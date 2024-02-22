@@ -2,7 +2,7 @@
 #define __RENDER_ENTITY_H__
 
 #include "renderworld.h"
-#include "..\math\matrix.h"
+#include "../math/matrix.h"
 
 namespace CG {
 	

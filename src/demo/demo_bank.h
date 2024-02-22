@@ -4,13 +4,13 @@
 #include "demo.h"
 
 namespace Tutorial {
-	class DemoBank : public Demo {
-	public:
-		static const char *s_name;
+    class DemoBank : public Demo {
+    public:
+        static const char *s_name;
 
-	protected:
-		void OnUpdate();
-	};
+    protected:
+        void OnUpdate();
+    };
 }
 
 #endif

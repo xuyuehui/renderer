@@ -1,7 +1,8 @@
 #ifndef __SOFT_RENDERER__
 #define __SOFT_RENDERER__
 
-#include "..\renderer.h"
+#include "../renderer.h"
+#include "../../utility/utility.h"
 
 namespace CG {
 	class FrameBuffer;

@@ -4,12 +4,12 @@
 #include "demo.h"
 
 namespace Tutorial {
-	class DemoTriangle : public Demo {
-	public:
-		static const char *s_name;
-	protected:
-		void OnUpdate();
-	};
+    class DemoTriangle : public Demo {
+    public:
+        static const char *s_name;
+    protected:
+        void OnUpdate();
+    };
 }
 
 #endif

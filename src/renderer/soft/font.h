@@ -2,7 +2,7 @@
 #define __FONT_H__
 
 namespace CG {
-	class FrameBuffer;
+    class FrameBuffer;
     typedef struct color_s color_t;
 
     enum FONT_CHARACTER
@@ -47,10 +47,10 @@ namespace CG {
         CHAR_NUM,
     };
 
-	class Font {
-	public:
-		static void R_DrawCharacter(const FrameBuffer &frameBuffer, float x, float y, FONT_CHARACTER character, float size, const color_t &color, float ratio);
-	};
+    class Font {
+    public:
+        static void R_DrawCharacter(const FrameBuffer &frameBuffer, float x, float y, FONT_CHARACTER character, float size, const color_t &color, float ratio);
+    };
 }
 
 #endif

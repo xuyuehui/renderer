@@ -1,7 +1,7 @@
 ﻿#include <assert.h>
 #include "font.h"
 #include "rasterizer.h"
-#include "..\..\math\vector.h"
+#include "../../math/vector.h"
 
 namespace CG {
     // 16-segment character data

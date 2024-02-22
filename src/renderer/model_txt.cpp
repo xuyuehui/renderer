@@ -1,5 +1,5 @@
 #include "model_txt.h"
-#include "..\shared.h"
+#include "../shared.h"
 
 namespace CG {
 	RenderModelTxt::RenderModelTxt() {

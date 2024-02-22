@@ -1,8 +1,9 @@
 #include "demo_triangle.h"
-#include "..\platform\platform.h"
-#include "..\renderer\renderer.h"
-#include "..\math\math.h"
-#include "..\shared.h"
+#include "../platform/platform.h"
+#include "../renderer/renderer.h"
+#include "../math/math.h"
+#include "../shared.h"
+#include "../utility/utility.h"
 
 using namespace CG;
 

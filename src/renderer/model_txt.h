@@ -4,16 +4,16 @@
 #include "model.h"
 
 namespace CG {
-	class RenderModelTxt : public RenderModel {
-	public:
-		RenderModelTxt();
+    class RenderModelTxt : public RenderModel {
+    public:
+        RenderModelTxt();
 
-		bool InitFromFile(const char *filename);
+        bool InitFromFile(const char *filename);
 
-		int NumSurfaces() const;
+        int NumSurfaces() const;
 
-		modelSurface_t *Surface(int surfaceNum) const;
-	};
+        modelSurface_t *Surface(int surfaceNum) const;
+    };
 }
 
 #endif

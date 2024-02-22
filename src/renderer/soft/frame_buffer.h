@@ -1,8 +1,8 @@
 #ifndef __FRAME_BUFFER_H__
 #define __FRAME_BUFFER_H__
 
-#include "..\..\shared.h"
-#include "..\..\math\vector.h"
+#include "../../shared.h"
+#include "../../math/vector.h"
 
 namespace CG {
 	class FrameBuffer {

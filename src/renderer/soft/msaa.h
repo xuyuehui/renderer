@@ -5,7 +5,7 @@
 #include "../renderworld.h"
 
 namespace CG {
-	void GetMSAAMask(sampleType_t sampleType, unsigned short &mask, const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos);
+    void GetMSAAMask(sampleType_t sampleType, unsigned short &mask, const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos);
 }
 
 #endif

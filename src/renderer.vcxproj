@@ -198,6 +198,7 @@
     <ClInclude Include="renderer\soft\shader_internal.h" />
     <ClInclude Include="renderer\soft\soft_renderer.h" />
     <ClInclude Include="shared.h" />
+    <ClInclude Include="utility\utility.h" />
     <ClInclude Include="utility\list.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -18,27 +18,15 @@ namespace CG {
 #define PI 3.14159265358979323846264338327950288f
 #define EPSILON 1e-6f
 
-	typedef unsigned char			byte;
-	typedef unsigned short			uint16;
-	typedef short					int16;
-	typedef unsigned int			uint32;
-	typedef int						int32;
+    typedef unsigned char			byte;
+    typedef unsigned short			uint16;
+    typedef short					int16;
+    typedef unsigned int			uint32;
+    typedef int						int32;
 
-	typedef unsigned short			word;
-	typedef unsigned int			dword;
-	typedef unsigned long			ulong;
-
-	typedef struct color_s {
-		byte r;
-		byte g;
-		byte b;
-
-		color_s(byte r, byte g, byte b) {
-			this->r = r;
-			this->g = g;
-			this->b = b;
-		}
-	}color_t;
+    typedef unsigned short			word;
+    typedef unsigned int			dword;
+    typedef unsigned long			ulong;
 }
 
 #endif
