@@ -4,6 +4,8 @@
 #include "../shared.h"
 
 namespace CG {
+    class Texture;
+
     class Material {
     public:
         int shaderID;
@@ -17,11 +19,11 @@ namespace CG {
 
     protected:
         uint32 flags;
+        Texture *albedo;
+        Texture *diffuse;
+        Texture *specular;
+        Texture *normal;
     };
-
-    inline Material::Material() : shaderID(0), flags(0)
-    {
-    }
 
     inline void Material::SetRenderFlags(uint32 f)
     {

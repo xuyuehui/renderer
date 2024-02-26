@@ -51,8 +51,7 @@ namespace CG {
         {-0.125f, -0.375f}, {0.375f,  0.375f},
     };
 
-
-    void GetMSAAMask(sampleType_t sampleType, unsigned short &mask, const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos) {
+    void GetMSAAMask(msaaLevel_t sampleType, unsigned short &mask, const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos) {
         mask = 0;
         float tp0, tp1, tp2;
         int sampleNum = 0;
@@ -60,13 +59,13 @@ namespace CG {
         Vec3 samples[8];
 
         switch (sampleType) {
-        case SAMPLE_MSAA2X:
+        case MSAA_LEVEL_2X:
             sampleNum = 2;
             break;
-        case SAMPLE_MSAA4X:
+        case MSAA_LEVEL_4X:
             sampleNum = 4;
             break;
-        case SAMPLE_MSAA8X:
+        case MSAA_LEVEL_8X:
             sampleNum = 8;
             break;
         }
@@ -76,7 +75,7 @@ namespace CG {
         }
 
         for (int i = 0; i < sampleNum; i++) {
-            if (!Math::OutsideTest(v0, v1, v2, samples[i], tp0, tp1, tp2)) {
+            if (!Math::PointInsideTriangle(v0, v1, v2, samples[i], tp0, tp1, tp2)) {
                 mask |= (1 << i);
             }
         }

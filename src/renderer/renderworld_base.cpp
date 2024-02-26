@@ -1,7 +1,7 @@
 #include "renderworld_base.h"
 
 namespace CG {
-    RenderWorld_Base::RenderWorld_Base() : renderFlags(0), sampleType(SAMPLE_DEFAULT){
+    RenderWorld_Base::RenderWorld_Base() : renderFlags(0), antiAlias(AA_DEFAULT){
     }
 
     RenderWorld_Base::~RenderWorld_Base() {

@@ -76,14 +76,11 @@ namespace CG {
         return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
     }
 
-    bool Math::OutsideTest(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2) {
+    bool Math::PointInsideTriangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2) {
         w0 = EdgeFunction(v1, v2, pos);
         w1 = EdgeFunction(v2, v0, pos);
         w2 = EdgeFunction(v0, v1, pos);
 
-        bool hasNeg = w0 < 0 || w1 < 0 || w2 < 0;
-        bool hasPos = w0 > 0 || w1 > 0 || w2 > 0;
-
-        return hasNeg && hasPos;
+        return w0 >= 0 && w1 >= 0 && w2 >= 0;
     }
 }

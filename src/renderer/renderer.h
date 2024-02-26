@@ -14,6 +14,9 @@ namespace CG {
 
     class Window;
     class RenderWorld;
+    class ShaderManager;
+    class ModelManager;
+    class TextureManager;
 
     typedef struct renderTargetDesc_s {
         byte *data;
@@ -36,9 +39,11 @@ namespace CG {
         virtual void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth) = 0;
         virtual void DrawText(const char *text, const Vec2& pos, float size, const color_t &color, float gap) = 0;
 
-        virtual uint32_t LoadShader(const char *name) = 0;
-
         virtual RenderWorld *CreateRenderWorld() = 0;
+
+        virtual ShaderManager *GetShaderManager() const = 0;
+        virtual ModelManager *GetModelManager() const = 0;
+        virtual TextureManager *GetTextureManager() const = 0;
     };
 
     Renderer * CreateRendererAPI(rendererAPIType_t type);

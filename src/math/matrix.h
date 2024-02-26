@@ -14,7 +14,38 @@ namespace CG {
     };
 
     class Mat3 {
+    public:
+        Mat3();
+        explicit Mat3(const Vec3 &x, const Vec3 &y, const Vec3 &z);
+        explicit Mat3(float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz);
+
+        Vec3 operator* (const Vec3 &vec) const;
+    private:
+        Vec3 mat[3];
     };
+
+    inline Mat3::Mat3() {
+    }
+
+    inline Mat3::Mat3(const Vec3 &x, const Vec3 &y, const Vec3 &z) {
+        mat[0] = x;
+        mat[1] = y;
+        mat[2] = z;
+    }
+
+    inline Mat3::Mat3(float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz) {
+        mat[0][0] = xx; mat[0][1] = xy; mat[0][2] = xz;
+        mat[1][0] = yx; mat[1][1] = yy; mat[1][2] = yz;
+        mat[2][0] = zx; mat[2][1] = zy; mat[2][2] = zz;
+    }
+
+    inline Vec3 Mat3::operator* (const Vec3 &vec) const {
+        return Vec3(
+            mat[0].x * vec.x + mat[1].x * vec.y + mat[2].x + vec.z,
+            mat[0].y * vec.x + mat[1].y * vec.y + mat[2].y + vec.z,
+            mat[0].z * vec.x + mat[1].z * vec.y + mat[2].z + vec.z
+        );
+    }
 
     class Mat4 {
     public:

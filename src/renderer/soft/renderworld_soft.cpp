@@ -1,13 +1,15 @@
 #include "renderworld_soft.h"
 #include "../../math/math.h"
+#include "../../utility/utility.h"
 #include "../render_entity.h"
 #include "../model.h"
 #include "../material.h"
 
 #include "soft_renderer.h"
-#include "shadermanager.h"
+#include "shadermanager_soft.h"
 #include "shader.h"
 #include "msaa.h"
+#include "frame_buffer.h"
 
 namespace CG {
 
@@ -31,19 +33,23 @@ namespace CG {
         v.z *= v.w;
     }
 
-    static inline int ScreenMapping_X(float x, int width) {
+    static inline float ScreenMapping_X(float x, int width) {
         return floor((x * 0.5f + 0.5f) * width);
     }
 
-    static inline int ScreenMapping_Y(float y, int height) {
+    static inline float ScreenMapping_Y(float y, int height) {
         return floor((y * 0.5f + 0.5f) * height);
+    }
+
+    static inline byte Float2ByteColor(float v) {
+        return (byte)(clamp(v, 0.0f, 1.0f) * 255);
     }
 
     RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
         this->renderer = dynamic_cast<SoftRenderer*>(renderer);
 
         defaultMat = new Material();
-        defaultMat->SetRenderFlags(RF_BACK_FACE_CULLING);
+        defaultMat->SetRenderFlags(RF_BACK_FACE_CULLING | RF_DEPTH_TEST);
     }
 
     RenderWorld_Soft::~RenderWorld_Soft() {
@@ -57,10 +63,8 @@ namespace CG {
         Mat4 viewMat = Math::ViewMatrix(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
         Mat4 vp = projMat * viewMat;
 
-        ShaderManager *shaderManager = renderer->shaderManager;
-
-        renderTargetDesc_t rtd;
-        renderer->GetColorBufferDesc(rtd);
+        ShaderManager *shaderManager = renderer->GetShaderManager();
+        FrameBuffer *frameBuffer = renderer->GetFrontFrameBuffer();
 
         for (int i = 0; i < entities.Num(); i++) {
             const RenderEntity *entity = entities[i];
@@ -106,12 +110,12 @@ namespace CG {
                         }
                     }
                     
-                    v0.position.x = ScreenMapping_X(v0.position.x, rtd.width);
-                    v1.position.x = ScreenMapping_X(v1.position.x, rtd.width);
-                    v2.position.x = ScreenMapping_X(v2.position.x, rtd.width);
-                    v0.position.y = ScreenMapping_Y(v0.position.y, rtd.height);
-                    v1.position.y = ScreenMapping_Y(v1.position.y, rtd.height);
-                    v2.position.y = ScreenMapping_Y(v2.position.y, rtd.height);
+                    v0.position.x = ScreenMapping_X(v0.position.x, frameBuffer->GetWidth());
+                    v1.position.x = ScreenMapping_X(v1.position.x, frameBuffer->GetWidth());
+                    v2.position.x = ScreenMapping_X(v2.position.x, frameBuffer->GetWidth());
+                    v0.position.y = ScreenMapping_Y(v0.position.y, frameBuffer->GetHeight());
+                    v1.position.y = ScreenMapping_Y(v1.position.y, frameBuffer->GetHeight());
+                    v2.position.y = ScreenMapping_Y(v2.position.y, frameBuffer->GetHeight());
 
                     v0.position.z = 1.0f / v0.position.z;
                     v1.position.z = 1.0f / v1.position.z;
@@ -127,10 +131,10 @@ namespace CG {
                     }
 
                     // reference : https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/overview-rasterization-algorithm.html
-                    const int xMin = max(min(v0.position.x, min(v1.position.x, v2.position.x)), 0);
-                    const int xMax = min(max(v0.position.x, max(v1.position.x, v2.position.x)), rtd.width - 1);
-                    const int yMin = max(min(v0.position.y, min(v1.position.y, v2.position.y)), 0);
-                    const int yMax = min(max(v0.position.y, max(v1.position.y, v2.position.y)), rtd.height - 1);
+                    int xMin = max(min(v0.position.x, min(v1.position.x, v2.position.x)), 0);
+                    int xMax = min(max(v0.position.x, max(v1.position.x, v2.position.x)), frameBuffer->GetWidth() - 1);
+                    int yMin = max(min(v0.position.y, min(v1.position.y, v2.position.y)), 0);
+                    int yMax = min(max(v0.position.y, max(v1.position.y, v2.position.y)), frameBuffer->GetHeight() - 1);
 
                     float area = Math::EdgeFunction(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3());
                     unsigned short mask = 0;
@@ -140,17 +144,19 @@ namespace CG {
                             Vec3 pos(x + 0.5f, y + 0.5f, 1.0f);
                             float w0, w1, w2;
 
-                            if (GetSampleType() > SAMPLE_DEFAULT) {
-                                GetMSAAMask(GetSampleType(), mask, v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos);
+                            if (GetAntiAliasingType() == AA_DEFAULT) {
+                                if (!Math::PointInsideTriangle(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2)) {
+                                    continue;
+                                }
+                            }
+                            else if (GetAntiAliasingType() == AA_MSAA){
+                                GetMSAAMask((msaaLevel_t)GetAntiAliasingLevel(), mask, v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos);
 
                                 if (mask == 0) {
                                     continue;
                                 }
 
-                                Math::OutsideTest(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2);
-                            }
-                            else if (Math::OutsideTest(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2)){
-                                continue;
+                                Math::PointInsideTriangle(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2);
                             }
 
                             w0 /= area;
@@ -161,6 +167,51 @@ namespace CG {
                             pos.z = 1.0f / denom;
                             if (isnan(pos.z)) {
                                 continue;
+                            }
+
+                            // Near/Far Plane Clpping
+                            if (pos.z < 0.0f || pos.z > 0.999f) {
+                                continue;
+                            }
+
+                            if (pos.x < 0 || pos.x >= frameBuffer->GetWidth() || y < 0 || y >= frameBuffer->GetHeight()) {
+                                continue;
+                            }
+
+                            // reference : https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes.html
+                            float correct = 1.0f / (w0 * v0.position.w + w1 * v1.position.w + w2 * v2.position.w);
+                            Vec3 barycentric = Vec3(w0 * v0.position.w, w1 * v1.position.w, w2 * v2.position.w) * correct;
+
+                            v2f_t v;
+
+                            v.position = Vec4(pos.x, pos.y, pos.z, 0.0f);
+                            v.fragPos = Mat3(v0.fragPos.x, v1.fragPos.x, v2.fragPos.x, v0.fragPos.y, v1.fragPos.y, v2.fragPos.y, v0.fragPos.z, v1.fragPos.z, v2.fragPos.z) * barycentric;
+                            v.normal = Mat3(v0.normal.x, v1.normal.x, v2.normal.x, v0.normal.y, v1.normal.y, v2.normal.y, v0.normal.z, v1.normal.z, v2.normal.z) * barycentric;
+                            v.t_normal = Mat3(v0.t_normal.x, v1.t_normal.x, v2.t_normal.x, v0.t_normal.y, v1.t_normal.y, v2.t_normal.y, v0.t_normal.z, v1.t_normal.z, v2.t_normal.z) * barycentric;
+                            v.texcoord = Vec2(Vec3(v0.texcoord.x, v1.texcoord.x, v2.texcoord.x).Dot(barycentric), Vec3(v0.texcoord.y, v1.texcoord.y, v2.texcoord.y).Dot(barycentric));
+                            v.tangent = v0.tangent;
+                            v.bitangent = v0.bitangent;
+
+                            if (GetAntiAliasingType() == AA_DEFAULT) {
+                                // Depth Test
+                                int depthPos = y * frameBuffer->GetWidth() + x;
+                                if (material->HasRenderFlags(RF_DEPTH_TEST) && frameBuffer->GetDepthBuffer()[depthPos] <= v.position.z) {
+                                    continue;
+                                }
+
+                                if (!material->HasRenderFlags(RF_TRANSPARENT)) {
+                                    frameBuffer->GetDepthBuffer()[depthPos] = v.position.z;
+                                }
+
+                                // Fragment Shading
+                                Vec4 color = shader->Fragment(v);
+
+                                byte *colorBuffer = frameBuffer->GetColorBuffer();
+                                int colorPos = (frameBuffer->GetWidth() * y + x) * 3;
+                                
+                                colorBuffer[colorPos + 0] = Float2ByteColor(color.x);
+                                colorBuffer[colorPos + 1] = Float2ByteColor(color.y);
+                                colorBuffer[colorPos + 2] = Float2ByteColor(color.z);
                             }
                         }
                     }

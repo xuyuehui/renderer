@@ -5,10 +5,12 @@
 #include "font.h"
 #include "renderworld_soft.h"
 
-#include "shadermanager.h"
+#include "shadermanager_soft.h"
+#include "../modelmanager.h"
+#include "../TextureManager.h"
 
 namespace CG {
-    SoftRenderer::SoftRenderer() : bufferIndex(0), needUpdated(false), window(NULL), shaderManager(NULL) {
+    SoftRenderer::SoftRenderer() : bufferIndex(0), needUpdated(false), window(NULL), shaderManager(NULL), modelManager(NULL), textureManager(NULL) {
         buffers[0] = NULL;
         buffers[1] = NULL;
     }
@@ -16,7 +18,22 @@ namespace CG {
     SoftRenderer::~SoftRenderer() {
         delete buffers[0];
         delete buffers[1];
-        delete shaderManager;
+
+        if (shaderManager != NULL) {
+            shaderManager->Shutdown();
+            delete shaderManager;
+        }
+
+
+        if (modelManager != NULL) {
+            modelManager->Shutdown();
+            delete modelManager;
+        }
+
+        if (textureManager != NULL) {
+            textureManager->Shutdown();
+            delete textureManager;
+        }
     }
 
     void SoftRenderer::Init(Window* window) {
@@ -38,8 +55,14 @@ namespace CG {
         buffers[0] = new FrameBuffer(width, height);
         buffers[1] = new FrameBuffer(width, height);
 
-        shaderManager = new ShaderManager();
+        shaderManager = new ShaderManager_Soft();
         shaderManager->Init();
+
+        modelManager = new ModelManager();
+        modelManager->Init();
+
+        textureManager = new TextureManager();
+        textureManager->Init();
     }
 
     void SoftRenderer::ClearColorBuffer(const rgb& color) {
@@ -105,9 +128,4 @@ namespace CG {
     RenderWorld *SoftRenderer::CreateRenderWorld() {
         return new RenderWorld_Soft(this);
     }
-     
-    uint32_t SoftRenderer::LoadShader(const char *name) {
-        return -1;
-    }
-
 }

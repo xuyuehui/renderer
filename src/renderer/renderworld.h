@@ -6,11 +6,11 @@
 #include "../math/quat.h"
 #include "../utility/utility.h"
 
-#define COLOR_WHITE color_t(255, 255, 255)
-
 namespace CG {
     const uint32 RF_BACK_FACE_CULLING		= 0x00000001;
     const uint32 RF_WIREFRAME_MODE			= 0x00000002;
+    const uint32 RF_DEPTH_TEST              = 0x00000004;
+    const uint32 RF_TRANSPARENT             = 0x00000008;
 
     class RenderModel;
 
@@ -39,12 +39,10 @@ namespace CG {
     }renderView_t;
 
     typedef enum {
-        SAMPLE_DEFAULT,
-        SAMPLE_MSAA2X,
-        SAMPLE_MSAA4X,
-        SAMPLE_MSAA8X,
-        SAMPLE_MAX,
-    } sampleType_t;
+        AA_DEFAULT,
+        AA_MSAA,
+        AA_MAX,
+    } antiAliasingType_t;
 
     class RenderWorld {
     public:
@@ -60,8 +58,9 @@ namespace CG {
         virtual void UnsetRenderFlags(uint32 f) = 0;
         virtual bool HasRenderFlags(uint32 f) const = 0;
 
-        virtual void SetSampleType(sampleType_t st) = 0;
-        virtual sampleType_t GetSampleType() const = 0;
+        virtual void SetAntiAliasingType(antiAliasingType_t aa, uint32 opt) = 0;
+        virtual antiAliasingType_t GetAntiAliasingType() const = 0;
+        virtual uint32 GetAntiAliasingLevel() const = 0;
     };
 }
 

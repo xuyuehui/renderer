@@ -1,4 +1,4 @@
 #include "texture.h"
 
-namespace seRenderer {
+namespace CG {
 }

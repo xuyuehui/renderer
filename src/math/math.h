@@ -17,7 +17,7 @@ namespace CG {
         static Mat4 ViewMatrix(const Vec3 &eye, const Vec3 &target, const Vec3 &up);
         static float InvSqrt(float sqrLength);
         static float EdgeFunction(const Vec3 &a, const Vec3 &b, const Vec3 &c);
-        static bool OutsideTest(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2);
+        static bool PointInsideTriangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2);
 
     private:
         enum {

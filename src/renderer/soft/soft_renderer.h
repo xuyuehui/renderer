@@ -8,11 +8,11 @@ namespace CG {
 	class FrameBuffer;
 	class ShaderManager;
 	class Shader;
+	class TextureManager;
+	class ModelManager;
 
 	class SoftRenderer : public Renderer {
 	public:
-		ShaderManager *shaderManager;
-
 		SoftRenderer();
 		~SoftRenderer();
 
@@ -26,9 +26,11 @@ namespace CG {
 		void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
 		void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
 
-		virtual uint32 LoadShader(const char *name);
+		RenderWorld *CreateRenderWorld();
 
-		virtual RenderWorld *CreateRenderWorld();
+		ShaderManager *GetShaderManager() const;
+		ModelManager *GetModelManager() const;
+		TextureManager *GetTextureManager() const;
 	public:
 		// 已经准备好的缓冲区
 		FrameBuffer *GetFrontFrameBuffer() const;
@@ -41,6 +43,10 @@ namespace CG {
 		bool needUpdated;
 
 		Window *window;
+
+		ShaderManager *shaderManager;
+		ModelManager *modelManager;
+		TextureManager *textureManager;
 	};
 
 	inline FrameBuffer *SoftRenderer::GetFrontFrameBuffer() const {
@@ -49,6 +55,18 @@ namespace CG {
 
 	inline FrameBuffer *SoftRenderer::GetBackFrameBuffer() const {
 		return buffers[bufferIndex ^ 1];
+	}
+
+	inline ShaderManager *SoftRenderer::GetShaderManager() const {
+		return shaderManager;
+	}
+
+	inline ModelManager *SoftRenderer::GetModelManager() const {
+		return modelManager;
+	}
+
+	inline TextureManager *SoftRenderer::GetTextureManager() const {
+		return textureManager;
 	}
 }
 

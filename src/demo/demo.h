@@ -4,7 +4,6 @@
 namespace CG {
 	class Application;
 	class Window;
-	class ModelManager;
 }
 
 namespace Tutorial {
@@ -21,7 +20,6 @@ namespace Tutorial {
 	protected:
 		CG::Application *app;
 		CG::Window *window;
-		CG::ModelManager *modelManager;
 	};
 
 	Demo *InitializeDemo(int argc, char **argv);

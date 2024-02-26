@@ -20,13 +20,12 @@ namespace CG {
 
     typedef struct v2f_s {
         Vec4 position;
+        Vec3 fragPos;
         Vec3 normal;
         Vec3 t_normal;
         Vec2 texcoord;
         Vec3 tangent;
         Vec3 bitangent;
-
-        Vec4 localPos;
     }v2f_t;
 
     class Shader {

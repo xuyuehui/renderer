@@ -48,11 +48,14 @@ namespace CG {
         explicit Vec3(float x, float y, float z);
 
         float operator[] (int index) const;
+        float& operator[] (int index);
         Vec3 operator-() const;
         Vec3 & operator= (const Vec3 &a);
         Vec3 operator-(const Vec3 &a) const;
+        Vec3 operator* (float a) const;
 
         Vec3 Cross(const Vec3 &a) const;
+        float Dot(const Vec3 &a) const;
 
         float Normalize();
         Vec3 Normalized() const;
@@ -68,6 +71,11 @@ namespace CG {
     }
 
     inline float Vec3::operator[] (int index) const {
+        assert(index >= 0 && index < 3);
+        return (&x)[index];
+    }
+
+    inline float& Vec3::operator[] (int index) {
         assert(index >= 0 && index < 3);
         return (&x)[index];
     }
@@ -88,8 +96,16 @@ namespace CG {
         return Vec3(x - a.x, y - a.y, z - a.z);
     }
 
+    inline Vec3 Vec3::operator*(float a) const {
+        return Vec3(x * a, y * a, z * a);
+    }
+
     inline Vec3 Vec3::Cross(const Vec3 &a) const {
         return Vec3(y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x);
+    }
+
+    inline float Vec3::Dot(const Vec3 &a) const {
+        return x * a.x + y * a.y + z * a.z;
     }
 
     inline float Vec3::Normalize() {

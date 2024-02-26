@@ -161,14 +161,17 @@
     <ClCompile Include="renderer\renderer.cpp" />
     <ClCompile Include="renderer\renderworld.cpp" />
     <ClCompile Include="renderer\renderworld_base.cpp" />
+    <ClCompile Include="renderer\shadermanager.cpp" />
     <ClCompile Include="renderer\soft\font.cpp" />
     <ClCompile Include="renderer\soft\frame_buffer.cpp" />
     <ClCompile Include="renderer\soft\msaa.cpp" />
     <ClCompile Include="renderer\soft\rasterizer.cpp" />
     <ClCompile Include="renderer\soft\renderworld_soft.cpp" />
-    <ClCompile Include="renderer\soft\shadermanager.cpp" />
+    <ClCompile Include="renderer\soft\shadermanager_soft.cpp" />
     <ClCompile Include="renderer\soft\shader_internal.cpp" />
     <ClCompile Include="renderer\soft\soft_renderer.cpp" />
+    <ClCompile Include="renderer\texture.cpp" />
+    <ClCompile Include="renderer\texturemanager.cpp" />
     <ClCompile Include="utility\list.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,15 +191,18 @@
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="renderer\renderworld.h" />
     <ClInclude Include="renderer\renderworld_base.h" />
+    <ClInclude Include="renderer\shadermanager.h" />
     <ClInclude Include="renderer\soft\font.h" />
     <ClInclude Include="renderer\soft\frame_buffer.h" />
     <ClInclude Include="renderer\soft\msaa.h" />
     <ClInclude Include="renderer\soft\rasterizer.h" />
     <ClInclude Include="renderer\soft\renderworld_soft.h" />
     <ClInclude Include="renderer\soft\shader.h" />
-    <ClInclude Include="renderer\soft\shadermanager.h" />
+    <ClInclude Include="renderer\soft\shadermanager_soft.h" />
     <ClInclude Include="renderer\soft\shader_internal.h" />
     <ClInclude Include="renderer\soft\soft_renderer.h" />
+    <ClInclude Include="renderer\texture.h" />
+    <ClInclude Include="renderer\texturemanager.h" />
     <ClInclude Include="shared.h" />
     <ClInclude Include="utility\utility.h" />
     <ClInclude Include="utility\list.h" />

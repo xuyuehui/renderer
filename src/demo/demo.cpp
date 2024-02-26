@@ -11,7 +11,7 @@
 using namespace CG;
 
 namespace Tutorial {
-    Demo::Demo() : app(NULL), window(NULL), modelManager(NULL) {
+    Demo::Demo() : app(NULL), window(NULL) {
     }
 
     int Demo::Run(CG::Application *app) {
@@ -39,14 +39,9 @@ namespace Tutorial {
 
         window = CreateRenderWindow(w, h, "rendering");
         app->GetRenderer()->Init(window);
-
-        modelManager = new ModelManager();
-        modelManager->Init();
     }
 
     void Demo::OnShutdown() {
-        modelManager->Shutdown();
-        delete modelManager;
     }
 
     Demo *InitializeDemo(int argc, char **argv) {
