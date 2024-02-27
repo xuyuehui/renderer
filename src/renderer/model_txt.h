@@ -16,7 +16,8 @@ namespace CG {
 
         modelSurface_t *Surface(int surfaceNum) const;
     protected:
-        void LoadDescFile(const char *filename);
+        void ParseDescFile(const char *filename);
+        void GenerateMaterial();
     private:
         std::string meshFilename;
         std::string albedoMap;

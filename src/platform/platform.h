@@ -31,6 +31,7 @@ namespace CG {
 
     Application * InitializeApplication(int argc, char **argv);
     Window * CreateRenderWindow(int width, int height, const char *title);
+    Application *App();
 }
 
 #endif

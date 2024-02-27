@@ -1,5 +1,8 @@
 #include "model_txt.h"
 #include "../shared.h"
+#include "material.h"
+#include "texturemanager.h"
+#include "shadermanager.h"
 
 #include <fstream>
 
@@ -12,12 +15,13 @@ namespace CG {
 	}
 
 	bool RenderModelTxt::InitFromFile(const char *filename){
-		LoadDescFile(filename);
+		ParseDescFile(filename);
+		GenerateMaterial();
 
 		return true;
 	}
 
-	void RenderModelTxt::LoadDescFile(const char *filename) {
+	void RenderModelTxt::ParseDescFile(const char *filename) {
 		ifstream fs;
 		char buffer[MAX_BUFFER_SIZE];
 		char tmp[MAX_BUFFER_SIZE];
@@ -63,6 +67,10 @@ namespace CG {
 		}
 
 		fs.close();
+	}
+
+	void RenderModelTxt::GenerateMaterial() {
+		material = new Material();
 	}
 
 	int RenderModelTxt::NumSurfaces() const {

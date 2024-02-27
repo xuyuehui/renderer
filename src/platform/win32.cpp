@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace CG {
-    static const char *s_className = "seRenderApp";
+    static const char *s_className = "CGApp";
 
     // Declare
     class Win32Application;
@@ -108,6 +108,10 @@ namespace CG {
         app = new Win32Application(argc, argv);
         app->OnInitialize();
 
+        return app;
+    }
+
+    Application *App() {
         return app;
     }
 
