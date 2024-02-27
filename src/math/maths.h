@@ -1,5 +1,5 @@
-#ifndef __MATH_H__
-#define __MATH_H__
+#ifndef __MATHS_H__
+#define __MATHS_H__
 
 #include "../shared.h"
 
