@@ -54,10 +54,10 @@ namespace Tutorial {
         }
 
         Demo *demo = NULL;
-        if (stricmp(demoName, DemoTriangle::s_name) == 0){
+        if (strcmp(demoName, DemoTriangle::s_name) == 0){
             demo = new DemoTriangle();
         }
-        else if (stricmp(demoName, DemoMain::s_name) == 0) {
+        else if (strcmp(demoName, DemoMain::s_name) == 0) {
             demo = new DemoMain();
         }
         else {

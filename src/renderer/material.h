@@ -10,7 +10,10 @@ namespace CG {
     class Material {
     public:
         Shader *shader;
-
+        Texture *albedo;
+        Texture *diffuse;
+        Texture *specular;
+        Texture *normal;
     public:
         Material();
 
@@ -20,10 +23,6 @@ namespace CG {
 
     protected:
         uint32 flags;
-        Texture *albedo;
-        Texture *diffuse;
-        Texture *specular;
-        Texture *normal;
     };
 
     inline void Material::SetRenderFlags(uint32 f) {

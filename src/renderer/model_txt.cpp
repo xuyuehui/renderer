@@ -3,6 +3,8 @@
 #include "material.h"
 #include "texturemanager.h"
 #include "shadermanager.h"
+#include "../platform/platform.h"
+#include "../renderer/renderer.h"
 
 #include <fstream>
 
@@ -71,6 +73,8 @@ namespace CG {
 
 	void RenderModelTxt::GenerateMaterial() {
 		material = new Material();
+
+		material->shader = App()->GetRenderer()->GetShaderManager()->LoadShader("internal/unlit");
 	}
 
 	int RenderModelTxt::NumSurfaces() const {

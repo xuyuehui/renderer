@@ -4,12 +4,13 @@ namespace CG {
     TextureManager::TextureManager() {
     }
 
-    TextureManager::~TextureManager() {
-    }
-
     void TextureManager::Init() {
     }
 
     void TextureManager::Shutdown() {
+    }
+
+    Texture * TextureManager::LoadTexture(const char *filename) {
+        return NULL;
     }
 }

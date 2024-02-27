@@ -150,9 +150,12 @@
     <ClCompile Include="math\quat.cpp" />
     <ClCompile Include="math\vector.cpp" />
     <ClCompile Include="platform\win32.cpp" />
+    <ClCompile Include="renderer\image\bmp.cpp" />
     <ClCompile Include="renderer\material.cpp" />
     <ClCompile Include="renderer\modelmanager.cpp" />
     <ClInclude Include="math\angles.h" />
+    <ClInclude Include="renderer\image\bmp.h" />
+    <ClInclude Include="renderer\image_loader.h" />
     <ClInclude Include="renderer\material.h" />
     <ClInclude Include="renderer\modelmanager.h" />
     <ClCompile Include="renderer\model_txt.cpp" />
