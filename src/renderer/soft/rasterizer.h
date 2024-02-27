@@ -1,7 +1,7 @@
 #ifndef __RASTERIZER_H__
 #define __RASTERIZER_H__
 
-#include "..\..\shared.h"
+#include "../../shared.h"
 #include "../../utility/utility.h"
 
 namespace CG {

@@ -1,7 +1,7 @@
 #include "demo_bank.h"
 #include "../platform/platform.h"
 #include "../renderer/renderer.h"
-#include "../math/math.h"
+#include "../math/maths.h"
 
 using namespace CG;
 using namespace std;

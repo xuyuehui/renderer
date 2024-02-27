@@ -2,7 +2,7 @@
 #define __VECTOR_H__
 
 #include "../shared.h"
-#include "math.h"
+#include "maths.h"
 
 namespace CG {
     class Vec2 {

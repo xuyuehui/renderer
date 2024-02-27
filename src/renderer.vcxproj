@@ -145,7 +145,7 @@
     <ClCompile Include="demo\demo_triangle.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\angles.cpp" />
-    <ClCompile Include="math\math.cpp" />
+    <ClCompile Include="math\maths.cpp" />
     <ClCompile Include="math\matrix.cpp" />
     <ClCompile Include="math\quat.cpp" />
     <ClCompile Include="math\vector.cpp" />
@@ -179,7 +179,7 @@
     <ClInclude Include="demo\demo_bank.h" />
     <ClInclude Include="demo\demo_main.h" />
     <ClInclude Include="demo\demo_triangle.h" />
-    <ClInclude Include="math\math.h" />
+    <ClInclude Include="math\maths.h" />
     <ClInclude Include="math\matrix.h" />
     <ClInclude Include="math\quat.h" />
     <ClInclude Include="math\vector.h" />

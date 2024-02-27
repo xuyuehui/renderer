@@ -1,6 +1,6 @@
 #include "msaa.h"
 #include "../../utility/list.h"
-#include "../../math/math.h"
+#include "../../math/maths.h"
 
 namespace CG {
     /* MSAA Specs */

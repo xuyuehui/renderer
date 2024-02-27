@@ -1,7 +1,7 @@
 #include "demo_main.h"
 #include "../platform/platform.h"
 #include "../renderer/renderer.h"
-#include "../math/math.h"
+#include "../math/maths.h"
 #include "../shared.h"
 #include "../renderer/modelmanager.h"
 #include "../renderer/model.h"

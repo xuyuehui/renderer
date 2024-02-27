@@ -2,7 +2,7 @@
 #include "../platform/platform.h"
 #include "../renderer/renderer.h"
 #include "../renderer/modelmanager.h"
-#include "../math/math.h"
+#include "../math/maths.h"
 
 #include "demo_bank.h"
 #include "demo_triangle.h"
