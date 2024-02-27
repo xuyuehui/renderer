@@ -7,7 +7,7 @@
 
 #include "soft_renderer.h"
 #include "shadermanager_soft.h"
-#include "shader.h"
+#include "shader_soft.h"
 #include "msaa.h"
 #include "frame_buffer.h"
 
@@ -48,7 +48,10 @@ namespace CG {
     RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
         this->renderer = dynamic_cast<SoftRenderer*>(renderer);
 
+        defaultShader = this->renderer->GetShaderManager()->LoadShader("internal/unlit");
+
         defaultMat = new Material();
+        defaultMat->shader = defaultShader;
         defaultMat->SetRenderFlags(RF_BACK_FACE_CULLING | RF_DEPTH_TEST);
     }
 
@@ -76,7 +79,7 @@ namespace CG {
             for (int i = 0; i < model->NumSurfaces(); i++) {
                 modelSurface_t *surface = model->Surface(i);
                 const Material *material = surface->material != NULL ? surface->material : defaultMat;
-                const Shader *shader = shaderManager->FindShader(material->shaderID);
+                const Shader_Soft *shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
 
                 for (int i = 0, tidx = 0; i < surface->geometry->numIndexes; i += 3, tidx++) {
 

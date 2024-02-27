@@ -5,10 +5,11 @@
 
 namespace CG {
     class Texture;
+    class Shader;
 
     class Material {
     public:
-        int shaderID;
+        Shader *shader;
 
     public:
         Material();
@@ -25,18 +26,15 @@ namespace CG {
         Texture *normal;
     };
 
-    inline void Material::SetRenderFlags(uint32 f)
-    {
+    inline void Material::SetRenderFlags(uint32 f) {
         flags |= f;
     }
 
-    inline void Material::UnseRenderFlags(uint32 f)
-    {
+    inline void Material::UnseRenderFlags(uint32 f) {
         flags &= ~(f);
     }
 
-    inline bool Material::HasRenderFlags(uint32 f) const
-    {
+    inline bool Material::HasRenderFlags(uint32 f) const {
         return (flags & f) != 0;
     }
 }

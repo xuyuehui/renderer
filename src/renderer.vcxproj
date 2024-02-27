@@ -191,15 +191,16 @@
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="renderer\renderworld.h" />
     <ClInclude Include="renderer\renderworld_base.h" />
+    <ClInclude Include="renderer\shader.h" />
     <ClInclude Include="renderer\shadermanager.h" />
     <ClInclude Include="renderer\soft\font.h" />
     <ClInclude Include="renderer\soft\frame_buffer.h" />
     <ClInclude Include="renderer\soft\msaa.h" />
     <ClInclude Include="renderer\soft\rasterizer.h" />
     <ClInclude Include="renderer\soft\renderworld_soft.h" />
-    <ClInclude Include="renderer\soft\shader.h" />
     <ClInclude Include="renderer\soft\shadermanager_soft.h" />
     <ClInclude Include="renderer\soft\shader_internal.h" />
+    <ClInclude Include="renderer\soft\shader_soft.h" />
     <ClInclude Include="renderer\soft\soft_renderer.h" />
     <ClInclude Include="renderer\texture.h" />
     <ClInclude Include="renderer\texturemanager.h" />

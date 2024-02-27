@@ -1,5 +1,5 @@
 #include "shadermanager_soft.h"
-#include "shader.h"
+#include "shader_soft.h"
 #include "shader_internal.h"
 
 namespace CG {
@@ -10,27 +10,19 @@ namespace CG {
     }
 
     void ShaderManager_Soft::Init() {
-        shaders.push_back(new UnlitShader());
+        shaders.push_back(new UnlitShader("internal/unlit"));
     }
 
     void ShaderManager_Soft::Shutdown() {
     }
 
-    uint32 ShaderManager_Soft::LoadShader(const char *filename) {
+    Shader * ShaderManager_Soft::LoadShader(const char *filename) {
         for (int i = 0; i < shaders.size(); i++) {
-            if (stricmp(shaders[i]->Name(), filename) == 0) {
-                return i + 1;
+            if (stricmp(shaders[i]->ID(), filename) == 0) {
+                return shaders[i];
             }
         }
 
         return 0;
-    }
-
-    const Shader *ShaderManager_Soft::FindShader(uint32 shaderID) const {
-        if (shaderID <= 0 || shaderID > shaders.size()) {
-            return shaders[0];
-        }
-
-        return shaders[shaderID - 1];
     }
 }

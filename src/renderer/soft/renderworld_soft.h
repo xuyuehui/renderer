@@ -7,6 +7,7 @@ namespace CG {
     class Renderer;
     class SoftRenderer;
     class Material;
+    class Shader;
 
     class RenderWorld_Soft : public RenderWorld_Base {
     public:
@@ -18,6 +19,7 @@ namespace CG {
     private:
         SoftRenderer *renderer;
         Material *defaultMat;
+        Shader *defaultShader;
     };
 }
 

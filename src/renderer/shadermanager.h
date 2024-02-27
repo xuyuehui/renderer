@@ -13,8 +13,7 @@ namespace CG {
         virtual void Init() = 0;
         virtual void Shutdown() = 0;
 
-        virtual uint32 LoadShader(const char *filename) = 0;
-        virtual const Shader *FindShader(uint32 shaderID) const = 0;
+        virtual Shader *LoadShader(const char *filename) = 0;
     };
 }
 

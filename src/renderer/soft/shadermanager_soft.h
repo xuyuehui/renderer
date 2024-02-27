@@ -7,6 +7,8 @@
 using namespace std;
 
 namespace CG {
+    class Shader_Soft;
+
     class ShaderManager_Soft : public ShaderManager {
     public:
         ShaderManager_Soft();
@@ -15,10 +17,9 @@ namespace CG {
         void Init();
         void Shutdown();
 
-        uint32 LoadShader(const char *filename);
-        const Shader *FindShader(uint32 shaderID) const;
+        Shader *LoadShader(const char *filename);
     private:
-        vector<Shader *> shaders;
+        vector<Shader_Soft *> shaders;
     };
 }
 
