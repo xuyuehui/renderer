@@ -1,0 +1,231 @@
+//
+//  macos.m
+//  renderer
+//
+//  Created by xuyuehui on 2024/2/27.
+//
+
+#include <Cocoa/Cocoa.h>
+#include <mach-o/dyld.h>
+#include <mach/mach_time.h>
+#include <unistd.h>
+#include "platform.h"
+#include "../renderer/renderer.h"
+
+using namespace CG;
+
+class MacosApplication : public Application {
+public:
+    MacosApplication(int argc, char **argv) : closing(false){
+        renderer = CreateRendererAPI(RAPI_SOFT);
+    }
+    
+    ~MacosApplication() {
+    }
+    
+    bool ShouldClosed();
+    void PoolEvents();
+    void Exit();
+
+    Renderer *GetRenderer();
+public:
+    void OnInitialize();
+    void OnDeinitialize();
+private:
+    bool closing;
+    Renderer *renderer;
+};
+
+MacosApplication *app;
+NSAutoreleasePool *autoReleasePool;
+
+inline bool MacosApplication::ShouldClosed() {
+    return closing;
+}
+
+inline void MacosApplication::PoolEvents() {
+    NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                        untilDate:[NSDate distantPast]
+                                           inMode:NSDefaultRunLoopMode dequeue:YES];
+    
+    if (event == nil) {
+        return;
+    }
+    
+    [NSApp sendEvent:event];
+}
+
+inline void MacosApplication::Exit() {
+    closing = true;
+}
+
+inline Renderer *MacosApplication::GetRenderer() {
+    return renderer;
+}
+
+class MacosWindow : public Window {
+public:
+    MacosWindow() :handle(NULL), width(1080), height(768) {
+    }
+    
+    ~MacosWindow() {
+    }
+    
+    void SetKeyboardCallback(keyboardCallback_t callback);
+    void *GetHandle() const;
+    void GetSize(int &width, int &height) const;
+    void SwapBuffer();
+public:
+    NSWindow *handle;
+    int width;
+    int height;
+    
+    byte *colorBuffer;
+};
+
+void MacosWindow::SetKeyboardCallback(keyboardCallback_t callback) {
+}
+
+void *MacosWindow::GetHandle() const {
+    return handle;
+}
+
+void MacosWindow::GetSize(int &width, int &height) const {
+    width = this->width;
+    height = this->height;
+}
+
+static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) {
+    int size = width * height * 3;
+    for (int i = 0; i < size;) {
+        to[i + 0] = from[i + 2];
+        to[i + 1] = from[i + 1];
+        to[i + 2] = from[i + 0];
+        
+        i += 3;
+    }
+}
+
+void MacosWindow::SwapBuffer() {
+    if (colorBuffer == NULL) {
+        colorBuffer = new byte[width * height * 3];
+    }
+    
+    renderTargetDesc_t rtd;
+    app->GetRenderer()->GetColorBufferDesc(rtd);
+    
+    Blit2ColorBuffer(rtd.data, colorBuffer, width, height);
+
+    [[handle contentView] setNeedsDisplay:YES];
+}
+
+void MacosApplication::OnInitialize() {
+    if (!NSApp) {
+        autoReleasePool = [[NSAutoreleasePool alloc] init];
+        
+        [NSApplication sharedApplication];
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+        
+        [NSApp finishLaunching];
+    }
+}
+
+void MacosApplication::OnDeinitialize() {
+    [autoReleasePool drain];
+}
+
+Application *CG::InitializeApplication(int argc, char **argv) {
+    app = new MacosApplication(argc, argv);
+    app->OnInitialize();
+    return app;
+}
+
+@interface WindowDelegate : NSObject<NSWindowDelegate>
+@end
+
+@implementation WindowDelegate {
+    MacosWindow *window;
+}
+- (instancetype)initWithWindow:(MacosWindow *)window {
+    self = [super init];
+    if (self != nil) {
+        self->window = window;
+    }
+    
+    return self;
+}
+
+- (BOOL)windowShouldClose:(NSWindow *)sender {
+    app->Exit();
+    return NO;
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
+    NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc]
+                              initWithBitmapDataPlanes:&window->colorBuffer
+                              pixelsWide:window->width
+                              pixelsHigh:window->height
+                              bitsPerSample:8
+                              samplesPerPixel:3
+                              hasAlpha:NO
+                              isPlanar:NO
+                              colorSpaceName:NSCalibratedRGBColorSpace
+                              bytesPerRow:window->width*3
+                              bitsPerPixel:24] autorelease];
+    
+    NSImage *image = [[[NSImage alloc] init] autorelease];
+    [image addRepresentation:rep];
+    [image drawInRect:dirtyRect];
+}
+@end
+
+@interface ContentView : NSView
+@end
+
+@implementation ContentView {
+    MacosWindow *window;
+}
+
+- (instancetype)initWithWindow:(MacosWindow *)window {
+    self = [super init];
+    if (self != nil) {
+        self->window = window;
+    }
+    
+    return self;
+}
+@end
+
+ContentView *view;
+
+Window *CG::CreateRenderWindow(int width, int height, const char *title) {
+    NSUInteger windowStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable;
+    NSRect windowRect = NSMakeRect(0, 0, width, height);
+    
+    NSWindow *handle = [[NSWindow alloc] initWithContentRect:windowRect
+                                         styleMask:windowStyle
+                                         backing:NSBackingStoreBuffered
+                                         defer:NO];
+    [handle autorelease];
+    
+    MacosWindow *window = new MacosWindow();
+    window->handle = handle;
+    
+    WindowDelegate *delegate = [[WindowDelegate alloc] initWithWindow:window];
+    [handle setDelegate:delegate];
+    
+    view = [[[ContentView alloc] initWithWindow:window] autorelease];
+    
+    [handle setTitle:[NSString stringWithUTF8String:title]];
+    [handle setColorSpace:[NSColorSpace genericRGBColorSpace]];
+    [handle setContentView:view];
+    [handle makeFirstResponder:view];
+    [handle orderFrontRegardless];
+    [handle makeKeyAndOrderFront:nil];
+    
+    return window;
+}
+
+Application *CG::App() {
+    return app;
+}

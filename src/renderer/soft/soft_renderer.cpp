@@ -77,6 +77,8 @@ namespace CG {
         bufferIndex ^= 1;
         GetBackFrameBuffer()->ClearDepthBuffer(0);
         needUpdated = true;
+        
+        window->SwapBuffer();
     }
 
     bool SoftRenderer::GetColorBufferDesc(renderTargetDesc_t& rtd) {
