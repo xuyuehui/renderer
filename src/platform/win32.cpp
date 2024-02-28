@@ -115,13 +115,13 @@ namespace CG {
         return app;
     }
 
-    class seWin32Window : public Window {
+    class Win32Window : public Window {
     public:
-        seWin32Window(HWND hwnd, int w, int h) : handle(hwnd), width(w), height(h), keyboardCallback(NULL), colorBuffer(NULL) {
+        Win32Window(HWND hwnd, int w, int h) : handle(hwnd), width(w), height(h), keyboardCallback(NULL), colorBuffer(NULL) {
             s_windows.insert(make_pair(hwnd, this));
         }
 
-        ~seWin32Window() {
+        ~Win32Window() {
             delete[] colorBuffer;
         }
 
@@ -137,6 +137,10 @@ namespace CG {
             width = this->width;
             height = this->height;
         }
+
+        void SwapBuffer() {
+        }
+
     public:
         keyboardCallback_t keyboardCallback;
         byte *colorBuffer;
@@ -157,7 +161,7 @@ namespace CG {
         }
     }
 
-    static void OnPainting(seWin32Window *window, Renderer *renderer) {
+    static void OnPainting(Win32Window *window, Renderer *renderer) {
         HWND hwnd = (HWND)window->GetHandle();
         renderTargetDesc_t rtd;
         
@@ -190,7 +194,7 @@ namespace CG {
     };
 
     LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-        seWin32Window *window = (seWin32Window *)GetWindow(hwnd);
+        Win32Window *window = (Win32Window *)GetWindow(hwnd);
         Renderer *renderer = app->GetRenderer();
 
         if (window != NULL) {
@@ -246,7 +250,7 @@ namespace CG {
         ShowWindow(hwnd, SW_SHOWNORMAL);
         UpdateWindow(hwnd);
 
-        return new seWin32Window(hwnd, width, height);
+        return new Win32Window(hwnd, width, height);
     }
 }
 

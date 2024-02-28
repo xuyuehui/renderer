@@ -5,69 +5,69 @@
 #include "../../utility/utility.h"
 
 namespace CG {
-	class FrameBuffer;
-	class ShaderManager;
-	class Shader;
-	class TextureManager;
-	class ModelManager;
+    class FrameBuffer;
+    class ShaderManager;
+    class Shader;
+    class TextureManager;
+    class ModelManager;
 
-	class SoftRenderer : public Renderer {
-	public:
-		SoftRenderer();
-		~SoftRenderer();
+    class SoftRenderer : public Renderer {
+    public:
+        SoftRenderer();
+        ~SoftRenderer();
 
-		void Init(Window *window);
-		void ClearColorBuffer(const rgb &color);
-		void ClearDepthBuffer(float depth);
-		void SwapBuffer();
+        void Init(Window *window);
+        void ClearColorBuffer(const rgb &color);
+        void ClearDepthBuffer(float depth);
+        void SwapBuffer();
 
-		bool GetColorBufferDesc(renderTargetDesc_t &rtd);
+        bool GetColorBufferDesc(renderTargetDesc_t &rtd);
 
-		void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
-		void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
+        void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
+        void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
 
-		RenderWorld *CreateRenderWorld();
+        RenderWorld *CreateRenderWorld();
 
-		ShaderManager *GetShaderManager() const;
-		ModelManager *GetModelManager() const;
-		TextureManager *GetTextureManager() const;
-	public:
-		// ÒÑ¾­×¼±¸ºÃµÄ»º³åÇø
-		FrameBuffer *GetFrontFrameBuffer() const;
+        ShaderManager *GetShaderManager() const;
+        ModelManager *GetModelManager() const;
+        TextureManager *GetTextureManager() const;
+    public:
+        // å·²ç»å‡†å¤‡å¥½çš„ç¼“å†²åŒº
+        FrameBuffer *GetFrontFrameBuffer() const;
 
-		// µ±Ç°Ö¡ÕıÔÚ¸ü¸ÄµÄ»º³åÇø
-		FrameBuffer *GetBackFrameBuffer() const;
-	private:
-		FrameBuffer *buffers[2];
-		byte bufferIndex;
-		bool needUpdated;
+        // å½“å‰å¸§æ­£åœ¨æ›´æ”¹çš„ç¼“å†²åŒº
+        FrameBuffer *GetBackFrameBuffer() const;
+    private:
+        FrameBuffer *buffers[2];
+        byte bufferIndex;
+        bool needUpdated;
 
-		Window *window;
+        Window *window;
 
-		ShaderManager *shaderManager;
-		ModelManager *modelManager;
-		TextureManager *textureManager;
-	};
+        ShaderManager *shaderManager;
+        ModelManager *modelManager;
+        TextureManager *textureManager;
+    };
 
-	inline FrameBuffer *SoftRenderer::GetFrontFrameBuffer() const {
-		return buffers[bufferIndex];
-	}
+    inline FrameBuffer *SoftRenderer::GetFrontFrameBuffer() const {
+        return buffers[bufferIndex];
+    }
 
-	inline FrameBuffer *SoftRenderer::GetBackFrameBuffer() const {
-		return buffers[bufferIndex ^ 1];
-	}
+    inline FrameBuffer *SoftRenderer::GetBackFrameBuffer() const {
+        return buffers[bufferIndex ^ 1];
+    }
 
-	inline ShaderManager *SoftRenderer::GetShaderManager() const {
-		return shaderManager;
-	}
+    inline ShaderManager *SoftRenderer::GetShaderManager() const {
+        return shaderManager;
+    }
 
-	inline ModelManager *SoftRenderer::GetModelManager() const {
-		return modelManager;
-	}
+    inline ModelManager *SoftRenderer::GetModelManager() const {
+        return modelManager;
+    }
 
-	inline TextureManager *SoftRenderer::GetTextureManager() const {
-		return textureManager;
-	}
+    inline TextureManager *SoftRenderer::GetTextureManager() const {
+        return textureManager;
+    }
 }
 
 #endif
