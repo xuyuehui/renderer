@@ -12,6 +12,8 @@
 #include "platform.h"
 #include "../renderer/renderer.h"
 
+#define PATH_SIZE 256
+
 using namespace CG;
 
 class MacosApplication : public Application {
@@ -45,8 +47,8 @@ inline bool MacosApplication::ShouldClosed() {
 
 inline void MacosApplication::PoolEvents() {
     NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny
-                                        untilDate:[NSDate distantPast]
-                                           inMode:NSDefaultRunLoopMode dequeue:YES];
+                            untilDate:[NSDate distantPast]
+                            inMode:NSDefaultRunLoopMode dequeue:YES];
     
     if (event == nil) {
         return;
@@ -98,9 +100,9 @@ void MacosWindow::GetSize(int &width, int &height) const {
 static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) {
     int size = width * height * 3;
     for (int i = 0; i < size;) {
-        to[i + 0] = from[i + 2];
+        to[i + 0] = from[i + 0];
         to[i + 1] = from[i + 1];
-        to[i + 2] = from[i + 0];
+        to[i + 2] = from[i + 2];
         
         i += 3;
     }
@@ -119,6 +121,38 @@ void MacosWindow::SwapBuffer() {
     [[handle contentView] setNeedsDisplay:YES];
 }
 
+static void InitializeMenubar() {
+    NSMenu *menuBar, *appMenu;
+    NSMenuItem *appMenuItem, *quitMenuItem;
+    NSString *appName, *quitTitle;
+    
+    menuBar = [[[NSMenu alloc] init] autorelease];
+    [NSApp setMainMenu:menuBar];
+    
+    appMenuItem = [[[NSMenuItem alloc] init] autorelease];
+    [menuBar addItem:appMenuItem];
+    
+    appMenu = [[[NSMenu alloc] init] autorelease];
+    [appMenuItem setSubmenu:appMenu];
+    
+    appName = [[NSProcessInfo processInfo] processName];
+    quitTitle = [@"Quit " stringByAppendingString:appName];
+    quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle
+                                        action:@selector(terminate:)
+                                        keyEquivalent:@"q"] autorelease];
+    
+    [appMenu addItem:quitMenuItem];
+}
+
+static void InitializeWorkingDir() {
+    char path[PATH_SIZE];
+    uint32_t size = PATH_SIZE;
+    
+    _NSGetExecutablePath(path, &size);
+    *strrchr(path, '/') = '\0';
+    chdir(path);
+}
+
 void MacosApplication::OnInitialize() {
     if (!NSApp) {
         autoReleasePool = [[NSAutoreleasePool alloc] init];
@@ -126,18 +160,15 @@ void MacosApplication::OnInitialize() {
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
         
+        InitializeWorkingDir();
+        InitializeMenubar();
+        
         [NSApp finishLaunching];
     }
 }
 
 void MacosApplication::OnDeinitialize() {
     [autoReleasePool drain];
-}
-
-Application *CG::InitializeApplication(int argc, char **argv) {
-    app = new MacosApplication(argc, argv);
-    app->OnInitialize();
-    return app;
 }
 
 @interface WindowDelegate : NSObject<NSWindowDelegate>
@@ -160,23 +191,6 @@ Application *CG::InitializeApplication(int argc, char **argv) {
     return NO;
 }
 
-- (void)drawRect:(NSRect)dirtyRect {
-    NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc]
-                              initWithBitmapDataPlanes:&window->colorBuffer
-                              pixelsWide:window->width
-                              pixelsHigh:window->height
-                              bitsPerSample:8
-                              samplesPerPixel:3
-                              hasAlpha:NO
-                              isPlanar:NO
-                              colorSpaceName:NSCalibratedRGBColorSpace
-                              bytesPerRow:window->width*3
-                              bitsPerPixel:24] autorelease];
-    
-    NSImage *image = [[[NSImage alloc] init] autorelease];
-    [image addRepresentation:rep];
-    [image drawInRect:dirtyRect];
-}
 @end
 
 @interface ContentView : NSView
@@ -194,9 +208,34 @@ Application *CG::InitializeApplication(int argc, char **argv) {
     
     return self;
 }
+
+- (void)drawRect:(NSRect)dirtyRect {
+    NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc]
+                              initWithBitmapDataPlanes:&window->colorBuffer
+                              pixelsWide:window->width
+                              pixelsHigh:window->height
+                              bitsPerSample:8
+                              samplesPerPixel:3
+                              hasAlpha:NO
+                              isPlanar:NO
+                              colorSpaceName:NSCalibratedRGBColorSpace
+                              bytesPerRow:window->width*3
+                              bitsPerPixel:24] autorelease];
+    
+    NSImage *image = [[[NSImage alloc] init] autorelease];
+    [image addRepresentation:rep];
+    [image drawInRect:dirtyRect];
+}
+
 @end
 
 ContentView *view;
+
+Application *CG::InitializeApplication(int argc, char **argv) {
+    app = new MacosApplication(argc, argv);
+    app->OnInitialize();
+    return app;
+}
 
 Window *CG::CreateRenderWindow(int width, int height, const char *title) {
     NSUInteger windowStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable;
