@@ -114,6 +114,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>shared.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +131,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>shared.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +157,6 @@
     <ClCompile Include="renderer\modelmanager.cpp" />
     <ClInclude Include="math\angles.h" />
     <ClInclude Include="renderer\image\bmp.h" />
-    <ClInclude Include="renderer\image_loader.h" />
     <ClInclude Include="renderer\material.h" />
     <ClInclude Include="renderer\modelmanager.h" />
     <ClCompile Include="renderer\model_txt.cpp" />

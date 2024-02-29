@@ -4,7 +4,9 @@
 #include "demo.h"
 
 namespace CG {
-    class RenderModel;
+    struct renderEntity_s;
+    typedef renderEntity_s renderEntity_t;
+    class RenderWorld;
 }
 
 namespace Tutorial {
@@ -20,7 +22,8 @@ namespace Tutorial {
         void OnShutdown();
 
     private:
-        CG::RenderModel *model;
+        renderEntity_t *renderEntity;
+        RenderWorld *renderWorld;
     };
 }
 

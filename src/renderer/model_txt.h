@@ -4,6 +4,7 @@
 #include "model.h"
 #include <string>
 #include "../math/vector.h"
+#include "../utility/list.h"
 
 namespace CG {
     class RenderModelTxt : public RenderModel {
@@ -14,9 +15,10 @@ namespace CG {
 
         int NumSurfaces() const;
 
-        modelSurface_t *Surface(int surfaceNum) const;
+        const modelSurface_t *Surface(int surfaceNum) const;
     protected:
         void ParseDescFile(const char *filename);
+        bool GenerateMesh();
         void GenerateMaterial();
     private:
         std::string meshFilename;
@@ -26,7 +28,7 @@ namespace CG {
         std::string normalMap;
         Vec3 scale;
 
-        Material *material;
+        modelSurface_t surface;
     };
 }
 

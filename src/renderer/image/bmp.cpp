@@ -1,27 +1,65 @@
 #include "bmp.h"
-#include "../../shared.h"
+#include <fstream>
 
-#define LBI_BM 0x4d42    // ASCII code for 'BM'
-#define LBI_FILE_HEADER_SIZE 14L
+#define BMP_MAGIC 0x4D42
+#define BMP_PADDING(a) ((a) % 4)
 
-#define LBI_RGB  0   // no compression
-#define LBI_RLE8 1   // 8bit RLE encoding
-#define LBI_RLE4 2   // 4bit RLE encoding
+#define BMP_BYTE_PER_PIXEL 3
 
 namespace CG {
-    typedef struct bmpFileHeader_s {
-        uint16 signature;
-        uint32 fileSize;
+    typedef struct bitmapHeader_s {
+        uint32 size;
         uint32 reserved;
         uint32 offset;
-    }bmpFileHeader_t;
+        uint32 biSize;
+        int32 width;
+        int32 height;
+        uint16 planes;
+        uint16 bitCount;
+        uint32 compression;
+        uint32 sizeImage;
+        int xPelsPerMeter;
+        int yPelsPerMeter;
+        uint32 clrUsed;
+        uint32 clrImportant;
+    }bitmapHeader_t;
 
-    bool LoadBMP(const char *filename, bmp_t &bmp) {
-        FILE *fp = fopen(filename, "rb");
-        if (!fp) {
-            return false;
+    int Bitmap::Read(const char *filename, bitmap_t &bitmap) {
+        std::ifstream in(filename, std::ios::binary);
+
+        if (!in.is_open()) {
+            return BMP_FILE_OPEN_FAILED;
         }
 
-        return true;
+        unsigned short magic = 0;
+
+        in.read(reinterpret_cast<char *>(&magic), sizeof(magic));
+        if (magic != BMP_MAGIC) {
+            return BMP_INVALID_FILE;
+        }
+
+        bitmapHeader_t header;
+
+        in.read(reinterpret_cast<char *>(&header), sizeof(header));
+
+        int h = abs(header.height);
+        int offset = (header.height > 0 ? 0 : h - 1);
+        int padding = BMP_PADDING(header.width);
+
+        bitmap.len = header.width * h * BMP_BYTE_PER_PIXEL;
+        bitmap.data = new byte[bitmap.len];
+        bitmap.width = header.width;
+        bitmap.height = h;
+        bitmap.bytePerPixel = BMP_BYTE_PER_PIXEL;
+
+        for (int y = h - 1; y >= 0; y--) {
+            int index = abs(y - offset) * header.width * BMP_BYTE_PER_PIXEL;
+            in.read(reinterpret_cast<char *>(&bitmap.data[index]), header.width * BMP_BYTE_PER_PIXEL);
+            in.seekg(padding, std::ios::cur);
+        }
+
+        in.close();
+
+        return BMP_OK;
     }
 }

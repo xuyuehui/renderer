@@ -6,6 +6,8 @@ namespace CG {
 	class Window;
 }
 
+using namespace CG;
+
 namespace Tutorial {
 	class Demo {
 	public:

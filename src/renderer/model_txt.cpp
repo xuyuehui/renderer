@@ -13,22 +13,25 @@ using namespace std;
 namespace CG {
 	const int MAX_BUFFER_SIZE = 256;
 
-	RenderModelTxt::RenderModelTxt() : scale(Vec3(1.0f,  1.0f, 1.0f)), material(NULL) {
+	RenderModelTxt::RenderModelTxt() : scale(Vec3(1.0f,  1.0f, 1.0f)) {
 	}
 
 	bool RenderModelTxt::InitFromFile(const char *filename){
 		ParseDescFile(filename);
+		GenerateMesh();
 		GenerateMaterial();
 
 		return true;
 	}
 
 	void RenderModelTxt::ParseDescFile(const char *filename) {
-		ifstream fs;
+		ifstream fs(filename, std::ios::in);
 		char buffer[MAX_BUFFER_SIZE];
 		char tmp[MAX_BUFFER_SIZE];
 
-		fs.open(filename);
+		if (!fs.is_open()) {
+			return;
+		}
 
 		while (fs.getline(buffer, MAX_BUFFER_SIZE)) {
 			if (strncmp(buffer, "mesh", 4) == 0) {
@@ -71,17 +74,55 @@ namespace CG {
 		fs.close();
 	}
 
-	void RenderModelTxt::GenerateMaterial() {
-		material = new Material();
+	bool RenderModelTxt::GenerateMesh() {
+		if (meshFilename.empty()) {
+			return false;
+		}
 
-		material->shader = App()->GetRenderer()->GetShaderManager()->LoadShader("internal/unlit");
+		ifstream fs(meshFilename.c_str(), std::ios::in);
+
+		if (!fs.is_open()) {
+			return false;
+		}
+
+		char buffer[MAX_BUFFER_SIZE];
+		while (fs.getline(buffer, MAX_BUFFER_SIZE)) {
+		}
+
+		fs.close();
+
+		return true;
+	}
+
+	void RenderModelTxt::GenerateMaterial() {
+		surface.material = new Material();
+
+		Renderer *renderer = App()->GetRenderer();
+
+		surface.material->shader = renderer->GetShaderManager()->LoadShader("internal/unlit");
+
+		if (!albedoMap.empty()) {
+			surface.material->albedo = renderer->GetTextureManager()->LoadTexture(albedoMap.c_str());
+		}
+
+		if (!diffuseMap.empty()) {
+			surface.material->albedo = renderer->GetTextureManager()->LoadTexture(diffuseMap.c_str());
+		}
+
+		if (!specularMap.empty()) {
+			surface.material->albedo = renderer->GetTextureManager()->LoadTexture(specularMap.c_str());
+		}
+
+		if (!normalMap.empty()) {
+			surface.material->albedo = renderer->GetTextureManager()->LoadTexture(normalMap.c_str());
+		}
 	}
 
 	int RenderModelTxt::NumSurfaces() const {
 		return 0;
 	}
 
-	modelSurface_t * RenderModelTxt::Surface(int surfaceNum) const {
-		return NULL;
+	const modelSurface_t * RenderModelTxt::Surface(int surfaceNum) const {
+		return &surface;
 	}
 }

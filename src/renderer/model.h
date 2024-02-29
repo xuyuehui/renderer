@@ -25,7 +25,7 @@ namespace CG {
 
     typedef struct modelSurface_s {
         int id;
-        const Material *material;
+        Material *material;
         srfTriangles_t *geometry;
     }modelSurface_t;
 
@@ -37,7 +37,7 @@ namespace CG {
         
         virtual int NumSurfaces() const = 0;
         
-        virtual modelSurface_t *Surface(int nurfaceNum) const = 0;
+        virtual const modelSurface_t *Surface(int nurfaceNum) const = 0;
     };
 }
 

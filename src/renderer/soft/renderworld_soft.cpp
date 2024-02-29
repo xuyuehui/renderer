@@ -77,7 +77,7 @@ namespace CG {
             RenderModel *model = entity->RenderParams().model;
 
             for (int i = 0; i < model->NumSurfaces(); i++) {
-                modelSurface_t *surface = model->Surface(i);
+                const modelSurface_t *surface = model->Surface(i);
                 const Material *material = surface->material != NULL ? surface->material : defaultMat;
                 const Shader_Soft *shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
 

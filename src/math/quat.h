@@ -18,6 +18,8 @@ namespace CG {
         float &operator[] (int index);
 
         Quat &operator= (const Quat &a);
+
+        static Quat &Indentity();
     };
 
     inline Quat::Quat() : x(.0f), y(.0f), z(.0f), w(.0f) {
