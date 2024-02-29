@@ -7,11 +7,16 @@
 #include "../renderer/renderer.h"
 
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
 namespace CG {
 	const int MAX_BUFFER_SIZE = 256;
+
+    inline static bool IsEqual(const char* a, const char *b) {
+        return strncmp(a, b, strlen(b)) == 0;
+    }
 
 	RenderModelTxt::RenderModelTxt() : scale(Vec3(1.0f,  1.0f, 1.0f)) {
 	}
@@ -86,7 +91,45 @@ namespace CG {
 		}
 
 		char buffer[MAX_BUFFER_SIZE];
+        float x, y, z;
+        
+        std::vector<Vec3> vertices;
+        std::vector<Vec2> texcoords;
+        std::vector<Vec3> vertexNormals;
+        std::vector<Vec3i> faces;
+        std::vector<Vec3i> faceNormals;
+        std::vector<Vec3i> faceTexcoords;
+        
+        size_t v1, v2, v3, vt1, vt2, vt3, vn1, vn2, vn3;
+
 		while (fs.getline(buffer, MAX_BUFFER_SIZE)) {
+            if (IsEqual(buffer, "v ")) {
+                if (sscanf(buffer, "v %f %f %f", &x, &y, &z) == 3) {
+                    vertices.push_back(Vec3(x, y, z));
+                }
+            } else if (IsEqual(buffer, "vt ")) {
+                if (sscanf(buffer, "vt %f %f", &x, &y) == 2) {
+                    texcoords.push_back(Vec2(x, y));
+                }
+            } else if (IsEqual(buffer, "vn ")) {
+                if (sscanf(buffer, "vn %f %f %f", &x, &y, &z) == 3) {
+                    vertexNormals.push_back(Vec3(x, y, z));
+                }
+            } else if (IsEqual(buffer, "f ")) {
+                if (sscanf(buffer, "f %lu/%lu/%lu %lu/%lu/%lu %lu/%lu/%lu", &v1, &v2, &v3, &vt1, &vt2, &vt3, &vn1, &vn2, &vn3) == 9) {
+                    faces.push_back(Vec3i((int)(v1-1), (int)(v2-1), (int)(v3-1)));
+                    faceTexcoords.push_back(Vec3i((int)(vt1-1), (int)(vt2-1), (int)(vt3-1)));
+                    faceNormals.push_back(Vec3i((int)(vn1-1), (int)(vn2-1), (int)(vn3-1)));
+                } else if (sscanf(buffer, "f %lu %lu %lu", &v1, &v2, &v3) == 3) {
+                    faces.push_back(Vec3i((int)(v1-1), (int)(v2-1), (int)(v3-1)));
+                } else if (sscanf(buffer, "f %lu//%lu %lu//%lu %lu//%lu", &v1, &v2, &v3, &vn1, &vn2, &vn3) == 6) {
+                    faces.push_back(Vec3i((int)(v1-1), (int)(v2-1), (int)(v3-1)));
+                    faceNormals.push_back(Vec3i((int)(vn1-1), (int)(vn2-1), (int)(vn3-1)));
+                } else if (sscanf(buffer, "f %lu/%lu %lu/%lu %lu/%lu", &v1, &v2, &v3, &vt1, &vt2, &vt3) == 6) {
+                    faces.push_back(Vec3i((int)(v1-1), (int)(v2-1), (int)(v3-1)));
+                    faceTexcoords.push_back(Vec3i((int)(vt1-1), (int)(vt2-1), (int)(vt3-1)));
+                }
+            }
 		}
 
 		fs.close();

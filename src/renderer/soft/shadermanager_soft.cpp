@@ -18,7 +18,7 @@ namespace CG {
 
     Shader * ShaderManager_Soft::LoadShader(const char *filename) {
         for (int i = 0; i < shaders.size(); i++) {
-            if (strcmp(shaders[i]->ID(), filename) == 0) {
+            if (strncmp(shaders[i]->ID(), filename, strlen(shaders[i]->ID())) == 0) {
                 return shaders[i];
             }
         }

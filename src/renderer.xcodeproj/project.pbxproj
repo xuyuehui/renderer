@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F4690B1E2B8E3B69006F6DEB /* macos.mm in Sources */ = {isa = PBXBuildFile; fileRef = F4690B1D2B8E3B69006F6DEB /* macos.mm */; };
 		F4690B212B8E3D8D006F6DEB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4690B202B8E3D8D006F6DEB /* Cocoa.framework */; };
+		F4690B282B9075FF006F6DEB /* bmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4690B262B9075FF006F6DEB /* bmp.cpp */; };
 		F4BC090B2B87396000AC052D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC090A2B87396000AC052D /* main.cpp */; };
 		F4BC09162B87398300AC052D /* demo_bank.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC090E2B87398300AC052D /* demo_bank.cpp */; };
 		F4BC09172B87398300AC052D /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC09122B87398300AC052D /* demo.cpp */; };
@@ -56,6 +57,8 @@
 /* Begin PBXFileReference section */
 		F4690B1D2B8E3B69006F6DEB /* macos.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = macos.mm; sourceTree = "<group>"; };
 		F4690B202B8E3D8D006F6DEB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		F4690B262B9075FF006F6DEB /* bmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bmp.cpp; path = image/bmp.cpp; sourceTree = "<group>"; };
+		F4690B272B9075FF006F6DEB /* bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bmp.h; path = image/bmp.h; sourceTree = "<group>"; };
 		F4BC090A2B87396000AC052D /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F4BC090E2B87398300AC052D /* demo_bank.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = demo_bank.cpp; sourceTree = "<group>"; };
 		F4BC090F2B87398300AC052D /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
@@ -187,6 +190,8 @@
 		F4BC09292B87399C00AC052D /* renderer */ = {
 			isa = PBXGroup;
 			children = (
+				F4690B262B9075FF006F6DEB /* bmp.cpp */,
+				F4690B272B9075FF006F6DEB /* bmp.h */,
 				F4C4AF5A2B8DEDA2002A2B09 /* shader.h */,
 				F4C4AF562B8DEDA2002A2B09 /* shadermanager.cpp */,
 				F4C4AF592B8DEDA2002A2B09 /* shadermanager.h */,
@@ -352,6 +357,7 @@
 				F4BC09632B87399C00AC052D /* renderworld_base.cpp in Sources */,
 				F4690B1E2B8E3B69006F6DEB /* macos.mm in Sources */,
 				F4BC09552B87399C00AC052D /* matrix.cpp in Sources */,
+				F4690B282B9075FF006F6DEB /* bmp.cpp in Sources */,
 				F4BC095B2B87399C00AC052D /* msaa.cpp in Sources */,
 				F4BC09192B87398300AC052D /* demo_main.cpp in Sources */,
 				F4BC09642B87399C00AC052D /* material.cpp in Sources */,

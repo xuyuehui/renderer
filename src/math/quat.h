@@ -19,7 +19,7 @@ namespace CG {
 
         Quat &operator= (const Quat &a);
 
-        static Quat &Indentity();
+        static Quat Indentity();
     };
 
     inline Quat::Quat() : x(.0f), y(.0f), z(.0f), w(.0f) {

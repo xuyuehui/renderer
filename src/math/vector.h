@@ -202,6 +202,89 @@ namespace CG {
     inline Vec2 &Vec4::ToVec2() {
         return *reinterpret_cast<Vec2 *>(this);
     }
+
+    class Vec2i {
+    public:
+        int x;
+        int y;
+
+        Vec2i();
+        explicit Vec2i(int x, int y);
+
+        int operator[] (int index);
+        Vec2i &operator= (const Vec2i &a);
+    };
+
+    inline Vec2i::Vec2i() : x(0), y(0){
+    }
+
+    inline Vec2i::Vec2i(int x, int y) {
+        this->x = x;
+        this->y = y;
+    }
+
+    inline int Vec2i::operator[] (int index) {
+        assert(index >= 0 && index < 2);
+        return (&x)[index];
+    }
+
+    inline Vec2i &Vec2i::operator= (const Vec2i &a) {
+        x = a.x;
+        y = a.y;
+
+        return *this;
+    }
+
+class Vec3i {
+public:
+    int x;
+    int y;
+    int z;
+
+    Vec3i();
+    explicit Vec3i(int x, int y, int z);
+
+    int operator[] (int index) const;
+    int& operator[] (int index);
+    Vec3i operator-() const;
+    Vec3i & operator= (const Vec3i &a);
+    Vec3i operator-(const Vec3i &a) const;
+};
+
+    inline Vec3i::Vec3i() : x(0), y(0), z(0){
+    }
+
+    inline Vec3i::Vec3i(int x, int y, int z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
+    inline int Vec3i::operator[] (int index) const {
+        assert(index >= 0 && index < 3);
+        return (&x)[index];
+    }
+
+    inline int& Vec3i::operator[] (int index) {
+        assert(index >= 0 && index < 3);
+        return (&x)[index];
+    }
+
+    inline Vec3i Vec3i::operator-() const {
+        return Vec3i(-x, -y, -z);
+    }
+
+    inline Vec3i &Vec3i::operator= (const Vec3i &a) {
+        x = a.x;
+        y = a.y;
+        z = a.z;
+
+        return *this;
+    }
+
+    inline Vec3i Vec3i::operator-(const Vec3i &a) const {
+        return Vec3i(x - a.x, y - a.y, z - a.z);
+    }
 }
 
 #endif
