@@ -41,9 +41,9 @@ namespace CG {
 
     inline Vec3 Mat3::operator* (const Vec3 &vec) const {
         return Vec3(
-            mat[0].x * vec.x + mat[1].x * vec.y + mat[2].x + vec.z,
-            mat[0].y * vec.x + mat[1].y * vec.y + mat[2].y + vec.z,
-            mat[0].z * vec.x + mat[1].z * vec.y + mat[2].z + vec.z
+            mat[0].x * vec.x + mat[0].y * vec.y + mat[0].z * vec.z,
+            mat[1].x * vec.x + mat[1].y * vec.y + mat[1].z * vec.z,
+            mat[2].x * vec.x + mat[2].y * vec.y + mat[2].z * vec.z
         );
     }
 

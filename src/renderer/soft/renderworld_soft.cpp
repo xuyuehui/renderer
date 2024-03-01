@@ -125,7 +125,7 @@ namespace CG {
                     v0.position.y = ScreenMapping_Y(v0.position.y, frameBuffer->GetHeight());
                     v1.position.y = ScreenMapping_Y(v1.position.y, frameBuffer->GetHeight());
                     v2.position.y = ScreenMapping_Y(v2.position.y, frameBuffer->GetHeight());
-
+//
                     v0.position.z = 1.0f / v0.position.z;
                     v1.position.z = 1.0f / v1.position.z;
                     v2.position.z = 1.0f / v2.position.z;
@@ -200,6 +200,7 @@ namespace CG {
                             v.texcoord = Vec2(Vec3(v0.texcoord.x, v1.texcoord.x, v2.texcoord.x).Dot(barycentric), Vec3(v0.texcoord.y, v1.texcoord.y, v2.texcoord.y).Dot(barycentric));
                             v.tangent = v0.tangent;
                             v.bitangent = v0.bitangent;
+                            v.color = Vec4(Mat3(v0.color.x, v1.color.x, v2.color.x, v0.color.y, v1.color.y, v2.color.y, v0.color.z, v1.color.z, v2.color.z) * barycentric, 1.0f);
 
                             if (GetAntiAliasingType() == AA_DEFAULT) {
                                 // Depth Test

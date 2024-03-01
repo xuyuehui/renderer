@@ -23,7 +23,7 @@ namespace CG {
         int *indexes;
     }srfTriangles_t;
 
-    // 三角形扩展信息，面法线、切线、副切线
+    // 涓夎褰㈡墿灞曚俊鎭紝闈㈡硶绾裤�佸垏绾裤�佸壇鍒囩嚎
     typedef struct srfTriangleExts_s {
         srfTriangleExts_s() : normals(NULL), tangents(NULL), bitangents(NULL) {
         }

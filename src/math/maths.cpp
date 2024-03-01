@@ -35,9 +35,9 @@ namespace CG {
         float zw = rotation.z * rotation.w;
 
         Mat4 mat(
-            (1.0f - 2.0f * yy - 2.0f * zz) * scale.x,	2.0f * xy + 2.0f * zw,						2.0f * xz - 2.0f * yw,						translate.x,
-            2.0f * xy,									(1.0f - 2.0f * xx - 2.0f * zz) * scale.y,	2.0f * yz + 2.0f * xw,						translate.y,
-            2.0f * xz + 2.0f * yw,						2.0f * yz - 2.0f * xw,						(1.0f - 2.0f * xx - 2.0f * yy) * scale.z,	translate.z,
+            (1.0f - 2.0f * yy - 2.0f * zz) * scale.x,	2.0f * xy - 2.0f * zw,						2.0f * xz + 2.0f * yw,						translate.x,
+            2.0f * xy + 2.0f * zw,						(1.0f - 2.0f * xx - 2.0f * zz) * scale.y,	2.0f * yz - 2.0f * xw,						translate.y,
+            2.0f * xz - 2.0f * yw,						2.0f * yz + 2.0f * xw,						(1.0f - 2.0f * xx - 2.0f * yy) * scale.z,	translate.z,
             0.0f,										0.0f,										0.0f,										1.0f
         );
 

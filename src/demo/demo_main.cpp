@@ -30,7 +30,7 @@ namespace Tutorial {
 
         camera = new renderView_t();
 
-        camera->position = Vec3(.0f, .0f, 3.0f);
+        camera->position = Vec3(.0f, .0f, -3.0f);
         camera->target = Vec3(.0f, .0f, .0f);
         camera->fovY = PI / 3;
         camera->aspect = 1.0f;

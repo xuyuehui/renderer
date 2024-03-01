@@ -160,7 +160,7 @@ void MacosApplication::OnInitialize() {
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
         
-        InitializeWorkingDir();
+        //InitializeWorkingDir();
         InitializeMenubar();
         
         [NSApp finishLaunching];
