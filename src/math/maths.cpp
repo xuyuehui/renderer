@@ -1,4 +1,4 @@
-#include "maths.h"
+#include "math.h"
 #include "../shared.h"
 #include "vector.h"
 #include "matrix.h"

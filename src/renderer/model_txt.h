@@ -12,10 +12,9 @@ namespace CG {
         RenderModelTxt();
 
         bool InitFromFile(const char *filename);
-
         int NumSurfaces() const;
-
         const modelSurface_t *Surface(int surfaceNum) const;
+        void GenerateSurfaceTriangleExt();
     protected:
         void ParseDescFile(const char *filename);
         bool GenerateMesh();
@@ -29,6 +28,7 @@ namespace CG {
         Vec3 scale;
 
         modelSurface_t surface;
+        Vec3 center;
     };
 }
 

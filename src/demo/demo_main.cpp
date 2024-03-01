@@ -11,7 +11,7 @@
 namespace Tutorial {
     const char *DemoMain::s_name = "main";
 
-    DemoMain::DemoMain() : renderWorld(NULL), renderEntity(NULL) {
+    DemoMain::DemoMain() : renderWorld(NULL), renderEntity(NULL), camera(NULL) {
     }
 
     void DemoMain::OnInit() {
@@ -27,6 +27,18 @@ namespace Tutorial {
         renderEntity->scale = Vec3(1.0f, 1.0f, 1.0f);
 
         renderWorld->AddEntityDef(*renderEntity);
+
+        camera = new renderView_t();
+
+        camera->position = Vec3(.0f, .0f, 3.0f);
+        camera->target = Vec3(.0f, .0f, .0f);
+        camera->fovY = PI / 3;
+        camera->aspect = 1.0f;
+        camera->near = 0.1f;
+        camera->far = 1000.0f;
+        camera->up = Vec3(.0f, 1.0f, 0.0f);
+
+        renderWorld->SetRenderView(*camera);
     }
 
     void DemoMain::OnUpdate() {
@@ -38,6 +50,7 @@ namespace Tutorial {
     void DemoMain::OnShutdown() {
         delete renderEntity;
         delete renderWorld;
+        delete camera;
         Demo::OnShutdown();
     }
 }

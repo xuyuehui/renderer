@@ -10,8 +10,13 @@ using namespace std;
 
 namespace CG {
     typedef struct vdata_s {
-        Mat4 localMat;
+        Mat4 modelMat;
+        Mat4 modelInvTransposeMat;
+        Mat4 viewMat;
+        Mat4 projMat;
         Mat4 vpMat;
+        Mat4 mvpMat;
+
         Vec3 position;
         Vec3 normal;
         Vec2 texcoord;
@@ -28,6 +33,7 @@ namespace CG {
         Vec2 texcoord;
         Vec3 tangent;
         Vec3 bitangent;
+        Vec4 color;
     }v2f_t;
 
     class Shader_Soft : public Shader {

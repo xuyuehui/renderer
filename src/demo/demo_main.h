@@ -5,7 +5,9 @@
 
 namespace CG {
     struct renderEntity_s;
+    struct renderView_s;
     typedef renderEntity_s renderEntity_t;
+    typedef renderView_s renderView_t;
     class RenderWorld;
 }
 
@@ -20,8 +22,8 @@ namespace Tutorial {
         void OnInit();
         void OnUpdate();
         void OnShutdown();
-
     private:
+        renderView_t* camera;
         renderEntity_t *renderEntity;
         RenderWorld *renderWorld;
     };

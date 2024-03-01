@@ -1,18 +1,23 @@
 #include "renderworld_base.h"
+#include "render_entity.h"
+#include "render_light.h"
 
 namespace CG {
-    RenderWorld_Base::RenderWorld_Base() : renderFlags(0), antiAlias(AA_DEFAULT){
+    RenderWorld_Base::RenderWorld_Base() : renderFlags(0), antiAlias(AA_DEFAULT) {
     }
 
     RenderWorld_Base::~RenderWorld_Base() {
     }
 
     uint32_t RenderWorld_Base::AddEntityDef(const renderEntity_t &entity) {
-        return -1;
+        RenderEntity *re = new RenderEntity();
+        re->UpdateRenderParams(&entity);
+        return entities.Append(re);
     }
 
     uint32_t RenderWorld_Base::AddLightDef(const renderLight_t &light) {
-        return -1;
+        RenderLight *rl = new RenderLight();
+        return lights.Append(rl);
     }
 
     void RenderWorld_Base::SetRenderView(const renderView_t &renderView) {

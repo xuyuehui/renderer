@@ -15,6 +15,7 @@ namespace CG {
 
         float operator[] (int index);
         Vec2 &operator= (const Vec2 &a);
+        Vec2 operator-(const Vec2 &a) const;
     };
 
     inline Vec2::Vec2() : x(.0f), y(.0f){
@@ -38,6 +39,10 @@ namespace CG {
         return *this;
     }
 
+    inline Vec2 Vec2::operator-(const Vec2 &a) const {
+        return Vec2(x - a.x, y - a.y);
+    }
+
     class Vec3 {
     public:
         float x;
@@ -53,6 +58,8 @@ namespace CG {
         Vec3 & operator= (const Vec3 &a);
         Vec3 operator-(const Vec3 &a) const;
         Vec3 operator* (float a) const;
+        Vec3 &operator *= (float a);
+        Vec3 &operator += (const Vec3 &a);
 
         Vec3 Cross(const Vec3 &a) const;
         float Dot(const Vec3 &a) const;
@@ -100,6 +107,22 @@ namespace CG {
         return Vec3(x * a, y * a, z * a);
     }
 
+    inline Vec3 &Vec3::operator *= (float a) {
+        x *= a;
+        y *= a;
+        z *= a;
+
+        return *this;
+    }
+
+    inline Vec3 &Vec3::operator += (const Vec3 &a) {
+        x += a.x;
+        y += a.y;
+        z += a.z;
+
+        return *this;
+    }
+    
     inline Vec3 Vec3::Cross(const Vec3 &a) const {
         return Vec3(y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x);
     }
@@ -141,6 +164,7 @@ namespace CG {
 
         Vec4();
         explicit Vec4(float x, float y, float z, float w);
+        explicit Vec4(const Vec3 &a, float w);
 
         float operator[] (int index) const;
         float & operator[] (int index);
@@ -161,6 +185,13 @@ namespace CG {
         this->x = x;
         this->y = y;
         this->z = z;
+        this->w = w;
+    }
+
+    inline Vec4::Vec4(const Vec3 &a, float w) {
+        this->x = a.x;
+        this->y = a.y;
+        this->z = a.z;
         this->w = w;
     }
 

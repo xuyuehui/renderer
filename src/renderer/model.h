@@ -23,10 +23,24 @@ namespace CG {
         int *indexes;
     }srfTriangles_t;
 
+    // 三角形扩展信息，面法线、切线、副切线
+    typedef struct srfTriangleExts_s {
+        srfTriangleExts_s() : normals(NULL), tangents(NULL), bitangents(NULL) {
+        }
+
+        Vec3 *normals;
+        Vec3 *tangents;
+        Vec3 *bitangents;
+    }srfTriangleExts_t;
+
     typedef struct modelSurface_s {
+        modelSurface_s() : id(0), material(NULL), geometry(NULL), geometryExt(NULL) {
+        }
+
         int id;
         Material *material;
         srfTriangles_t *geometry;
+        srfTriangleExts_t *geometryExt;
     }modelSurface_t;
 
     class RenderModel {
@@ -38,6 +52,8 @@ namespace CG {
         virtual int NumSurfaces() const = 0;
         
         virtual const modelSurface_t *Surface(int nurfaceNum) const = 0;
+
+        virtual void GenerateSurfaceTriangleExt() = 0;
     };
 }
 

@@ -13,15 +13,21 @@
 
 namespace CG {
 
-    static inline vdata_t VDATA(const srfTriangles_t *triangles, int vertIndex, const RenderEntity *entity) {
+    static inline vdata_t VDATA(const srfTriangles_t *triangles, int vertIndex, const Mat4& model, const Mat4& view, const Mat4 &proj, const Mat4& vp, const Mat4 &mvp, const Mat4& modelInvTranspose) {
         vdata_t vd;
 
-        vd.localMat = entity->Transform();
-        vd.position = triangles->verts[vertIndex].xyz;
-        vd.normal = triangles->verts[vertIndex].normal;
-        vd.texcoord = triangles->verts[vertIndex].st;
-        vd.color = triangles->verts[vertIndex].color;
-        vd.tangent = triangles->verts[vertIndex].tangent;
+        vd.modelMat = model;
+        vd.viewMat = view;
+        vd.projMat = proj;
+        vd.vpMat = vp;
+        vd.mvpMat = mvp;
+        vd.modelInvTransposeMat = modelInvTranspose;
+
+        vd.position = triangles->verts[triangles->indexes[vertIndex]].xyz;
+        vd.normal = triangles->verts[triangles->indexes[vertIndex]].normal;
+        vd.texcoord = triangles->verts[triangles->indexes[vertIndex]].st;
+        vd.color = triangles->verts[triangles->indexes[vertIndex]].color;
+        vd.tangent = triangles->verts[triangles->indexes[vertIndex]].tangent;
 
         return vd;
     }
@@ -79,17 +85,17 @@ namespace CG {
             for (int i = 0; i < model->NumSurfaces(); i++) {
                 const modelSurface_t *surface = model->Surface(i);
                 const Material *material = surface->material != NULL ? surface->material : defaultMat;
-                const Shader_Soft *shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
+                Shader_Soft *shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
 
                 for (int i = 0, tidx = 0; i < surface->geometry->numIndexes; i += 3, tidx++) {
 
                     // Vertex Processing
-                    v2f_t v0 = shader->Vertex(VDATA(surface->geometry, i, entity));
-                    v2f_t v1 = shader->Vertex(VDATA(surface->geometry, i + 1, entity));
-                    v2f_t v2 = shader->Vertex(VDATA(surface->geometry, i + 2, entity));
+                    v2f_t v0 = shader->Vertex(VDATA(surface->geometry, i, entity->Transform(), viewMat, projMat, vp, mvpMat, modelInvTransport));
+                    v2f_t v1 = shader->Vertex(VDATA(surface->geometry, i + 1, entity->Transform(), viewMat, projMat, vp, mvpMat, modelInvTransport));
+                    v2f_t v2 = shader->Vertex(VDATA(surface->geometry, i + 2, entity->Transform(), viewMat, projMat, vp, mvpMat, modelInvTransport));
 
                     // Perspective Division
-                    PerspectiveDivision(v0.position);
+                    PerspectiveDivision(v0.position);  
                     PerspectiveDivision(v1.position);
                     PerspectiveDivision(v2.position);
 
@@ -98,7 +104,7 @@ namespace CG {
                         (v0.position.x >  1.0f && v1.position.x >  1.0f && v2.position.x >  1.0f) ||
                         (v0.position.y < -1.0f && v1.position.y < -1.0f && v2.position.y < -1.0f) ||
                         (v0.position.y >  1.0f && v1.position.y >  1.0f && v2.position.y >  1.0f) ||
-                        (v0.position.z < -1.0f && v1.position.z < -1.0f && v2.position.z < -1.0f) ||
+                        (v0.position.z <  0.0f && v1.position.z <  0.0f && v2.position.z <  0.0f) ||
                         (v0.position.z >  1.0f && v1.position.z >  1.0f && v2.position.z >  1.0f)){
                         continue;
                     }

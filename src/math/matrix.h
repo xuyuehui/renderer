@@ -10,7 +10,7 @@
 namespace CG {
     class Mat2 {
     private:
-        
+
     };
 
     class Mat3 {
@@ -52,17 +52,19 @@ namespace CG {
         Mat4();
         explicit Mat4(const Vec4 &x, const Vec4 &y, const Vec4 &z, const Vec4 &w);
         explicit Mat4(float xx, float xy, float xz, float xw,
-                      float yx, float yy, float yz, float yw,
-                      float zx, float zy, float zz, float zw,
-                      float wx, float wy, float wz, float ww);
+            float yx, float yy, float yz, float yw,
+            float zx, float zy, float zz, float zw,
+            float wx, float wy, float wz, float ww);
 
         const Vec4 &operator[](int index) const;
         Vec4 &operator[](int index);
 
         Mat4 operator*(const Mat4 &a) const;
+        Vec4 operator*(const Vec4 &vec) const;
+        Vec3 operator*(const Vec3 &vec) const;
 
         Mat4 Transport() const;
-        Mat4 & TransportSelf();
+        Mat4 &TransportSelf();
         Mat4 Inverse() const;
         bool InverseSelf();
     private:
@@ -108,9 +110,9 @@ namespace CG {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 *dstPtr = m1Ptr[0] * m2Ptr[0 * 4 + j]
-                        + m1Ptr[1] * m2Ptr[1 * 4 + j]
-                        + m1Ptr[2] * m2Ptr[2 * 4 + j]
-                        + m1Ptr[3] * m2Ptr[3 * 4 + j];
+                    + m1Ptr[1] * m2Ptr[1 * 4 + j]
+                    + m1Ptr[2] * m2Ptr[2 * 4 + j]
+                    + m1Ptr[3] * m2Ptr[3 * 4 + j];
 
                 dstPtr++;
             }
@@ -121,11 +123,44 @@ namespace CG {
         return dst;
     }
 
+    inline Vec4 Mat4::operator*(const Vec4 &vec) const {
+        return Vec4(
+                mat[0].x * vec.x + mat[0].y * vec.y + mat[0].z * vec.z + mat[0].w * vec.w,
+                mat[1].x * vec.x + mat[1].y * vec.y + mat[1].z * vec.z + mat[1].w * vec.w,
+                mat[2].x * vec.x + mat[2].y * vec.y + mat[2].z * vec.z + mat[2].w * vec.w,
+                mat[3].x * vec.x + mat[3].y * vec.y + mat[3].z * vec.z + mat[3].w * vec.w
+       );
+    }
+
+    inline Vec3 Mat4::operator*(const Vec3 &vec) const {
+        float s = mat[3].x * vec.x + mat[3].y * vec.y + mat[3].z * vec.z + mat[3].w;
+        if (s == 0.0f) {
+            return Vec3(0.0f, 0.0f, 0.0f);
+        }
+
+        if (s == 1.0f) {
+            return Vec3(
+                mat[0].x * vec.x + mat[0].y * vec.y + mat[0].z * vec.z + mat[0].w,
+                mat[1].x * vec.x + mat[1].y * vec.y + mat[1].z * vec.z + mat[1].w,
+                mat[2].x * vec.x + mat[2].y * vec.y + mat[2].z * vec.z + mat[2].w
+            );
+        }
+        else {
+            float invS = 1.0f / s;
+            return Vec3(
+                (mat[0].x * vec.x + mat[0].y * vec.y + mat[0].z * vec.z + mat[0].w) * invS,
+                (mat[1].x * vec.x + mat[1].y * vec.y + mat[1].z * vec.z + mat[1].w) * invS,
+                (mat[2].x * vec.x + mat[2].y * vec.y + mat[2].z * vec.z + mat[2].w) * invS
+            );
+        }
+    }
+
     inline Mat4 Mat4::Inverse() const {
         Mat4 invMat;
 
         invMat = *this;
         bool r = invMat.InverseSelf();
+        assert(r);
 
         return invMat;
     }
