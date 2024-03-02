@@ -209,6 +209,7 @@ namespace CG {
 
     void RenderModelTxt::GenerateMaterial() {
         surface.material = new Material();
+        surface.material->SetRenderFlags(RF_BACK_FACE_CULLING | RF_DEPTH_TEST);
 
         Renderer *renderer = App()->GetRenderer();
 

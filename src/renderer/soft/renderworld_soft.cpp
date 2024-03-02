@@ -32,13 +32,6 @@ namespace CG {
         return vd;
     }
 
-    static inline void PerspectiveDivision(Vec4 &v) {
-        v.w = 1.0f / v.w;
-        v.x *= v.w;
-        v.y *= v.w;
-        v.z *= v.w;
-    }
-
     static inline float ScreenMapping_X(float x, int width) {
         return floor((x * 0.5f + 0.5f) * width);
     }
@@ -95,9 +88,9 @@ namespace CG {
                     v2f_t v2 = shader->Vertex(VDATA(surface->geometry, i + 2, entity->Transform(), viewMat, projMat, vp, mvpMat, modelInvTransport));
 
                     // Perspective Division
-                    PerspectiveDivision(v0.position);  
-                    PerspectiveDivision(v1.position);
-                    PerspectiveDivision(v2.position);
+                    Math::PerspectiveDivision(v0.position);
+                    Math::PerspectiveDivision(v1.position);
+                    Math::PerspectiveDivision(v2.position);
 
                     // Screen Clipping
                     if ((v0.position.x < -1.0f && v1.position.x < -1.0f && v2.position.x < -1.0f) ||

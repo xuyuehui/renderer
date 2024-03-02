@@ -7,11 +7,6 @@
 #include "../utility/utility.h"
 
 namespace CG {
-    const uint32 RF_BACK_FACE_CULLING		= 0x00000001;
-    const uint32 RF_WIREFRAME_MODE			= 0x00000002;
-    const uint32 RF_DEPTH_TEST              = 0x00000004;
-    const uint32 RF_TRANSPARENT             = 0x00000008;
-
     class RenderModel;
 
     typedef struct renderEntity_s {

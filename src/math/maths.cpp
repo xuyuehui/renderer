@@ -83,4 +83,12 @@ namespace CG {
 
         return w0 >= 0 && w1 >= 0 && w2 >= 0;
     }
+
+    void Math::PerspectiveDivision(Vec4 &v) {
+        v.w = 1.0f / v.w;
+        v.x *= v.w;
+        v.y *= v.w;
+        v.z *= v.w;
+    }
+
 }
