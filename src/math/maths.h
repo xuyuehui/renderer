@@ -1,4 +1,4 @@
-#ifndef __MATHS_H__
+﻿#ifndef __MATHS_H__
 #define __MATHS_H__
 
 #include "../shared.h"

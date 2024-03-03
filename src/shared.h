@@ -9,9 +9,9 @@
 namespace CG {
 #undef max
 #undef min
-#define max(a, b) (a) > (b)?(a) : (b)
-#define min(a, b) (a) < (b)?(a) : (b)
-#define clamp(a, b, c) min(max((a), (b)), (c)) 
+#define max(a, b) ((a) > (b)?(a) : (b))
+#define min(a, b) ((a) < (b)?(a) : (b))
+#define clamp(a, b, c) (min(max((a), (b)), (c)))
 
 #define __unused_variable(var) (void(var))
 

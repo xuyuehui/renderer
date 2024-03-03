@@ -4,6 +4,7 @@
 #include "../render_entity.h"
 #include "../model.h"
 #include "../material.h"
+#include "../../shared.h"
 
 #include "soft_renderer.h"
 #include "shadermanager_soft.h"
@@ -193,8 +194,7 @@ namespace CG {
                             }
 
                             // reference : https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes.html
-                            float correct = 1.0f / (w0 * v0.position.w + w1 * v1.position.w + w2 * v2.position.w);
-                            Vec3 barycentric = Vec3(w0 * v0.position.w, w1 * v1.position.w, w2 * v2.position.w) * correct;
+                            Vec3 barycentric = Vec3(w0 * v0.position.z, w1 * v1.position.z, w2 * v2.position.z) * (1.0f / (w0 * v0.position.z + w1 * v1.position.z + w2 * v2.position.z));
 
                             v2f_t v;
 
@@ -205,7 +205,10 @@ namespace CG {
                             v.texcoord = Vec2(Vec3(v0.texcoord.x, v1.texcoord.x, v2.texcoord.x).Dot(barycentric), Vec3(v0.texcoord.y, v1.texcoord.y, v2.texcoord.y).Dot(barycentric));
                             v.tangent = v0.tangent;
                             v.bitangent = v0.bitangent;
-                            v.color = Vec4(Mat3(v0.color.x, v1.color.x, v2.color.x, v0.color.y, v1.color.y, v2.color.y, v0.color.z, v1.color.z, v2.color.z) * barycentric, 1.0f);
+                            v.color = Mat4(v0.color.x, v1.color.x, v2.color.x, .0f, 
+                                           v0.color.y, v1.color.y, v2.color.y, .0f,
+                                           v0.color.z, v1.color.z, v2.color.z, .0f,
+                                           v0.color.w, v1.color.w, v2.color.w, .0f) * Vec4(barycentric, 0.0f);
 
                             if (GetAntiAliasingType() == AA_DEFAULT) {
                                 // Depth Test

@@ -48,10 +48,10 @@ namespace CG {
     Mat4 Math::ProjectMatrix(float fovY, float aspect, float near, float far) {
         float tanFovYHalf = tanf(fovY / 2.0f);
         Mat4 mat(
-            1.0f / (aspect * tanFovYHalf),	0.0f,					0.0f,						0.0f,
-            0.0f,							1.0f / tanFovYHalf,		0.0f,						0.0f,
-            0.0f,							0.0f,					-(near + far) / (far-near),	-2.0f * far * near / (far-near),
-            0.0f,							0.0f,					-1.0f,						0.0f
+            1.0f / (aspect * tanFovYHalf),	0.0f,					0.0f,						    0.0f,
+            0.0f,							1.0f / tanFovYHalf,		0.0f,						    0.0f,
+            0.0f,							0.0f,					-(near + far) / (far - near),	-2.0f * far * near / (far - near),
+            0.0f,							0.0f,					-1.0f,						    0.0f
         );
         return mat;
     }
@@ -81,7 +81,7 @@ namespace CG {
         w1 = EdgeFunction(v2, v0, pos);
         w2 = EdgeFunction(v0, v1, pos);
 
-        return (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 < 0 && w1 < 0 && w2 < 0);
+        return (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0);
     }
 
     bool Math::IsTopLeft(const Vec2 &v) {
