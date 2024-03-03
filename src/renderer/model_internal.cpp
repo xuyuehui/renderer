@@ -1,4 +1,4 @@
-#include "model_txt.h"
+#include "model_internal.h"
 #include "../shared.h"
 #include "material.h"
 #include "texturemanager.h"
@@ -18,10 +18,10 @@ namespace CG {
         return strncmp(a, b, strlen(b)) == 0;
     }
 
-    RenderModelTxt::RenderModelTxt() : scale(Vec3(1.0f,  1.0f, 1.0f)) {
+    RenderModelInternal::RenderModelInternal() : scale(Vec3(1.0f,  1.0f, 1.0f)) {
     }
 
-    bool RenderModelTxt::InitFromFile(const char *filename){
+    bool RenderModelInternal::InitFromFile(const char *filename){
         ParseDescFile(filename);
         GenerateMesh();
         GenerateMaterial();
@@ -30,15 +30,15 @@ namespace CG {
     }
 
 
-    int RenderModelTxt::NumSurfaces() const {
+    int RenderModelInternal::NumSurfaces() const {
         return 1;
     }
 
-    const modelSurface_t *RenderModelTxt::Surface(int surfaceNum) const {
+    const modelSurface_t *RenderModelInternal::Surface(int surfaceNum) const {
         return &surface;
     }
 
-    void RenderModelTxt::ParseDescFile(const char *filename) {
+    void RenderModelInternal::ParseDescFile(const char *filename) {
         ifstream fs(filename, std::ios::in);
         char buffer[MAX_BUFFER_SIZE];
         char tmp[MAX_BUFFER_SIZE];
@@ -88,7 +88,7 @@ namespace CG {
         fs.close();
     }
 
-    bool RenderModelTxt::GenerateMesh() {
+    bool RenderModelInternal::GenerateMesh() {
         if (meshFilename.empty()) {
             return false;
         }
@@ -207,7 +207,7 @@ namespace CG {
         return true;
     }
 
-    void RenderModelTxt::GenerateMaterial() {
+    void RenderModelInternal::GenerateMaterial() {
         surface.material = new Material();
         surface.material->SetRenderFlags(RF_BACK_FACE_CULLING | RF_DEPTH_TEST);
 
@@ -232,7 +232,7 @@ namespace CG {
         }
     }
 
-    void RenderModelTxt::GenerateSurfaceTriangleExt() {
+    void RenderModelInternal::GenerateSurfaceTriangleExt() {
         if (surface.geometryExt != NULL) {
             return;
         }

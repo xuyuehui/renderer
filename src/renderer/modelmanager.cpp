@@ -2,7 +2,7 @@
 #include "model.h"
 #include "../shared.h"
 
-#include "model_txt.h"
+#include "model_internal.h"
 
 namespace CG {
     ModelManager::ModelManager() {
@@ -20,7 +20,7 @@ namespace CG {
     RenderModel *ModelManager::GetModel(const char *filename) {
         RenderModel *model;
 
-        model = new RenderModelTxt();
+        model = new RenderModelInternal();
         model->InitFromFile(filename);
 
         return model;

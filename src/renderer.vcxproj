@@ -159,7 +159,7 @@
     <ClInclude Include="renderer\image\bmp.h" />
     <ClInclude Include="renderer\material.h" />
     <ClInclude Include="renderer\modelmanager.h" />
-    <ClCompile Include="renderer\model_txt.cpp" />
+    <ClCompile Include="renderer\model_internal.cpp" />
     <ClCompile Include="renderer\render_light.cpp" />
     <ClCompile Include="renderer\render_entity.cpp" />
     <ClCompile Include="renderer\renderer.cpp" />
@@ -188,7 +188,7 @@
     <ClInclude Include="math\quat.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="platform\platform.h" />
-    <ClInclude Include="renderer\model_txt.h" />
+    <ClInclude Include="renderer\model_internal.h" />
     <ClInclude Include="renderer\model.h" />
     <ClInclude Include="renderer\render_light.h" />
     <ClInclude Include="renderer\render_entity.h" />

@@ -18,8 +18,6 @@ namespace CG {
 
     private:
         SoftRenderer *renderer;
-        Material *defaultMat;
-        Shader *defaultShader;
     };
 }
 

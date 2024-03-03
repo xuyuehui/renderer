@@ -1,5 +1,5 @@
-#ifndef __MODEL_TXT_H__
-#define __MODEL_TXT_H__
+#ifndef __MODEL_INTERNAL_H__
+#define __MODEL_INTERNAL_H__
 
 #include "model.h"
 #include <string>
@@ -7,9 +7,9 @@
 #include "../utility/list.h"
 
 namespace CG {
-    class RenderModelTxt : public RenderModel {
+    class RenderModelInternal : public RenderModel {
     public:
-        RenderModelTxt();
+        RenderModelInternal();
 
         bool InitFromFile(const char *filename);
         int NumSurfaces() const;
