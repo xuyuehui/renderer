@@ -33,12 +33,6 @@ namespace CG {
         float far;
     }renderView_t;
 
-    typedef enum {
-        AA_DEFAULT,
-        AA_MSAA,
-        AA_MAX,
-    } antiAliasingType_t;
-
     class RenderWorld {
     public:
         virtual ~RenderWorld() {}
@@ -48,14 +42,6 @@ namespace CG {
 
         virtual void SetRenderView(const renderView_t &renderView) = 0;
         virtual void RenderScene() = 0;
-
-        virtual void SetRenderFlags(uint32 f) = 0;
-        virtual void UnsetRenderFlags(uint32 f) = 0;
-        virtual bool HasRenderFlags(uint32 f) const = 0;
-
-        virtual void SetAntiAliasingType(antiAliasingType_t aa, uint32 opt) = 0;
-        virtual antiAliasingType_t GetAntiAliasingType() const = 0;
-        virtual uint32 GetAntiAliasingLevel() const = 0;
     };
 }
 

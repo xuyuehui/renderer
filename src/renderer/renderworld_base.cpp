@@ -3,7 +3,7 @@
 #include "render_light.h"
 
 namespace CG {
-    RenderWorld_Base::RenderWorld_Base() : renderFlags(0), antiAlias(AA_DEFAULT) {
+    RenderWorld_Base::RenderWorld_Base() {
     }
 
     RenderWorld_Base::~RenderWorld_Base() {
