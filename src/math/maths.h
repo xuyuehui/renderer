@@ -4,6 +4,7 @@
 #include "../shared.h"
 
 namespace CG {
+    class Vec2;
     class Vec3;
     class Vec4;
     class Mat4;
@@ -19,6 +20,7 @@ namespace CG {
         static float InvSqrt(float sqrLength);
         static float EdgeFunction(const Vec3 &a, const Vec3 &b, const Vec3 &c);
         static bool PointInsideTriangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2);
+        static bool IsTopLeft(const Vec2 &v);
         static void PerspectiveDivision(Vec4 &v);
 
     private:

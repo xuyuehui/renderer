@@ -59,14 +59,12 @@ namespace CG {
     }
 
     void RenderWorld_Soft::RenderScene() {
-        renderer->ClearDepthBuffer(1.0f);
-
         Mat4 projMat = Math::ProjectMatrix(primaryRenderView.fovY, primaryRenderView.aspect, primaryRenderView.near, primaryRenderView.far);
         Mat4 viewMat = Math::ViewMatrix(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
         Mat4 vp = projMat * viewMat;
 
         ShaderManager *shaderManager = renderer->GetShaderManager();
-        FrameBuffer *frameBuffer = renderer->GetFrontFrameBuffer();
+        FrameBuffer *frameBuffer = renderer->GetBackFrameBuffer();
 
         for (int i = 0; i < entities.Num(); i++) {
             const RenderEntity *entity = entities[i];
@@ -148,6 +146,19 @@ namespace CG {
 
                             if (GetAntiAliasingType() == AA_DEFAULT) {
                                 if (!Math::PointInsideTriangle(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2)) {
+                                    continue;
+                                }
+
+                                // top-left Ô¼¶¨
+                                if (w0 == 0.0 && !Math::IsTopLeft(Vec2(v2.position.x - v1.position.x, v2.position.y - v1.position.y))) {
+                                    continue;
+                                }
+
+                                if (w1 == 0.0 && !Math::IsTopLeft(Vec2(v0.position.x - v2.position.x, v0.position.y - v2.position.y))) {
+                                    continue;
+                                }
+
+                                if (w2 == 0.0 && !Math::IsTopLeft(Vec2(v1.position.x - v0.position.x, v1.position.y - v0.position.y))) {
                                     continue;
                                 }
                             }

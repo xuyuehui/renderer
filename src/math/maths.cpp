@@ -81,7 +81,11 @@ namespace CG {
         w1 = EdgeFunction(v2, v0, pos);
         w2 = EdgeFunction(v0, v1, pos);
 
-        return w0 >= 0 && w1 >= 0 && w2 >= 0;
+        return (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 < 0 && w1 < 0 && w2 < 0);
+    }
+
+    bool Math::IsTopLeft(const Vec2 &v) {
+        return (v.y >= 0 && fabs(v.y) < EPSILON && v.x > 0) || v.y > 0;
     }
 
     void Math::PerspectiveDivision(Vec4 &v) {

@@ -75,7 +75,7 @@ namespace CG {
 
     void SoftRenderer::SwapBuffer() {
         bufferIndex ^= 1;
-        GetBackFrameBuffer()->ClearDepthBuffer(0);
+        GetBackFrameBuffer()->ClearDepthBuffer(1.0f);
         needUpdated = true;
         
         window->SwapBuffer();

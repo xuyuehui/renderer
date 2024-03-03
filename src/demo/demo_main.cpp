@@ -78,8 +78,6 @@ namespace Tutorial {
 
     void DemoMain::OnUpdate() {
         renderWorld->RenderScene();
-
-        app->GetRenderer()->SwapBuffer();
     }
 
     void DemoMain::OnShutdown() {
