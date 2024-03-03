@@ -1,4 +1,4 @@
-#include "soft_renderer.h"
+ï»¿#include "soft_renderer.h"
 #include "frame_buffer.h"
 #include "../../platform/platform.h"
 #include "rasterizer.h"
@@ -210,7 +210,7 @@ namespace CG {
                 const Vec3 &e1 = (v1.position - v0.position).ToVec3();
                 const Vec3 &e2 = (v2.position - v0.position).ToVec3();
 
-                // Èı½ÇĞÎ·¨ÏßµÄzÖµÎª¸º£¬´ú±íºÍÉãÏñ»ú·½ÏòÒ»Ö±£¬Ä¬ÈÏÎª-z£¬ÔòÎª±³Ãæ
+                // ä¸‰è§’å½¢æ³•çº¿çš„zå€¼ä¸ºè´Ÿï¼Œä»£è¡¨å’Œæ‘„åƒæœºæ–¹å‘ä¸€ç›´ï¼Œé»˜è®¤ä¸º-zï¼Œåˆ™ä¸ºèƒŒé¢
                 if (e1.Cross(e2).z < 0.0f) {
                     continue;
                 }
@@ -255,7 +255,7 @@ namespace CG {
                             continue;
                         }
 
-                        // top-left Ô¼¶¨
+                        // top-left çº¦å®š
                         if (w0 == 0.0 && !Math::IsTopLeft(Vec2(v2.position.x - v1.position.x, v2.position.y - v1.position.y))) {
                             continue;
                         }
