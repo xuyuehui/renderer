@@ -96,7 +96,7 @@ namespace CG {
                         (v0.position.y < -1.0f && v1.position.y < -1.0f && v2.position.y < -1.0f) ||
                         (v0.position.y >  1.0f && v1.position.y >  1.0f && v2.position.y >  1.0f) ||
                         (v0.position.z <  0.0f && v1.position.z <  0.0f && v2.position.z <  0.0f) ||
-                        (v0.position.z >  1.0f && v1.position.z >  1.0f && v2.position.z >  1.0f)){
+                        (v0.position.z >  1.0f && v1.position.z >  1.0f && v2.position.z >  1.0f)) {
                         continue;
                     }
 
@@ -105,6 +105,7 @@ namespace CG {
                         const Vec3 &e1 = (v1.position - v0.position).ToVec3();
                         const Vec3 &e2 = (v2.position - v0.position).ToVec3();
 
+                        // 三角形法线的z值为负，代表和摄像机方向一直，默认为-z，则为背面
                         if (e1.Cross(e2).z < 0.0f) {
                             continue;
                         }
@@ -149,7 +150,7 @@ namespace CG {
                                     continue;
                                 }
 
-                                // top-left Լ��
+                                // top-left 约定
                                 if (w0 == 0.0 && !Math::IsTopLeft(Vec2(v2.position.x - v1.position.x, v2.position.y - v1.position.y))) {
                                     continue;
                                 }

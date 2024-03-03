@@ -180,7 +180,7 @@ namespace CG {
             }
         }
 
-        // Ã»ÓĞ¶¥µã·¨Ïß£¬×ÔĞĞÄ¬ÈÏ¼ÆËã
+        // æ²¡æœ‰é¡¶ç‚¹æ³•çº¿ï¼Œè‡ªè¡Œé»˜è®¤è®¡ç®—
         if (normals.empty()) {
             GenerateSurfaceTriangleExt();
 
@@ -201,7 +201,7 @@ namespace CG {
                 }
             }
 
-            delete vertexRef;
+            delete[] vertexRef;
         }
 
         return true;
@@ -246,7 +246,7 @@ namespace CG {
             Vec3 e0 = surface.geometry->verts[surface.geometry->indexes[i * 3 + 1]].xyz - surface.geometry->verts[surface.geometry->indexes[i * 3 + 0]].xyz;
             Vec3 e1 = surface.geometry->verts[surface.geometry->indexes[i * 3 + 2]].xyz - surface.geometry->verts[surface.geometry->indexes[i * 3 + 1]].xyz;
 
-            // ¼ÆËãÃæ·¨Ïß
+            // è®¡ç®—é¢æ³•çº¿
             surface.geometryExt->normals[i] = e0.Cross(e1).Normalized();
 
             //Vec2 uv0 = surface.geometry->verts[faces[i][1]].st - surface.geometry->verts[faces[i][0]].st;

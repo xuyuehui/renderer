@@ -64,7 +64,7 @@ namespace CG {
 
         Mat4 mat(
             left.x,		left.y,		left.z,		-(left.x * eye.x + left.y * eye.y + left.z * eye.z),
-            upward.x,	upward.y,	upward.z,	-(upward.x * eye.x + upward.y *eye.y +upward.z * eye.z),
+            upward.x,	upward.y,	upward.z,	-(upward.x * eye.x + upward.y * eye.y + upward.z * eye.z),
             forward.x,	forward.y,	forward.z,	-(forward.x * eye.x + forward.y * eye.y + forward.z * eye.z),
             0.0f,		0.0f,		0.0f,		1.0f
         );

@@ -24,9 +24,9 @@ namespace Tutorial {
         Vec4 v2(-1.000000f, -1.000000f, 1.000000f, 1.0f);
         Vec4 v3(-1.000000f, -1.000000f, -1.000000f, 1.0f);
         
-        Vec4 tv1 = projMat * viewMat * modelMat * v1;
-        Vec4 tv2 = projMat * viewMat * modelMat * v2;
-        Vec4 tv3 = projMat * viewMat * modelMat * v3;
+        Vec4 tv1 = viewMat * modelMat * v1;
+        Vec4 tv2 = viewMat * modelMat * v2;
+        Vec4 tv3 = viewMat * modelMat * v3;
         
         Math::PerspectiveDivision(tv1);
         Math::PerspectiveDivision(tv2);
