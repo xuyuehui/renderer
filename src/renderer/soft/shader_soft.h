@@ -9,6 +9,8 @@
 using namespace std;
 
 namespace CG {
+    class Texture;
+
     typedef struct vdata_s {
         Mat4 modelMat;
         Mat4 modelInvTransposeMat;
@@ -34,7 +36,14 @@ namespace CG {
         Vec3 tangent;
         Vec3 bitangent;
         Vec4 color;
+        
+        Texture *albedoTex;
+        Texture *diffuseTex;
+        Texture *specularTex;
+        Texture *normalTex;
     }v2f_t;
+
+    Vec4 Sample2D(const Texture *texture, const Vec2 &texcoord);
 
     class Shader_Soft : public Shader {
     public:

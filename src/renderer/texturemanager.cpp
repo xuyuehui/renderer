@@ -24,7 +24,7 @@ namespace CG {
             return NULL;
         }
 
-        Texture *texture = new Texture(bitmap.width, bitmap.height, bitmap.len, bitmap.data, filename);
+        Texture *texture = new Texture(bitmap, filename);
         textures.insert(std::pair<std::string, Texture *>(filename, texture));
 
         return texture;

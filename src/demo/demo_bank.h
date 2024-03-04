@@ -9,6 +9,7 @@ namespace Tutorial {
         static const char *s_name;
 
     protected:
+        void OnInit();
         void OnUpdate();
     };
 }

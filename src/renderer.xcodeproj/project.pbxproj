@@ -30,7 +30,6 @@
 		F4BC095E2B87399C00AC052D /* rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC093C2B87399C00AC052D /* rasterizer.cpp */; };
 		F4BC095F2B87399C00AC052D /* frame_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC09412B87399C00AC052D /* frame_buffer.cpp */; };
 		F4BC09612B87399C00AC052D /* renderworld_soft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC09432B87399C00AC052D /* renderworld_soft.cpp */; };
-		F4BC09622B87399C00AC052D /* model_txt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC09482B87399C00AC052D /* model_txt.cpp */; };
 		F4BC09632B87399C00AC052D /* renderworld_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC094A2B87399C00AC052D /* renderworld_base.cpp */; };
 		F4BC09642B87399C00AC052D /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC094B2B87399C00AC052D /* material.cpp */; };
 		F4BC09652B87399C00AC052D /* modelmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4BC094D2B87399C00AC052D /* modelmanager.cpp */; };
@@ -40,6 +39,8 @@
 		F4C4AF5B2B8DEDA2002A2B09 /* shadermanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C4AF562B8DEDA2002A2B09 /* shadermanager.cpp */; };
 		F4C4AF5C2B8DEDA2002A2B09 /* texturemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C4AF582B8DEDA2002A2B09 /* texturemanager.cpp */; };
 		F4C4AF602B8DEDD1002A2B09 /* shadermanager_soft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C4AF5F2B8DEDD1002A2B09 /* shadermanager_soft.cpp */; };
+		F4FE1B582B95AA34005EE992 /* model_internal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4FE1B562B95AA34005EE992 /* model_internal.cpp */; };
+		F4FE1B5A2B95ADF1005EE992 /* shader_soft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4FE1B592B95ADF1005EE992 /* shader_soft.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -103,8 +104,6 @@
 		F4BC09452B87399C00AC052D /* model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model.h; sourceTree = "<group>"; };
 		F4BC09462B87399C00AC052D /* modelmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelmanager.h; sourceTree = "<group>"; };
 		F4BC09472B87399C00AC052D /* texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
-		F4BC09482B87399C00AC052D /* model_txt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_txt.cpp; sourceTree = "<group>"; };
-		F4BC09492B87399C00AC052D /* model_txt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_txt.h; sourceTree = "<group>"; };
 		F4BC094A2B87399C00AC052D /* renderworld_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderworld_base.cpp; sourceTree = "<group>"; };
 		F4BC094B2B87399C00AC052D /* material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = material.cpp; sourceTree = "<group>"; };
 		F4BC094C2B87399C00AC052D /* renderworld_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderworld_base.h; sourceTree = "<group>"; };
@@ -124,6 +123,9 @@
 		F4C4AF5E2B8DEDD1002A2B09 /* shader_soft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader_soft.h; sourceTree = "<group>"; };
 		F4C4AF5F2B8DEDD1002A2B09 /* shadermanager_soft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shadermanager_soft.cpp; sourceTree = "<group>"; };
 		F4EA4C6A2B8738C200FAFF58 /* renderer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = renderer; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4FE1B562B95AA34005EE992 /* model_internal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_internal.cpp; sourceTree = "<group>"; };
+		F4FE1B572B95AA34005EE992 /* model_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_internal.h; sourceTree = "<group>"; };
+		F4FE1B592B95ADF1005EE992 /* shader_soft.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = shader_soft.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,8 @@
 		F4BC09292B87399C00AC052D /* renderer */ = {
 			isa = PBXGroup;
 			children = (
+				F4FE1B562B95AA34005EE992 /* model_internal.cpp */,
+				F4FE1B572B95AA34005EE992 /* model_internal.h */,
 				F4690B262B9075FF006F6DEB /* bmp.cpp */,
 				F4690B272B9075FF006F6DEB /* bmp.h */,
 				F4C4AF5A2B8DEDA2002A2B09 /* shader.h */,
@@ -210,8 +214,6 @@
 				F4BC09452B87399C00AC052D /* model.h */,
 				F4BC09462B87399C00AC052D /* modelmanager.h */,
 				F4BC09472B87399C00AC052D /* texture.h */,
-				F4BC09482B87399C00AC052D /* model_txt.cpp */,
-				F4BC09492B87399C00AC052D /* model_txt.h */,
 				F4BC094A2B87399C00AC052D /* renderworld_base.cpp */,
 				F4BC094B2B87399C00AC052D /* material.cpp */,
 				F4BC094C2B87399C00AC052D /* renderworld_base.h */,
@@ -241,6 +243,7 @@
 				F4BC09412B87399C00AC052D /* frame_buffer.cpp */,
 				F4BC09432B87399C00AC052D /* renderworld_soft.cpp */,
 				F4BC09442B87399C00AC052D /* frame_buffer.h */,
+				F4FE1B592B95ADF1005EE992 /* shader_soft.cpp */,
 			);
 			path = soft;
 			sourceTree = "<group>";
@@ -344,13 +347,14 @@
 				F4C4AF602B8DEDD1002A2B09 /* shadermanager_soft.cpp in Sources */,
 				F4BC090B2B87396000AC052D /* main.cpp in Sources */,
 				F4BC095F2B87399C00AC052D /* frame_buffer.cpp in Sources */,
+				F4FE1B5A2B95ADF1005EE992 /* shader_soft.cpp in Sources */,
 				F4BC09172B87398300AC052D /* demo.cpp in Sources */,
 				F4BC095D2B87399C00AC052D /* font.cpp in Sources */,
 				F4BC09512B87399C00AC052D /* angles.cpp in Sources */,
 				F4BC09592B87399C00AC052D /* renderworld.cpp in Sources */,
 				F4BC096B2B8739B600AC052D /* list.cpp in Sources */,
-				F4BC09622B87399C00AC052D /* model_txt.cpp in Sources */,
 				F4BC095E2B87399C00AC052D /* rasterizer.cpp in Sources */,
+				F4FE1B582B95AA34005EE992 /* model_internal.cpp in Sources */,
 				F4C4AF552B8DED3A002A2B09 /* maths.cpp in Sources */,
 				F4BC095A2B87399C00AC052D /* shader_internal.cpp in Sources */,
 				F4BC09652B87399C00AC052D /* modelmanager.cpp in Sources */,

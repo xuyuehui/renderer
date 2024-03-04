@@ -165,17 +165,22 @@ namespace CG {
         Vec4();
         explicit Vec4(float x, float y, float z, float w);
         explicit Vec4(const Vec3 &a, float w);
+        explicit Vec4(const float* ptr);
 
         float operator[] (int index) const;
         float & operator[] (int index);
         Vec4 &operator= (const Vec4 &a);
         Vec4 operator-(const Vec4 &a) const;
+        
+        Vec4 operator*(const Vec4 &a) const;
 
         const Vec3 &ToVec3() const;
         Vec3 &ToVec3();
 
         const Vec2 &ToVec2() const;
         Vec2 &ToVec2();
+        
+        static Vec4 Lerp(const Vec4 &from, const Vec4& to, float alpha);
     };
 
     inline Vec4::Vec4() : x(.0f), y(.0f), z(.0f), w(.0f) {
@@ -193,6 +198,13 @@ namespace CG {
         this->y = a.y;
         this->z = a.z;
         this->w = w;
+    }
+
+    inline Vec4::Vec4(const float *ptr) {
+        this->x = ptr[0];
+        this->y = ptr[1];
+        this->z = ptr[2];
+        this->w = ptr[3];
     }
 
     inline float Vec4::operator[] (int index) const {
@@ -218,6 +230,10 @@ namespace CG {
         return Vec4(x - a.x, y - a.y, z - a.z, w - a.w);
     }
 
+    inline Vec4 Vec4::operator*(const Vec4 &a) const {
+        return Vec4(x * a.x, y * a.y, z * a.z, w * a.w);
+    }
+
     inline const Vec3 & Vec4::ToVec3() const {
         return *reinterpret_cast<const Vec3 *>(this);
     }
@@ -233,6 +249,15 @@ namespace CG {
     inline Vec2 &Vec4::ToVec2() {
         return *reinterpret_cast<Vec2 *>(this);
     }
+
+inline Vec4 Vec4::Lerp(const Vec4 &from, const Vec4 &to, float step) {
+    step = clamp(.0f, 1.0f, step);
+    
+    return Vec4(from.x * (1.0f - step) + to.x * step,
+                from.y * (1.0f - step) + to.y * step,
+                from.z * (1.0f - step) + to.z * step,
+                from.w * (1.0f - step) + to.w * step);
+}
 
     class Vec2i {
     public:

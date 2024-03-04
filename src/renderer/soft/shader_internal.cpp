@@ -7,14 +7,13 @@ namespace CG {
         out.position = in.mvpMat * Vec4(in.position, 1.0f);
         out.texcoord = in.texcoord;
         out.normal = in.modelInvTransposeMat * in.normal;
-        out.color = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        out.color = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         return out;
     }
 
     Vec4 UnlitShader::Fragment(const v2f_t &in) const {
-        Vec4 color = in.color;
-        return color;
+        return Sample2D(in.albedoTex, in.texcoord) * in.color;
     }
      
 }

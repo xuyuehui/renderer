@@ -1,4 +1,4 @@
-﻿#include "soft_renderer.h"
+#include "soft_renderer.h"
 #include "frame_buffer.h"
 #include "../../platform/platform.h"
 #include "rasterizer.h"
@@ -310,9 +310,14 @@ namespace CG {
                     v.tangent = v0.tangent;
                     v.bitangent = v0.bitangent;
                     v.color = Mat4(v0.color.x, v1.color.x, v2.color.x, .0f,
-                        v0.color.y, v1.color.y, v2.color.y, .0f,
-                        v0.color.z, v1.color.z, v2.color.z, .0f,
-                        v0.color.w, v1.color.w, v2.color.w, .0f) * Vec4(barycentric, 0.0f);
+                                   v0.color.y, v1.color.y, v2.color.y, .0f,
+                                   v0.color.z, v1.color.z, v2.color.z, .0f,
+                                   v0.color.w, v1.color.w, v2.color.w, .0f) * Vec4(barycentric, 0.0f);
+                    
+                    v.albedoTex = material->albedo;
+                    v.diffuseTex = material->diffuse;
+                    v.normalTex = material->normal;
+                    v.specularTex = material->specular;
 
                     if (GetAntiAliasingType() == AA_DEFAULT) {
                         // Depth Test

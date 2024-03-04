@@ -2,21 +2,37 @@
 #define __TEXTURE_H__
 
 #include "../shared.h"
+#include "../math/vector.h"
 #include <string>
 
 namespace CG {
+    enum TEX_FILTER_TYPE{
+        TEXFT_DEFAULT,
+        TEXFT_LINEAR,
+    };
+
+    typedef struct bitmap_s bitmap_t;
+
 	class Texture {
 	public:
-		Texture(int w, int h, int len, byte *data, const char *tag);
+		Texture(const bitmap_t& bmp, const char *tag);
+        ~Texture();
 
 		void GetSize(int &w, int &h) const;
-		const byte *Data() const;
+		const float *Data() const;
+        
+        Vec4 ColorAt(int x, int y) const;
+        
+        void SetFilterType(TEX_FILTER_TYPE type);
+        TEX_FILTER_TYPE GetFilterType() const;
 	protected:
 		std::string from;
 		int width;
 		int height;
 		int len;
-		byte *data;
+		float *data;
+        
+        TEX_FILTER_TYPE filterType;
 	};
 
 	inline void Texture::GetSize(int &w, int &h) const {
@@ -24,9 +40,17 @@ namespace CG {
 		h = height;
 	}
 
-	inline const byte *Texture::Data() const {
+	inline const float *Texture::Data() const {
 		return data;
 	}
+
+    inline void Texture::SetFilterType(TEX_FILTER_TYPE type) {
+        filterType = type;
+    }
+
+    inline TEX_FILTER_TYPE Texture::GetFilterType() const {
+        return filterType;
+    }
 }
 
 #endif
