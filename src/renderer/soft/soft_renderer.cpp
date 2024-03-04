@@ -197,11 +197,11 @@ namespace CG {
 
             // Screen Clipping
             if ((v0.position.x < -1.0f && v1.position.x < -1.0f && v2.position.x < -1.0f) ||
-                (v0.position.x > 1.0f && v1.position.x > 1.0f && v2.position.x > 1.0f) ||
+                (v0.position.x >  1.0f && v1.position.x >  1.0f && v2.position.x >  1.0f) ||
                 (v0.position.y < -1.0f && v1.position.y < -1.0f && v2.position.y < -1.0f) ||
-                (v0.position.y > 1.0f && v1.position.y > 1.0f && v2.position.y > 1.0f) ||
-                (v0.position.z < 0.0f && v1.position.z < 0.0f && v2.position.z < 0.0f) ||
-                (v0.position.z > 1.0f && v1.position.z > 1.0f && v2.position.z > 1.0f)) {
+                (v0.position.y >  1.0f && v1.position.y >  1.0f && v2.position.y >  1.0f) ||
+                (v0.position.z <  0.0f && v1.position.z <  0.0f && v2.position.z <  0.0f) ||
+                (v0.position.z >  1.0f && v1.position.z >  1.0f && v2.position.z >  1.0f)) {
                 continue;
             }
 
@@ -248,7 +248,7 @@ namespace CG {
             for (int x = xMin; x < xMax; x++) {
                 for (int y = yMin; y < yMax; y++) {
                     Vec3 pos(x + 0.5f, y + 0.5f, 1.0f);
-                    float w0, w1, w2;
+                    float w0 = .0f, w1 = .0f, w2 = .0f;
 
                     if (GetAntiAliasingType() == AA_DEFAULT) {
                         if (!Math::PointInsideTriangle(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2)) {

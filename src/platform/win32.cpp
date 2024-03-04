@@ -225,7 +225,7 @@ namespace CG {
             0,
             s_className,
             title,
-            WS_OVERLAPPEDWINDOW,
+            WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
             CW_USEDEFAULT, CW_USEDEFAULT, width, height,
             NULL, NULL, app->GetInstance(), NULL);
 
