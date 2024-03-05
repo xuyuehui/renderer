@@ -13,9 +13,11 @@ namespace Tutorial {
 	public:
 		Demo();
 		virtual ~Demo() {}
-
+        
 		virtual int Run(CG::Application *app);
 	protected:
+        virtual void Startup();
+        
 		virtual void OnInit();
 		virtual void OnShutdown();
 		virtual void OnUpdate() {}

@@ -5,7 +5,7 @@ using namespace std;
 
 namespace CG {
     void R_DrawPixel(const FrameBuffer &frameBuffer, int x, int y, const color_t &color, float depth) {
-        int depthBufferPos = frameBuffer.GetWidth() * y + x;
+        int depthBufferPos = frameBuffer.GetSize() - frameBuffer.GetWidth() * (y+1) + x;
         float d = clamp(depth, -1.0f, 1.0f);
         byte *colorBuffer = frameBuffer.GetColorBuffer();
         float *depthBuffer = frameBuffer.GetDepthBuffer();
@@ -15,7 +15,7 @@ namespace CG {
         }
 
         depthBuffer[depthBufferPos] = d;
-        int colorBufferPos = (frameBuffer.GetWidth() * y + x) * 3;
+        int colorBufferPos = (frameBuffer.GetSize() - frameBuffer.GetWidth() * (y+1) + x) * 3;
         colorBuffer[colorBufferPos] = color.r;
         colorBuffer[colorBufferPos + 1] = color.g;
         colorBuffer[colorBufferPos + 2] = color.b;

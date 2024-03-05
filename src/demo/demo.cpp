@@ -18,7 +18,7 @@ namespace Tutorial {
         Math::Init();
 
         this->app = app;
-        this->OnInit();
+        this->Startup();
 
         while (!app->ShouldClosed()) {
             app->GetRenderer()->ClearColorBuffer(rgb(.0f, .0f, 0.0f));
@@ -33,12 +33,17 @@ namespace Tutorial {
         return 0;
     }
 
-    void Demo::OnInit() {
+    void Demo::Startup() {
         int w = 512;
         int h = 512;
 
         window = CreateRenderWindow(w, h, "rendering");
         app->GetRenderer()->Init(window);
+        
+        OnInit();
+    }
+
+    void Demo::OnInit() {
     }
 
     void Demo::OnShutdown() {

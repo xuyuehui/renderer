@@ -15,8 +15,6 @@ namespace Tutorial {
     }
 
     void DemoMain::OnInit() {
-        Demo::OnInit();
-
         renderWorld = app->GetRenderer()->CreateRenderWorld();
 
         renderEntity = new CG::renderEntity_t();

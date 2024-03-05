@@ -15,7 +15,7 @@ namespace Tutorial {
     void DemoBank::OnInit() {
         Mat4 projMat = Math::ProjectMatrix(PI / 3, 1.0f, 0.1f, 1000.0f);
         Mat4 viewMat = Math::ViewMatrix(Vec3(.0f, .0f, -3.0f), Vec3(.0f, .0f, .0f), Vec3(.0f, 1.0f, 0.0f));
-        Mat4 modelMat = Math::FromRTS(Vec3(0.0f, 0.0f, 10.0f), Quat::Indentity(), Vec3(1.0f, 1.0f, 1.0f));
+        Mat4 modelMat = Math::FromRTS(Vec3(0.0f, 0.0f, 0.0f), Quat::Indentity(), Vec3(1.0f, 1.0f, 1.0f));
         
         Mat4 mvpMat = projMat * viewMat * modelMat;
         
@@ -23,9 +23,9 @@ namespace Tutorial {
         Vec4 v2(-1.000000f, -1.000000f, 0.0001f, 1.0f);
         Vec4 v3(-1.000000f, -1.000000f, 500.000000f, 1.0f);
         
-        Vec4 tv1 = projMat * viewMat * modelMat * v1;
-        Vec4 tv2 = projMat * viewMat * modelMat * v2;
-        Vec4 tv3 = projMat * viewMat * modelMat * v3;
+        Vec4 tv1 = viewMat * modelMat * v1;
+        Vec4 tv2 = viewMat * modelMat * v2;
+        Vec4 tv3 = viewMat * modelMat * v3;
         
         Math::PerspectiveDivision(tv1);
         Math::PerspectiveDivision(tv2);
@@ -44,8 +44,6 @@ namespace Tutorial {
     }
 
     void DemoBank::OnUpdate(){
-        cout << "[DemoBlank] OnUpdate" << endl;
-
         app->GetRenderer()->DrawText("hello world 1234", Vec2(100, 100), 6, color_t(255, 0, 0), 0.5f);
     }
 }

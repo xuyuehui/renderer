@@ -97,15 +97,8 @@ void MacosWindow::GetSize(int &width, int &height) const {
     height = this->height;
 }
 
-static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) {
-    int size = width * height * 3;
-    for (int i = 0; i < size;) {
-        to[i + 0] = from[i + 0];
-        to[i + 1] = from[i + 1];
-        to[i + 2] = from[i + 2];
-        
-        i += 3;
-    }
+static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) {    
+    memcpy(to, from, width * height * 3);
 }
 
 void MacosWindow::SwapBuffer() {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F46135BA2B97040400F920E6 /* model_triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F46135B92B97040400F920E6 /* model_triangle.cpp */; };
 		F4690B1E2B8E3B69006F6DEB /* macos.mm in Sources */ = {isa = PBXBuildFile; fileRef = F4690B1D2B8E3B69006F6DEB /* macos.mm */; };
 		F4690B212B8E3D8D006F6DEB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4690B202B8E3D8D006F6DEB /* Cocoa.framework */; };
 		F4690B282B9075FF006F6DEB /* bmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4690B262B9075FF006F6DEB /* bmp.cpp */; };
@@ -56,6 +57,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F46135B92B97040400F920E6 /* model_triangle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = model_triangle.cpp; sourceTree = "<group>"; };
+		F46135BB2B97041A00F920E6 /* model_triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = model_triangle.h; sourceTree = "<group>"; };
 		F4690B1D2B8E3B69006F6DEB /* macos.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = macos.mm; sourceTree = "<group>"; };
 		F4690B202B8E3D8D006F6DEB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F4690B262B9075FF006F6DEB /* bmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bmp.cpp; path = image/bmp.cpp; sourceTree = "<group>"; };
@@ -219,6 +222,8 @@
 				F4BC094C2B87399C00AC052D /* renderworld_base.h */,
 				F4BC094D2B87399C00AC052D /* modelmanager.cpp */,
 				F4BC094E2B87399C00AC052D /* renderer.cpp */,
+				F46135B92B97040400F920E6 /* model_triangle.cpp */,
+				F46135BB2B97041A00F920E6 /* model_triangle.h */,
 			);
 			path = renderer;
 			sourceTree = "<group>";
@@ -260,15 +265,15 @@
 		F4EA4C612B8738C200FAFF58 = {
 			isa = PBXGroup;
 			children = (
-				F4BC09672B8739B600AC052D /* shared.h */,
-				F4BC09682B8739B600AC052D /* utility */,
+				F4BC090D2B87398300AC052D /* demo */,
+				F4690B1F2B8E3D8D006F6DEB /* Frameworks */,
+				F4BC090A2B87396000AC052D /* main.cpp */,
 				F4BC091E2B87399C00AC052D /* math */,
 				F4BC091A2B87399C00AC052D /* platform */,
-				F4BC09292B87399C00AC052D /* renderer */,
-				F4BC090D2B87398300AC052D /* demo */,
-				F4BC090A2B87396000AC052D /* main.cpp */,
 				F4EA4C6B2B8738C200FAFF58 /* Products */,
-				F4690B1F2B8E3D8D006F6DEB /* Frameworks */,
+				F4BC09292B87399C00AC052D /* renderer */,
+				F4BC09672B8739B600AC052D /* shared.h */,
+				F4BC09682B8739B600AC052D /* utility */,
 			);
 			sourceTree = "<group>";
 		};
@@ -338,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4BC09612B87399C00AC052D /* renderworld_soft.cpp in Sources */,
+				F46135BA2B97040400F920E6 /* model_triangle.cpp in Sources */,
 				F4BC09182B87398300AC052D /* demo_triangle.cpp in Sources */,
 				F4C4AF5B2B8DEDA2002A2B09 /* shadermanager.cpp in Sources */,
 				F4BC09662B87399C00AC052D /* renderer.cpp in Sources */,
