@@ -13,8 +13,7 @@ namespace CG {
     class ModelManager;
     class Material;
 
-    struct modelSurface_s;
-    typedef modelSurface_s modelSurface_t;
+    typedef struct modelSurface_s modelSurface_t;
 
     class SoftRenderer : public Renderer {
     public:

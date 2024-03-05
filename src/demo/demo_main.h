@@ -4,10 +4,8 @@
 #include "demo.h"
 
 namespace CG {
-    struct renderEntity_s;
-    struct renderView_s;
-    typedef renderEntity_s renderEntity_t;
-    typedef renderView_s renderView_t;
+    typedef struct renderEntity_s renderEntity_t;
+    typedef struct renderView_s renderView_t;
     class RenderWorld;
 }
 

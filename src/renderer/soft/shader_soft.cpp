@@ -11,7 +11,7 @@
 namespace CG {
     Vec4 Sample2D(const Texture *texture, const Vec2 &texcoord) {
         if (texture == NULL) {
-            return Vec4(0, 0, 0, 1);
+            return Vec4(1.0f, .0f, 1.0f, 1);
         }
         
         if (texture->GetFilterType() == TEXFT_LINEAR) {

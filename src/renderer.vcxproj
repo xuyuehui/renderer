@@ -173,6 +173,7 @@
     <ClCompile Include="renderer\soft\renderworld_soft.cpp" />
     <ClCompile Include="renderer\soft\shadermanager_soft.cpp" />
     <ClCompile Include="renderer\soft\shader_internal.cpp" />
+    <ClCompile Include="renderer\soft\shader_soft.cpp" />
     <ClCompile Include="renderer\soft\soft_renderer.cpp" />
     <ClCompile Include="renderer\texture.cpp" />
     <ClCompile Include="renderer\texturemanager.cpp" />

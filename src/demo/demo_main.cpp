@@ -21,7 +21,7 @@ namespace Tutorial {
 
         renderEntity = new CG::renderEntity_t();
 
-        renderEntity->model = app->GetRenderer()->GetModelManager()->GetModel("./assets/cube.txt");
+        renderEntity->model = app->GetRenderer()->GetModelManager()->GetModel("./assets/teapot_high.txt");
         renderEntity->position = Vec3(0.0f, 0.0f, 10.0f);
         renderEntity->rotation = Quat::Indentity();
         renderEntity->scale = Vec3(1.0f, 1.0f, 1.0f);
