@@ -32,8 +32,6 @@ namespace CG {
         void ClearDepthBuffer(float depth);
         void SwapBuffer();
 
-        bool GetColorBufferDesc(renderTargetDesc_t &rtd);
-
         void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
         void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
 

@@ -18,14 +18,6 @@ namespace CG {
     class ModelManager;
     class TextureManager;
 
-    typedef struct renderTargetDesc_s {
-        byte *data;
-        int width;
-        int height;
-        int bitCount;
-        byte tag;
-    }renderTargetDesc_t;
-
     typedef enum {
         AA_DEFAULT,
         AA_MSAA,
@@ -39,8 +31,6 @@ namespace CG {
         virtual void Init(Window *window) = 0;
         virtual void ClearColorBuffer(const rgb &color) = 0;
         virtual void SwapBuffer() = 0;
-
-        virtual bool GetColorBufferDesc(renderTargetDesc_t &rtd) = 0;
 
         virtual void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth) = 0;
         virtual void DrawText(const char *text, const Vec2& pos, float size, const color_t &color, float gap) = 0;

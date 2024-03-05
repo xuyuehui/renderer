@@ -76,7 +76,7 @@ public:
     void SetKeyboardCallback(keyboardCallback_t callback);
     void *GetHandle() const;
     void GetSize(int &width, int &height) const;
-    void SwapBuffer();
+    void SwapBuffer(const byte *buffer, int width, int height);
 public:
     NSWindow *handle;
     int width;
@@ -97,7 +97,7 @@ void MacosWindow::GetSize(int &width, int &height) const {
     height = this->height;
 }
 
-static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) {    
+static void Blit2ColorBuffer(const byte *src, byte *dst, int width, int height) {    
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int srcIndex = (y * width + x) * 3;
@@ -110,15 +110,12 @@ static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) 
     }
 }
 
-void MacosWindow::SwapBuffer() {
+void MacosWindow::SwapBuffer(const byte *buffer, int width, int height) {
     if (colorBuffer == NULL) {
         colorBuffer = new byte[width * height * 3];
     }
-    
-    renderTargetDesc_t rtd;
-    app->GetRenderer()->GetColorBufferDesc(rtd);
-    
-    Blit2ColorBuffer(rtd.data, colorBuffer, width, height);
+
+    Blit2ColorBuffer(buffer, colorBuffer, width, height);
 
     [[handle contentView] setNeedsDisplay:YES];
 }

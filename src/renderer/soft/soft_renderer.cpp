@@ -119,24 +119,10 @@ namespace CG {
         bufferIndex ^= 1;
         GetBackFrameBuffer()->ClearDepthBuffer(1.0f);
         needUpdated = true;
+
+        FrameBuffer *frameBuffer = GetFrontFrameBuffer();
         
-        window->SwapBuffer();
-    }
-
-    bool SoftRenderer::GetColorBufferDesc(renderTargetDesc_t& rtd) {
-        if (!needUpdated) {
-            return false;
-        }
-
-        FrameBuffer * frameBuffer = GetFrontFrameBuffer();
-        rtd.bitCount = 24;
-        rtd.width = frameBuffer->GetWidth();
-        rtd.height = frameBuffer->GetHeight();
-        rtd.data = frameBuffer->GetColorBuffer();
-
-        needUpdated = false;
-
-        return true;
+        window->SwapBuffer(frameBuffer->GetColorBuffer(), frameBuffer->GetWidth(), frameBuffer->GetHeight());
     }
 
     void SoftRenderer::DrawLine(const Vec2& s, const Vec2& e, const color_t& color, float depth) {

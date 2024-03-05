@@ -115,6 +115,19 @@ namespace CG {
         return app;
     }
 
+    static void Blit2ColorBuffer(const byte *src, byte *dst, int width, int height) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int srcIndex = (y * width + x) * 3;
+                int dstIndex = ((height - y - 1) * width + x) * 3;
+
+                dst[dstIndex + 0] = src[srcIndex + 2];
+                dst[dstIndex + 1] = src[srcIndex + 1];
+                dst[dstIndex + 2] = src[srcIndex + 0];
+            }
+        }
+    }
+
     class Win32Window : public Window {
     public:
         Win32Window(HWND hwnd, int w, int h) : handle(hwnd), width(w), height(h), keyboardCallback(NULL), colorBuffer(NULL) {
@@ -138,7 +151,31 @@ namespace CG {
             height = this->height;
         }
 
-        void SwapBuffer() {
+        void SwapBuffer(const byte *buffer, int width, int height) {
+            HWND hwnd = (HWND)handle;
+
+            if (colorBuffer == NULL) {
+                colorBuffer = new byte[width * height * 3];
+            }
+
+            Blit2ColorBuffer(buffer, colorBuffer, width, height);
+
+            BITMAPINFO bmi;
+            HDC hdc = GetDC(hwnd);
+
+            bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+            bmi.bmiHeader.biBitCount = 24;
+            bmi.bmiHeader.biWidth = width;
+            bmi.bmiHeader.biHeight = -height;
+            bmi.bmiHeader.biCompression = BI_RGB;
+            bmi.bmiHeader.biClrUsed = 0;
+            bmi.bmiHeader.biClrImportant = 0;
+            bmi.bmiHeader.biPlanes = 1;
+            bmi.bmiHeader.biSizeImage = 0;
+
+            SetDIBitsToDevice(hdc, 0, 0, width, height, 0, 0, 0, height, colorBuffer, &bmi, DIB_RGB_COLORS);
+
+            ReleaseDC(hwnd, hdc);
         }
 
     public:
@@ -150,59 +187,7 @@ namespace CG {
         int		height;
     };
 
-    static void Blit2ColorBuffer(const byte *src, byte *dst, int width, int height) {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int srcIndex = (y * width + x) * 3;
-                int dstIndex = ((height - y - 1) * width + x) * 3;
-
-                dst[dstIndex + 0] = src[srcIndex + 2];
-                dst[dstIndex + 1] = src[srcIndex + 1];
-                dst[dstIndex + 2] = src[srcIndex + 0];
-            }
-        }
-    }
-
-    static void OnPainting(Win32Window *window, Renderer *renderer) {
-        HWND hwnd = (HWND)window->GetHandle();
-        renderTargetDesc_t rtd;
-        
-        if (!renderer->GetColorBufferDesc(rtd)) {
-            return;
-        }
-
-        if (window->colorBuffer == NULL) {
-            window->colorBuffer = new byte[rtd.width * rtd.height * 3];
-        }
-
-        Blit2ColorBuffer(rtd.data, window->colorBuffer, rtd.width, rtd.height);
-
-        BITMAPINFO bmi;
-        HDC hdc = GetDC(hwnd);
-
-        bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bmi.bmiHeader.biBitCount = 24;
-        bmi.bmiHeader.biWidth = rtd.width;
-        bmi.bmiHeader.biHeight = -rtd.height;
-        bmi.bmiHeader.biCompression = BI_RGB;
-        bmi.bmiHeader.biClrUsed = 0;
-        bmi.bmiHeader.biClrImportant = 0;
-        bmi.bmiHeader.biPlanes = 1;
-        bmi.bmiHeader.biSizeImage = 0;
-
-        SetDIBitsToDevice(hdc, 0, 0, rtd.width, rtd.height, 0, 0, 0, rtd.height, window->colorBuffer, &bmi, DIB_RGB_COLORS);
-
-        ReleaseDC(hwnd, hdc);
-    };
-
     LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-        Win32Window *window = (Win32Window *)GetWindow(hwnd);
-        Renderer *renderer = app->GetRenderer();
-
-        if (window != NULL) {
-            OnPainting(window, renderer);
-        }
-
         switch (msg) {
         case WM_CLOSE:
             app->Exit();
@@ -210,11 +195,6 @@ namespace CG {
             break;
         case WM_DESTROY:
             PostQuitMessage(0);
-            break;
-        case WM_PAINT:
-            if (window != NULL) {
-                OnPainting(window, renderer);
-            }
             break;
         }
 

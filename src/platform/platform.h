@@ -27,7 +27,7 @@ namespace CG {
         virtual void SetKeyboardCallback(keyboardCallback_t callback) = 0;
         virtual void *GetHandle() const = 0;
         virtual void GetSize(int &width, int &height) const = 0;
-        virtual void SwapBuffer() = 0;
+        virtual void SwapBuffer(const byte *buffer, int width, int height) = 0;
     };
 
     Application * InitializeApplication(int argc, char **argv);
