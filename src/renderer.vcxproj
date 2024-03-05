@@ -115,6 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>shared.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +133,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>shared.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,6 +162,7 @@
     <ClInclude Include="renderer\material.h" />
     <ClInclude Include="renderer\modelmanager.h" />
     <ClCompile Include="renderer\model_internal.cpp" />
+    <ClCompile Include="renderer\model_triangle.cpp" />
     <ClCompile Include="renderer\render_light.cpp" />
     <ClCompile Include="renderer\render_entity.cpp" />
     <ClCompile Include="renderer\renderer.cpp" />
@@ -191,6 +194,7 @@
     <ClInclude Include="platform\platform.h" />
     <ClInclude Include="renderer\model_internal.h" />
     <ClInclude Include="renderer\model.h" />
+    <ClInclude Include="renderer\model_triangle.h" />
     <ClInclude Include="renderer\render_light.h" />
     <ClInclude Include="renderer\render_entity.h" />
     <ClInclude Include="renderer\renderer.h" />

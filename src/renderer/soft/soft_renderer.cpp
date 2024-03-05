@@ -321,7 +321,7 @@ namespace CG {
 
                     if (GetAntiAliasingType() == AA_DEFAULT) {
                         // Depth Test
-                        int depthPos = frameBuffer->GetSize() - (y+1) * frameBuffer->GetWidth() + x;
+                        int depthPos = y * frameBuffer->GetWidth() + x;
                         if (material->HasRenderFlags(RF_DEPTH_TEST) && frameBuffer->GetDepthBuffer()[depthPos] <= v.position.z) {
                             continue;
                         }
@@ -334,7 +334,7 @@ namespace CG {
                         Vec4 color = shader->Fragment(v);
 
                         byte *colorBuffer = frameBuffer->GetColorBuffer();
-                        int colorPos = (frameBuffer->GetSize() - frameBuffer->GetWidth() * (y+1) + x) * 3;
+                        int colorPos = (frameBuffer->GetWidth() * y + x) * 3;
 
                         colorBuffer[colorPos + 0] = Float2ByteColor(color.x);
                         colorBuffer[colorPos + 1] = Float2ByteColor(color.y);

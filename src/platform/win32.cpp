@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace CG {
-    static const char *s_className = "CGApp";
+    static const char *s_className = "Renderer";
 
     // Declare
     class Win32Application;
@@ -150,14 +150,16 @@ namespace CG {
         int		height;
     };
 
-    static void Blit2ColorBuffer(const byte *from, byte *to, int width, int height) {
-        int size = width * height * 3;
-        for (int i = 0; i < size;) {
-            to[i] = from[i + 2];
-            to[i + 1] = from[i + 1];
-            to[i + 2] = from[i];
+    static void Blit2ColorBuffer(const byte *src, byte *dst, int width, int height) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int srcIndex = (y * width + x) * 3;
+                int dstIndex = ((height - y - 1) * width + x) * 3;
 
-            i += 3;
+                dst[dstIndex + 0] = src[srcIndex + 2];
+                dst[dstIndex + 1] = src[srcIndex + 1];
+                dst[dstIndex + 2] = src[srcIndex + 0];
+            }
         }
     }
 
