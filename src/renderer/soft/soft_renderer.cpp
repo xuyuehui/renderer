@@ -197,7 +197,7 @@ namespace CG {
                 const Vec3 &e2 = (v2.position - v0.position).ToVec3();
 
                 // 三角形法线的z值为负，代表和摄像机方向一直，默认为-z，则为背面
-                if (e1.Cross(e2).z < 0.0f) {
+                if (e1.Cross(e2).z <= 0.0f) {
                     continue;
                 }
             }

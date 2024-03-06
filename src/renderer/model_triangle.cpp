@@ -15,34 +15,33 @@
 
 namespace CG {
     RenderModelTriangle::RenderModelTriangle() {
-    }
-
-    bool RenderModelTriangle::InitFromFile(const char *filename) {
         surface.geometry = new srfTriangles_t();
-        
+
         surface.geometry->numVerts = 3;
-        surface.geometry->verts = new vertex_t[3] {
+        surface.geometry->verts = new vertex_t[3]{
             {
                 .xyz = Vec3(-1.0f, 0.0f, 1.0f),
                 .normal = Vec3(0.0f, 0.0f, -1.0f),
             },
-            
+
             {
                 .xyz = Vec3(0.0f, 1.0f, 2.0f),
                 .normal = Vec3(0.0f, 0.0f, -1.0f),
             },
-            
+
             {
                 .xyz = Vec3(1.0f, 0.0f, 1.0f),
                 .normal = Vec3(0.0f, 0.0f, -1.0f),
             }
         };
-        
+
         surface.geometry->numIndexes = 3;
         surface.geometry->indexes = new int[3] {
             0, 1, 2
         };
-        
+    }
+
+    bool RenderModelTriangle::InitFromFile(const char *filename) {
         return true;
     }
 

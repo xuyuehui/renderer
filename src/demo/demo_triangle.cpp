@@ -24,7 +24,6 @@ namespace Tutorial {
         renderEntity = new renderEntity_t();
 
         renderEntity->model = new RenderModelTriangle();
-        renderEntity->model->InitFromFile("triangle");
         
         renderEntity->position = Vec3(0.0f, 0.0f, 10.0f);
         renderEntity->rotation = Quat::Indentity();
