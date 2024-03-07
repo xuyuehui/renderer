@@ -1,19 +1,18 @@
 #include "shader_internal.h"
 
 namespace CG {
-    v2f_t UnlitShader::Vertex(const vdata_t &in) const {
-        v2f_t out;
+    void UnlitShader::Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const {
+        const shaderVaryingLocal_t *inVarying = static_cast<const shaderVaryingLocal_t *>(in);
+        shaderVaryingLocal_t *outVarying = static_cast<shaderVaryingLocal_t *>(out);
 
-        out.position = in.mvpMat * Vec4(in.position, 1.0f);
-        out.texcoord = in.texcoord;
-        out.normal = in.modelInvTransposeMat * in.normal;
-        out.color = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-        return out;
+        outVarying->position = inVarying->mvp * inVarying->position;
+        outVarying->texcoord = inVarying->texcoord;
+        outVarying->color = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    Vec4 UnlitShader::Fragment(const v2f_t &in) const {
-        return Sample2D(in.albedoTex, in.texcoord) * in.color;
+    Vec4 UnlitShader::Fragment(const fragmentArgs_t *in) const {
+        const shaderVaryingLocal_t *inVarying = static_cast<const shaderVaryingLocal_t *>(in->varying);
+        return Sample2D(in->textures[0], inVarying->texcoord) * inVarying->color;
     }
      
 }

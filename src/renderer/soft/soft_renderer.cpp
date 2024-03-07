@@ -13,40 +13,330 @@
 #include "../model.h"
 
 namespace CG {
-    static inline vdata_t VDATA(const srfTriangles_t *triangles, int vertIndex, const Mat4 &model, const Mat4 &view, const Mat4 &proj, const Mat4 &vp, const Mat4 &mvp, const Mat4 &modelInvTranspose) {
-        vdata_t vd;
-
-        vd.modelMat = model;
-        vd.viewMat = view;
-        vd.projMat = proj;
-        vd.vpMat = vp;
-        vd.mvpMat = mvp;
-        vd.modelInvTransposeMat = modelInvTranspose;
-
-        vd.position = triangles->verts[triangles->indexes[vertIndex]].xyz;
-        vd.normal = triangles->verts[triangles->indexes[vertIndex]].normal;
-        vd.texcoord = triangles->verts[triangles->indexes[vertIndex]].st;
-        vd.color = triangles->verts[triangles->indexes[vertIndex]].color;
-        vd.tangent = triangles->verts[triangles->indexes[vertIndex]].tangent;
-
-        return vd;
-    }
-
-    static inline float ScreenMapping_X(float x, int width) {
-        return floor((x * 0.5f + 0.5f) * width);
-    }
-
-    static inline float ScreenMapping_Y(float y, int height) {
-        return floor((y * 0.5f + 0.5f) * height);
-    }
+    typedef struct bbox_s {
+        int minX;
+        int minY;
+        int maxX;
+        int maxY;
+    }bbox_t;
 
     static inline byte Float2ByteColor(float v) {
         return (byte)(clamp(v, 0.0f, 1.0f) * 255);
     }
 
+    // https://www.khronos.org/registry/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf subsection 2.12.1
+    static inline void ViewportMapping(int width, int height, Vec4 &pos) {
+        // [-1, 1] -> [0, w]
+        pos.x = (pos.x + 1) * 0.5f * width;
+
+        // [-1, 1] -> [0, h]
+        pos.y = (pos.y + 1) * 0.5f * height;
+
+        // [-1, 1] ->[0, 1]
+        pos.z = (pos.z + 1) * 0.5f;
+    }
+
+    static inline bool IsVertexVisible(const Vec4 &v) {
+        return fabs(v.x) <= v.w && fabs(v.y) <= v.w && fabs(v.z) <= v.w;
+    }
+
+    typedef enum {
+        POSITIVE_W,
+        POSITIVE_X,
+        NEGATIVE_X,
+        POSITIVE_Y,
+        NEGATIVE_Y,
+        POSITIVE_Z,
+        NEGATIVE_Z,
+    } clipPlane_t;
+
+    static inline bool IsInsidePlane(const Vec4 &pos, clipPlane_t plane) {
+        switch (plane) {
+        case POSITIVE_W:
+            return pos.w >= EPSILON;
+        case POSITIVE_X:
+            return pos.x <= pos.w;
+        case NEGATIVE_X:
+            return pos.x >= -pos.w;
+        case POSITIVE_Y:
+            return pos.y <= pos.w;
+        case NEGATIVE_Y:
+            return pos.y >= -pos.w;
+        case POSITIVE_Z:
+            return pos.z <= pos.w;
+        case NEGATIVE_Z:
+            return pos.z >= -pos.w;
+        }
+
+        assert(false);
+        return false;
+    }
+
+    static inline float GetIntersetRatio(const Vec4 &prev, const Vec4 &curr, clipPlane_t plane) {
+        switch (plane) {
+        case POSITIVE_W:
+            return (prev.w - EPSILON) / (prev.w - curr.w);
+        case POSITIVE_X:
+            return (prev.w - prev.x) / ((prev.w - prev.x) - (curr.w - curr.x));
+        case NEGATIVE_X:
+            return (prev.w + prev.x) / ((prev.w + prev.x) - (curr.w + curr.x));
+        case POSITIVE_Y:
+            return (prev.w - prev.y) / ((prev.w - prev.y) - (curr.w - curr.y));
+        case NEGATIVE_Y:
+            return (prev.w + prev.y) / ((prev.w + prev.y) - (curr.w + curr.y));
+        case POSITIVE_Z:
+            return (prev.w - prev.z) / ((prev.w - prev.z) - (curr.w - curr.z));
+        case NEGATIVE_Z:
+            return (prev.w + prev.z) / ((prev.w + prev.z) - (curr.w + curr.z));
+        }
+
+        return .0f;
+    }
+
+    static inline int ClipAgainstPlane(clipPlane_t plane, ishaderVarying_t *inVertices[MAX_VARYINGS], int numInVert, ishaderVarying_t *outVeritces[MAX_VARYINGS], IProgram *program) {
+        int outNumVert = 0;
+
+        for (int i = 0; i < numInVert; i++) {
+            int currIndex = i;
+            int prevIndex = (i - 1 + numInVert) % numInVert;
+
+            ishaderVarying_t *curr = inVertices[currIndex];
+            ishaderVarying_t *prev = inVertices[prevIndex];
+
+            // 判断当前边的两个点与裁截面的关系
+            bool isCurrInside = IsInsidePlane(curr->position, plane);
+            bool isPrevInside = IsInsidePlane(prev->position, plane);
+
+            // 一个在外，一个在内，计算线段和面相交的点，取代被裁掉的点
+            if (isCurrInside != isPrevInside) {
+                float ratio = GetIntersetRatio(prev->position, curr->position, plane);
+                program->Interpolate(prev, curr, ratio, outVeritces[outNumVert]);
+
+                outNumVert++;
+            }
+
+            if (isCurrInside) {
+                program->CopyFrom(curr, outVeritces[outNumVert]);
+                outNumVert++;
+            }
+
+            assert(outNumVert <= MAX_VARYINGS);
+        }
+
+        return outNumVert;
+    }
+
+    // 齐次坐标空间下的三角形裁剪
+    // https://zhuanlan.zhihu.com/p/162190576
+    static inline int ClipTriangle(ishaderVarying_t *inVertices[MAX_VARYINGS], ishaderVarying_t *outVeritces[MAX_VARYINGS], IProgram *program) {
+        bool visible0 = IsVertexVisible(inVertices[0]->position);
+        bool visible1 = IsVertexVisible(inVertices[1]->position);
+        bool visible2 = IsVertexVisible(inVertices[2]->position);
+
+        // 都是可见，则不需要裁剪
+        if (visible0 && visible1 && visible2) {
+            program->CopyFrom(inVertices[0], outVeritces[0]);
+            program->CopyFrom(inVertices[1], outVeritces[1]);
+            program->CopyFrom(inVertices[2], outVeritces[2]);
+            return 3;
+        }
+
+        int numVert = 3;
+
+        numVert = ClipAgainstPlane(POSITIVE_W, inVertices, numVert, outVeritces, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        numVert = ClipAgainstPlane(POSITIVE_X, outVeritces, numVert, inVertices, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        numVert = ClipAgainstPlane(NEGATIVE_X, inVertices, numVert, outVeritces, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        numVert = ClipAgainstPlane(POSITIVE_Y, outVeritces, numVert, inVertices, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        numVert = ClipAgainstPlane(NEGATIVE_Y, inVertices, numVert, outVeritces, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        numVert = ClipAgainstPlane(POSITIVE_Z, outVeritces, numVert, inVertices, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        numVert = ClipAgainstPlane(NEGATIVE_Z, inVertices, numVert, outVeritces, program);
+        if (numVert < 3) {
+            return 0;
+        }
+
+        return numVert;
+    }
+
+    static inline bool isBackface_1(const Vec4 &v0, const Vec4 &v1, const Vec4 &v2) {
+        const Vec3 &e1 = (v1 - v0).ToVec3();
+        const Vec3 &e2 = (v2 - v0).ToVec3();
+
+        return e1.Cross(e2).z <= 0.0f;
+    }
+
+    // https://www.khronos.org/registry/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf subsection 3.5.1
+    static inline bool isBackface_0(const Vec4 &v0, const Vec4 &v1, const Vec4 &v2) {
+        float signedArea = v0.x * v1.y - v0.y * v1.x + v1.x * v2.y - v1.y * v2.x + v2.x * v0.y - v2.y * v0.x;
+
+        return signedArea <= 0.0f;
+    }
+
+    // 获取三角形三个顶点覆盖的Bounding Box
+    static inline bbox_t FindBoundingBox(ishaderVarying_t **verts, int width, int height) {
+        bbox_t bbox;
+
+        bbox.minX = max(min(verts[0]->position.x, min(verts[1]->position.x, verts[2]->position.x)), 0);
+        bbox.maxX = min(max(verts[0]->position.x, max(verts[1]->position.x, verts[2]->position.x)), width - 1);
+        bbox.minY = max(min(verts[0]->position.y, min(verts[1]->position.y, verts[2]->position.y)), 0);
+        bbox.maxY = min(max(verts[0]->position.y, max(verts[1]->position.y, verts[2]->position.y)), height - 1);
+
+        return bbox;
+    }
+
+    static inline float InterpolateDepth(ishaderVarying_t **verts, const Vec3 &weights) {
+        return verts[0]->position.z * weights.x + verts[1]->position.z * weights.y + verts[2]->position.z * weights.z;
+    }
+
+    /*
+     * for barycentric coordinates, see
+     * http://blackpawn.com/texts/pointinpoly/
+     *
+     * solve
+     *     P = A + s * AB + t * AC  -->  AP = s * AB + t * AC
+     * then
+     *     s = (AC.y * AP.x - AC.x * AP.y) / (AB.x * AC.y - AB.y * AC.x)
+     *     t = (AB.x * AP.y - AB.y * AP.x) / (AB.x * AC.y - AB.y * AC.x)
+     *
+     * notice
+     *     P = A + s * AB + t * AC
+     *       = A + s * (B - A) + t * (C - A)
+     *       = (1 - s - t) * A + s * B + t * C
+     * then
+     *     weight_A = 1 - s - t
+     *     weight_B = s
+     *     weight_C = t
+     */
+    static inline Vec3 CalculateWeight(Vec2 abc[3], Vec2 &p) {
+        Vec2 ab = abc[1] - abc[0];
+        Vec2 ac = abc[2] - abc[0];
+        Vec2 ap = p - abc[0];
+        float factor = 1.0f / (ab.x * ac.y - ab.y * ac.x);
+        float s = (ac.y * ap.x - ac.x * ap.y) * factor;
+        float t = (ab.x * ap.y - ab.y * ap.x) * factor;
+
+        return Vec3(1 - s - t, s, t);
+    }
+
+    inline void PerspectiveDivision(Vec4 &v) {
+        float rw = 1.0f / v.w;
+        v.x *= rw;
+        v.y *= rw;
+        v.z *= rw;
+    }
+
+    inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color) {
+        byte *colorBuffer = frameBuffer->GetColorBuffer();
+        int colorPos = (frameBuffer->GetWidth() * y + x) * 3;
+
+        colorBuffer[colorPos + 0] = Float2ByteColor(color.x);
+        colorBuffer[colorPos + 1] = Float2ByteColor(color.y);
+        colorBuffer[colorPos + 2] = Float2ByteColor(color.z);
+    }
+
+    static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, ishaderVarying_t **verts, IProgram *program) {
+        Vec2 screenCoords[3];
+        for (int i = 0; i < 3; ++i) {
+            screenCoords[i] = verts[i]->position.ToVec2();
+        }
+
+        // perform rasterization
+        bbox_t bbox = FindBoundingBox(verts, frameBuffer->GetWidth(), frameBuffer->GetHeight());
+        for (int x = bbox.minX; x <= bbox.maxX; x++) {
+            for (int y = bbox.minY; y <= bbox.maxY; y++) {
+                Vec2 point(x + 0.5f, y + 0.5f);
+                Vec3 weights = CalculateWeight(screenCoords, point);
+                bool w0 = weights.x > -EPSILON;
+                bool w1 = weights.y > -EPSILON;
+                bool w2 = weights.z > -EPSILON;
+
+                // 判断点是否在三角形里
+                if (!w0 || !w1 || !w2) {
+                    continue;
+                }
+
+                int depthIndex = y * frameBuffer->GetWidth() + x;
+                float depth = InterpolateDepth(verts, weights);
+                
+                // 深度测试
+                if (depth > frameBuffer->GetDepthBuffer()[depthIndex]) {
+                    continue;
+                }
+
+                // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes.html
+                // 根据重心坐标插值计算片元属性
+                program->Interpolate(verts, weights, program->shaderVarying);
+
+                fragmentArgs_t fa;
+
+                fa.varying = program->shaderVarying;
+                memcpy(fa.textures, program->textures, sizeof(program->textures));
+
+                Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(&fa);
+
+                DrawPixel(frameBuffer, x, y, color);
+            }
+        }
+
+        return true;
+    }
+
+    static inline bool RasterizeTriangle(FrameBuffer *frameBuffer, ishaderVarying_t** verts, IProgram *program) {
+        // perspective division
+        for (int i = 0; i < 3; i++) {
+            PerspectiveDivision(verts[i]->position);
+        }
+
+        // back face culling
+        bool backface = isBackface_0(verts[0]->position, verts[1]->position, verts[2]->position);
+        if (!program->doubleSided && backface) {
+            return false;
+        }
+
+        // precompute reciprocals of w
+        for (int i = 0; i < 3; i++) {
+            verts[i]->position.w = 1.0f / verts[i]->position.w;
+        }
+
+        // viewport mapping
+        for (int i = 0; i < 3; ++i) {
+            ViewportMapping(frameBuffer->GetWidth(), frameBuffer->GetHeight(), verts[i]->position);
+        }
+
+        // draw triangle
+        DrawTriangle_0(frameBuffer, verts, program);
+
+        return false;
+    }
+
     SoftRenderer::SoftRenderer() : bufferIndex(0), needUpdated(false), window(NULL), shaderManager(NULL), modelManager(NULL), textureManager(NULL), defaultMat(NULL), defaultShader(NULL), renderFlags(0), antiAlias(AA_DEFAULT) {
         buffers[0] = NULL;
         buffers[1] = NULL;
+
+        program = new ProgramLocal();
     }
 
     SoftRenderer::~SoftRenderer() {
@@ -70,6 +360,7 @@ namespace CG {
         }
 
         delete defaultMat;
+        delete program;
     }
 
     void SoftRenderer::Init(Window* window) {
@@ -104,7 +395,7 @@ namespace CG {
 
         defaultMat = new Material();
         defaultMat->shader = defaultShader;
-        defaultMat->SetRenderFlags(RF_BACK_FACE_CULLING | RF_DEPTH_TEST);
+        defaultMat->SetRenderFlags(RF_DEPTH_TEST);
     }
 
     void SoftRenderer::ClearColorBuffer(const rgb& color) {
@@ -163,170 +454,36 @@ namespace CG {
         FrameBuffer *frameBuffer = this->GetBackFrameBuffer();
 
         const Material *material = surface->material != NULL ? surface->material : defaultMat;
-        Shader_Soft *shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
-
-        Mat4 vp = context.proj * context.view;
-        Mat4 mvpMat = context.proj * context.view * context.model;
-        Mat4 modelInvTransport = context.model.Inverse().Transport();
+        program->shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
+        program->textures[0] = material->albedo;
+        program->textures[1] = material->diffuse;
+        program->textures[2] = material->specular;
+        program->textures[3] = material->normal;
 
         for (int i = 0, tidx = 0; i < surface->geometry->numIndexes; i += 3, tidx++) {
+            program->Setup(program->inVaryings[0], surface->geometry->verts[surface->geometry->indexes[i + 0]], context);
+            program->Setup(program->inVaryings[1], surface->geometry->verts[surface->geometry->indexes[i + 1]], context);
+            program->Setup(program->inVaryings[2], surface->geometry->verts[surface->geometry->indexes[i + 2]], context);
 
             // Vertex Processing
-            v2f_t v0 = shader->Vertex(VDATA(surface->geometry, i, context.model, context.view, context.proj, vp, mvpMat, modelInvTransport));
-            v2f_t v1 = shader->Vertex(VDATA(surface->geometry, i + 1, context.model, context.view, context.proj, vp, mvpMat, modelInvTransport));
-            v2f_t v2 = shader->Vertex(VDATA(surface->geometry, i + 2, context.model, context.view, context.proj, vp, mvpMat, modelInvTransport));
+            dynamic_cast<Shader_Soft *>(program->shader)->Vertex(program->inVaryings[0], program->outVaryings[0]);
+            dynamic_cast<Shader_Soft *>(program->shader)->Vertex(program->inVaryings[1], program->outVaryings[1]);
+            dynamic_cast<Shader_Soft *>(program->shader)->Vertex(program->inVaryings[2], program->outVaryings[2]);
 
-            // Perspective Division
-            Math::PerspectiveDivision(v0.position);
-            Math::PerspectiveDivision(v1.position);
-            Math::PerspectiveDivision(v2.position);
-
-            // Screen Clipping
-            if ((v0.position.x < -1.0f && v1.position.x < -1.0f && v2.position.x < -1.0f) ||
-                (v0.position.x >  1.0f && v1.position.x >  1.0f && v2.position.x >  1.0f) ||
-                (v0.position.y < -1.0f && v1.position.y < -1.0f && v2.position.y < -1.0f) ||
-                (v0.position.y >  1.0f && v1.position.y >  1.0f && v2.position.y >  1.0f) ||
-                (v0.position.z <  0.0f && v1.position.z <  0.0f && v2.position.z <  0.0f) ||
-                (v0.position.z >  1.0f && v1.position.z >  1.0f && v2.position.z >  1.0f)) {
+            // Cliping Triangle
+            int numVerices = ClipTriangle(program->outVaryings, program->inVaryings, program);
+            if (numVerices < 3) {
                 continue;
             }
 
-            // Back Face Culling
-            if (this->HasRenderFlags(RF_WIREFRAME_MODE) || material->HasRenderFlags(RF_WIREFRAME_MODE | RF_BACK_FACE_CULLING)) {
-                const Vec3 &e1 = (v1.position - v0.position).ToVec3();
-                const Vec3 &e2 = (v2.position - v0.position).ToVec3();
-
-                // 三角形法线的z值为负，代表和摄像机方向一直，默认为-z，则为背面
-                if (e1.Cross(e2).z <= 0.0f) {
-                    continue;
+            // Rasterize Triangle
+            for (int i = 0; i < numVerices-2;) {
+                bool isCulled = RasterizeTriangle(frameBuffer, &program->inVaryings[i], program);
+                if (isCulled) {
+                    break;
                 }
-            }
 
-            v0.position.x = ScreenMapping_X(v0.position.x, frameBuffer->GetWidth());
-            v1.position.x = ScreenMapping_X(v1.position.x, frameBuffer->GetWidth());
-            v2.position.x = ScreenMapping_X(v2.position.x, frameBuffer->GetWidth());
-            v0.position.y = ScreenMapping_Y(v0.position.y, frameBuffer->GetHeight());
-            v1.position.y = ScreenMapping_Y(v1.position.y, frameBuffer->GetHeight());
-            v2.position.y = ScreenMapping_Y(v2.position.y, frameBuffer->GetHeight());
-            //
-            v0.position.z = 1.0f / v0.position.z;
-            v1.position.z = 1.0f / v1.position.z;
-            v2.position.z = 1.0f / v2.position.z;
-
-            // wireframe mode
-            if (this->HasRenderFlags(RF_WIREFRAME_MODE)) {
-                this->DrawLine(v0.position.ToVec2(), v1.position.ToVec2(), COLOR_WHITE, 0.0f);
-                this->DrawLine(v1.position.ToVec2(), v2.position.ToVec2(), COLOR_WHITE, 0.0f);
-                this->DrawLine(v2.position.ToVec2(), v0.position.ToVec2(), COLOR_WHITE, 0.0f);
-
-                continue;
-            }
-
-            // reference : https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/overview-rasterization-algorithm.html
-            int xMin = max(min(v0.position.x, min(v1.position.x, v2.position.x)), 0);
-            int xMax = min(max(v0.position.x, max(v1.position.x, v2.position.x)), frameBuffer->GetWidth() - 1);
-            int yMin = max(min(v0.position.y, min(v1.position.y, v2.position.y)), 0);
-            int yMax = min(max(v0.position.y, max(v1.position.y, v2.position.y)), frameBuffer->GetHeight() - 1);
-
-            float area = Math::EdgeFunction(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3());
-            unsigned short mask = 0;
-
-            for (int x = xMin; x < xMax; x++) {
-                for (int y = yMin; y < yMax; y++) {
-                    Vec3 pos(x + 0.5f, y + 0.5f, 1.0f);
-                    float w0 = .0f, w1 = .0f, w2 = .0f;
-
-                    if (GetAntiAliasingType() == AA_DEFAULT) {
-                        if (!Math::PointInsideTriangle(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2)) {
-                            continue;
-                        }
-
-                        // top-left 约定
-                        if (w0 == 0.0 && !Math::IsTopLeft(Vec2(v2.position.x - v1.position.x, v2.position.y - v1.position.y))) {
-                            continue;
-                        }
-
-                        if (w1 == 0.0 && !Math::IsTopLeft(Vec2(v0.position.x - v2.position.x, v0.position.y - v2.position.y))) {
-                            continue;
-                        }
-
-                        if (w2 == 0.0 && !Math::IsTopLeft(Vec2(v1.position.x - v0.position.x, v1.position.y - v0.position.y))) {
-                            continue;
-                        }
-                    }
-                    else if (GetAntiAliasingType() == AA_MSAA) {
-                        //GetMSAAMask((msaaLevel_t)GetAntiAliasingLevel(), mask, v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos);
-
-                        //if (mask == 0) {
-                        //    continue;
-                        //}
-
-                        //Math::PointInsideTriangle(v0.position.ToVec3(), v1.position.ToVec3(), v2.position.ToVec3(), pos, w0, w1, w2);
-                    }
-
-                    w0 /= area;
-                    w1 /= area;
-                    w2 /= area;
-
-                    float denom = (w0 * v0.position.z + w1 * v1.position.z + w2 * v2.position.z);
-                    pos.z = 1.0f / denom;
-                    if (isnan(pos.z)) {
-                        continue;
-                    }
-
-                    // Near/Far Plane Clpping
-                    if (pos.z < 0.0f || pos.z > 0.999f) {
-                        continue;
-                    }
-
-                    if (pos.x < 0 || pos.x >= frameBuffer->GetWidth() || y < 0 || y >= frameBuffer->GetHeight()) {
-                        continue;
-                    }
-
-                    // reference : https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes.html
-                    Vec3 barycentric = Vec3(w0 * v0.position.z, w1 * v1.position.z, w2 * v2.position.z) * (1.0f / (w0 * v0.position.z + w1 * v1.position.z + w2 * v2.position.z));
-
-                    v2f_t v;
-
-                    v.position = Vec4(pos.x, pos.y, pos.z, 0.0f);
-                    v.fragPos = Mat3(v0.fragPos.x, v1.fragPos.x, v2.fragPos.x, v0.fragPos.y, v1.fragPos.y, v2.fragPos.y, v0.fragPos.z, v1.fragPos.z, v2.fragPos.z) * barycentric;
-                    v.normal = Mat3(v0.normal.x, v1.normal.x, v2.normal.x, v0.normal.y, v1.normal.y, v2.normal.y, v0.normal.z, v1.normal.z, v2.normal.z) * barycentric;
-                    v.t_normal = Mat3(v0.t_normal.x, v1.t_normal.x, v2.t_normal.x, v0.t_normal.y, v1.t_normal.y, v2.t_normal.y, v0.t_normal.z, v1.t_normal.z, v2.t_normal.z) * barycentric;
-                    v.texcoord = Vec2(Vec3(v0.texcoord.x, v1.texcoord.x, v2.texcoord.x).Dot(barycentric), Vec3(v0.texcoord.y, v1.texcoord.y, v2.texcoord.y).Dot(barycentric));
-                    v.tangent = v0.tangent;
-                    v.bitangent = v0.bitangent;
-                    v.color = Mat4(v0.color.x, v1.color.x, v2.color.x, .0f,
-                                   v0.color.y, v1.color.y, v2.color.y, .0f,
-                                   v0.color.z, v1.color.z, v2.color.z, .0f,
-                                   v0.color.w, v1.color.w, v2.color.w, .0f) * Vec4(barycentric, 0.0f);
-                    
-                    v.albedoTex = material->albedo;
-                    v.diffuseTex = material->diffuse;
-                    v.normalTex = material->normal;
-                    v.specularTex = material->specular;
-
-                    if (GetAntiAliasingType() == AA_DEFAULT) {
-                        // Depth Test
-                        int depthPos = y * frameBuffer->GetWidth() + x;
-                        if (material->HasRenderFlags(RF_DEPTH_TEST) && frameBuffer->GetDepthBuffer()[depthPos] <= v.position.z) {
-                            continue;
-                        }
-
-                        if (!material->HasRenderFlags(RF_TRANSPARENT)) {
-                            frameBuffer->GetDepthBuffer()[depthPos] = v.position.z;
-                        }
-
-                        // Fragment Shading
-                        Vec4 color = shader->Fragment(v);
-
-                        byte *colorBuffer = frameBuffer->GetColorBuffer();
-                        int colorPos = (frameBuffer->GetWidth() * y + x) * 3;
-
-                        colorBuffer[colorPos + 0] = Float2ByteColor(color.x);
-                        colorBuffer[colorPos + 1] = Float2ByteColor(color.y);
-                        colorBuffer[colorPos + 2] = Float2ByteColor(color.z);
-                    }
-                }
+                i += 3;
             }
         }
     }

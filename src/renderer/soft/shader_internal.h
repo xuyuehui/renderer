@@ -8,8 +8,8 @@ namespace CG {
     public:
         UnlitShader(string id);
 
-        v2f_t Vertex(const vdata_t &in) const;
-        Vec4 Fragment(const v2f_t &in) const;
+        void Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const;
+        Vec4 Fragment(const fragmentArgs_t *in) const;
     };
 
     inline UnlitShader::UnlitShader(string id) {

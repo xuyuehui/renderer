@@ -28,7 +28,7 @@ namespace CG {
     typedef unsigned int			dword;
     typedef unsigned long			ulong;
 
-    const uint32 RF_BACK_FACE_CULLING       = 0x00000001;
+    const uint32 RF_DOUBLE_SIDED            = 0x00000001;
     const uint32 RF_WIREFRAME_MODE          = 0x00000002;
     const uint32 RF_DEPTH_TEST              = 0x00000004;
     const uint32 RF_TRANSPARENT             = 0x00000008;

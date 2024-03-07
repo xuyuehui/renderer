@@ -66,6 +66,11 @@ namespace CG {
 
         float Normalize();
         Vec3 Normalized() const;
+
+        const Vec2 &ToVec2() const;
+        Vec2 &ToVec2();
+
+        static Vec3 Lerp(const Vec3 &src, const Vec3 &dst, float ratio);
     };
 
     inline Vec3::Vec3() : x(.0f), y(.0f), z(.0f){
@@ -153,6 +158,21 @@ namespace CG {
         );
     }
 
+    inline const Vec2 &Vec3::ToVec2() const {
+        return *reinterpret_cast<const Vec2 *>(this);
+    }
+
+    inline Vec2 &Vec3::ToVec2() {
+        return *reinterpret_cast<Vec2 *>(this);
+    }
+
+    inline Vec3 Vec3::Lerp(const Vec3 &src, const Vec3 &dst, float ratio) {
+        ratio = clamp(.0f, 1.0f, ratio);
+        return Vec3(src.x * (1.0f - ratio) + dst.x * ratio,
+                    src.y * (1.0f - ratio) + dst.y * ratio,
+                    src.z * (1.0f - ratio) + dst.z * ratio);
+    }
+
     typedef Vec3 rgb;
 
     class Vec4 {
@@ -180,7 +200,7 @@ namespace CG {
         const Vec2 &ToVec2() const;
         Vec2 &ToVec2();
         
-        static Vec4 Lerp(const Vec4 &from, const Vec4& to, float alpha);
+        static Vec4 Lerp(const Vec4 &src, const Vec4& dst, float ratio);
     };
 
     inline Vec4::Vec4() : x(.0f), y(.0f), z(.0f), w(.0f) {
@@ -250,14 +270,13 @@ namespace CG {
         return *reinterpret_cast<Vec2 *>(this);
     }
 
-inline Vec4 Vec4::Lerp(const Vec4 &from, const Vec4 &to, float step) {
-    step = clamp(.0f, 1.0f, step);
-    
-    return Vec4(from.x * (1.0f - step) + to.x * step,
-                from.y * (1.0f - step) + to.y * step,
-                from.z * (1.0f - step) + to.z * step,
-                from.w * (1.0f - step) + to.w * step);
-}
+    inline Vec4 Vec4::Lerp(const Vec4 &src, const Vec4 &dst, float ratio) {
+        ratio = clamp(.0f, 1.0f, ratio);
+        return Vec4(src.x * (1.0f - ratio) + dst.x * ratio,
+                    src.y * (1.0f - ratio) + dst.y * ratio,
+                    src.z * (1.0f - ratio) + dst.z * ratio,
+                    src.w * (1.0f - ratio) + dst.w * ratio);
+    }
 
     class Vec2i {
     public:

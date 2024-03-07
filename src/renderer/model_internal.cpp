@@ -152,6 +152,7 @@ namespace CG {
             for (int i = 0; i < vertices.size(); i++) {
                 center += vertices[i];
                 surface.geometry->verts[i].xyz = vertices[i];
+                surface.geometry->verts[i].color = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
             }
 
             center *= (1.0f / vertices.size());
@@ -209,7 +210,7 @@ namespace CG {
 
     void RenderModelInternal::GenerateMaterial() {
         surface.material = new Material();
-        surface.material->SetRenderFlags(RF_BACK_FACE_CULLING | RF_DEPTH_TEST);
+        surface.material->SetRenderFlags(RF_DEPTH_TEST);
 
         Renderer *renderer = App()->GetRenderer();
 

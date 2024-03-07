@@ -3,6 +3,7 @@
 
 #include "../math/vector.h"
 #include "../utility/utility.h"
+#include "../math/matrix.h"
 
 namespace CG {
     typedef enum rendererAPIType {
@@ -17,12 +18,19 @@ namespace CG {
     class ShaderManager;
     class ModelManager;
     class TextureManager;
+    typedef struct modelSurface_s modelSurface_t;
 
     typedef enum {
         AA_DEFAULT,
         AA_MSAA,
         AA_MAX,
     } antiAliasingType_t;
+
+    typedef struct drawSurfaceContext_s {
+        Mat4 model;
+        Mat4 view;
+        Mat4 proj;
+    } drawSurfaceContext_t;
 
     class Renderer {
     public:
@@ -34,6 +42,7 @@ namespace CG {
 
         virtual void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth) = 0;
         virtual void DrawText(const char *text, const Vec2& pos, float size, const color_t &color, float gap) = 0;
+        virtual void DrawSurface(const modelSurface_t *surface, const drawSurfaceContext_t &context) = 0;
 
         virtual RenderWorld *CreateRenderWorld() = 0;
 

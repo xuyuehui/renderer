@@ -30,17 +30,6 @@ namespace Tutorial {
         printf("v1 (%.2f, %.2f, %.5f, %.2f) -> (%.2f, %.2f, %.5f, %.2f)\n", v1.x, v1.y, v1.z, v1.w, tv1.x, tv1.y, tv1.z, tv1.w);
         printf("v2 (%.2f, %.2f, %.5f, %.2f) -> (%.2f, %.2f, %.5f, %.2f)\n", v2.x, v2.y, v2.z, v2.w, tv2.x, tv2.y, tv2.z, tv2.w);
         printf("v3 (%.2f, %.2f, %.5f, %.2f) -> (%.2f, %.2f, %.5f, %.2f)\n", v3.x, v3.y, v3.z, v3.w, tv3.x, tv3.y, tv3.z, tv3.w);
-
-        Math::PerspectiveDivision(tv1);
-        Math::PerspectiveDivision(tv2);
-        Math::PerspectiveDivision(tv3);
-
-        Vec3 e1 = (v2 - v1).ToVec3();
-        Vec3 e2 = (v3 - v1).ToVec3();
-
-        bool backface = e1.Cross(e2).z <= 0.0f;
-
-        printf("is backface? %s\n", backface ? "true" : "false");
     }
 
     void DemoBank::OnUpdate(){

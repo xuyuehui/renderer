@@ -12,17 +12,9 @@ namespace CG {
     class TextureManager;
     class ModelManager;
     class Material;
-
-    typedef struct modelSurface_s modelSurface_t;
+    class ProgramLocal;
 
     class SoftRenderer : public Renderer {
-    public:
-        typedef struct drawSurfaceContext_s {
-            Mat4 model;
-            Mat4 view;
-            Mat4 proj;
-        } drawSurfaceContext_t;
-
     public:
         SoftRenderer();
         ~SoftRenderer();
@@ -48,14 +40,14 @@ namespace CG {
         void SetAntiAliasingType(antiAliasingType_t aa, uint32 opt);
         antiAliasingType_t GetAntiAliasingType() const;
         uint32 GetAntiAliasingLevel() const;
+
+        void DrawSurface(const modelSurface_t *surface, const drawSurfaceContext_t &context);
     public:
         // 已经准备好的缓冲区
         FrameBuffer *GetFrontFrameBuffer() const;
 
         // 当前帧正在更改的缓冲区
         FrameBuffer *GetBackFrameBuffer() const;
-
-        void DrawSurface(const modelSurface_t *surface, const drawSurfaceContext_t &context);
     private:
         FrameBuffer *buffers[2];
         byte bufferIndex;
@@ -69,6 +61,8 @@ namespace CG {
 
         Material *defaultMat;
         Shader *defaultShader;
+
+        ProgramLocal *program;
 
         uint32 renderFlags;
         uint32 antiAlias;

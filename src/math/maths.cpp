@@ -22,7 +22,7 @@ namespace CG {
         initialized = true;
     }
 
-    // reference : 3D Math Primer for Graphics and Game Development, Second Edition, Chapter 8.7.3
+    // 3D Math Primer for Graphics and Game Development, Second Edition, Chapter 8.7.3
     Mat4 Math::FromRTS(const Vec3 &translate, const Quat &rotation, const Vec3 &scale) {
         float xx = rotation.x * rotation.x;
         float xy = rotation.x * rotation.y;
@@ -44,7 +44,7 @@ namespace CG {
         return mat;
     }
 
-    // reference : Fundamentals of Computer Graphics, Fourth Edition, Chapter 7.3 | GAMES101 Lecture 05
+    // Fundamentals of Computer Graphics, Fourth Edition, Chapter 7.3 | GAMES101 Lecture 05
     Mat4 Math::ProjectMatrix(float fovY, float aspect, float near, float far) {
         float tanFovYHalf = tanf(fovY / 2.0f);
         Mat4 mat(
@@ -56,7 +56,7 @@ namespace CG {
         return mat;
     }
 
-    // reference : Fundamentals of Computer Graphics, Fourth Edition, Chapter 7.1.3 | GAMES101 Lecture 04
+    // Fundamentals of Computer Graphics, Fourth Edition, Chapter 7.1.3 | GAMES101 Lecture 04
     Mat4 Math::ViewMatrix(const Vec3 &eye, const Vec3 &target, const Vec3 &up) {
         Vec3 forward = (eye - target).Normalized();
         Vec3 left = up.Cross(forward).Normalized();
@@ -71,7 +71,7 @@ namespace CG {
         return mat;
     }
 
-    // reference : https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage.html
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage.html
     float Math::EdgeFunction(const Vec3 &a, const Vec3 &b, const Vec3 &c) {
         return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
     }
@@ -87,12 +87,4 @@ namespace CG {
     bool Math::IsTopLeft(const Vec2 &v) {
         return (v.y >= 0 && fabs(v.y) < EPSILON && v.x > 0) || v.y > 0;
     }
-
-    void Math::PerspectiveDivision(Vec4 &v) {
-        v.w = 1.0f / v.w;
-        v.x *= v.w;
-        v.y *= v.w;
-        v.z *= v.w;
-    }
-
 }

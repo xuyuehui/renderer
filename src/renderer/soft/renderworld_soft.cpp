@@ -24,7 +24,7 @@ namespace CG {
         Mat4 projMat = Math::ProjectMatrix(primaryRenderView.fovY, primaryRenderView.aspect, primaryRenderView.near, primaryRenderView.far);
         Mat4 viewMat = Math::ViewMatrix(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
 
-        SoftRenderer::drawSurfaceContext_t drawSrfContext;
+        drawSurfaceContext_t drawSrfContext;
 
         drawSrfContext.proj = projMat;
         drawSrfContext.view = viewMat;

@@ -4,7 +4,6 @@
 #include "../shared.h"
 
 namespace CG {
-
     class Shader {
     public:
         virtual ~Shader() {}
