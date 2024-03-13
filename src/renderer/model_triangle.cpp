@@ -14,48 +14,50 @@
 #include "../renderer/renderer.h"
 
 namespace CG {
-    RenderModelTriangle::RenderModelTriangle() {
-        surface.geometry = new srfTriangles_t();
 
-        surface.geometry->numVerts = 3;
-        surface.geometry->verts = new vertex_t[3]{
-            {
-                .xyz = Vec3(-1.0f, 0.0f, 1.0f),
-                .normal = Vec3(0.0f, 0.0f, -1.0f),
-                .color = Vec4(1.0f, 0.0f, 0.0f, 1.0f),
-            },
+RenderModelTriangle::RenderModelTriangle() {
+    surface.geometry = new srfTriangles_t();
 
-            {
-                .xyz = Vec3(0.0f, 1.0f, 2.0f),
-                .normal = Vec3(0.0f, 0.0f, -1.0f),
-                .color = Vec4(0.0f, 1.0f, 0.0f, 1.0f),
-            },
+    surface.geometry->numVerts = 3;
+    surface.geometry->verts = new vertex_t[3]{
+        {
+            .xyz = Vec3(-1.0f, 0.0f, 1.0f),
+            .normal = Vec3(0.0f, 0.0f, -1.0f),
+            .color = Vec4(1.0f, 0.0f, 0.0f, 1.0f),
+        },
 
-            {
-                .xyz = Vec3(1.0f, 0.0f, 1.0f),
-                .normal = Vec3(0.0f, 0.0f, -1.0f),
-                .color = Vec4(0.0f, 0.0f, 1.0f, 1.0f),
-            }
-        };
+        {
+            .xyz = Vec3(0.0f, 1.0f, 2.0f),
+            .normal = Vec3(0.0f, 0.0f, -1.0f),
+            .color = Vec4(0.0f, 1.0f, 0.0f, 1.0f),
+        },
 
-        surface.geometry->numIndexes = 3;
-        surface.geometry->indexes = new int[3] {
-            0, 1, 2
-        };
-    }
+        {
+            .xyz = Vec3(1.0f, 0.0f, 1.0f),
+            .normal = Vec3(0.0f, 0.0f, -1.0f),
+            .color = Vec4(0.0f, 0.0f, 1.0f, 1.0f),
+        }
+    };
 
-    bool RenderModelTriangle::InitFromFile(const char *filename) {
-        return true;
-    }
+    surface.geometry->numIndexes = 3;
+    surface.geometry->indexes = new int[3] {
+        0, 1, 2
+    };
+}
 
-    int RenderModelTriangle::NumSurfaces() const {
-        return 1;
-    }
+bool RenderModelTriangle::InitFromFile(const char *filename) {
+    return true;
+}
 
-    const modelSurface_t* RenderModelTriangle::Surface(int surfaceNum) const {
-        return &surface;
-    }
+int RenderModelTriangle::NumSurfaces() const {
+    return 1;
+}
 
-    void RenderModelTriangle::GenerateSurfaceTriangleExt() {
-    }
+const modelSurface_t* RenderModelTriangle::Surface(int surfaceNum) const {
+    return &surface;
+}
+
+void RenderModelTriangle::GenerateSurfaceTriangleExt() {
+}
+
 }

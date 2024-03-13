@@ -21,6 +21,8 @@ namespace CG {
         static float EdgeFunction(const Vec3 &a, const Vec3 &b, const Vec3 &c);
         static bool PointInsideTriangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2);
         static bool IsTopLeft(const Vec2 &v);
+        static void MatrixToQuat(const Mat4 &mat, Quat &rotation);
+        static void MatrixToRTS(const Mat4 &mat, Vec3 &translate, Quat &rotation, Vec3 &scale);
     private:
         enum {
             LOOKUP_BITS = 8,

@@ -12,6 +12,8 @@
 #include "shader_soft.h"
 #include "../model.h"
 
+#include "../../utility/str.h"
+
 namespace CG {
     typedef struct bbox_s {
         int minX;
@@ -395,7 +397,6 @@ namespace CG {
 
         defaultMat = new Material();
         defaultMat->shader = defaultShader;
-        defaultMat->SetRenderFlags(RF_DEPTH_TEST);
     }
 
     void SoftRenderer::ClearColorBuffer(const rgb& color) {
@@ -446,19 +447,23 @@ namespace CG {
         }
     }
 
-    RenderWorld *SoftRenderer::CreateRenderWorld() {
+    RenderWorld *SoftRenderer::CreateRenderWorld(shadingMode_t mode) {
         return new RenderWorld_Soft(this);
     }
 
     void SoftRenderer::DrawSurface(const modelSurface_t *surface, const drawSurfaceContext_t &context) {
+        if (!surface->geometry) {
+            return;
+        }
+
         FrameBuffer *frameBuffer = this->GetBackFrameBuffer();
 
         const Material *material = surface->material != NULL ? surface->material : defaultMat;
         program->shader = dynamic_cast<Shader_Soft *>(material->shader != NULL ? material->shader : defaultShader);
-        program->textures[0] = material->albedo;
-        program->textures[1] = material->diffuse;
-        program->textures[2] = material->specular;
-        program->textures[3] = material->normal;
+        program->textures[0] = material->diffuse;
+        program->textures[1] = material->specular;
+        program->textures[2] = material->normal;
+        program->textures[3] = material->emission;
 
         for (int i = 0, tidx = 0; i < surface->geometry->numIndexes; i += 3, tidx++) {
             program->Setup(program->inVaryings[0], surface->geometry->verts[surface->geometry->indexes[i + 0]], context);

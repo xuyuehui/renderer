@@ -20,6 +20,10 @@ namespace CG {
     typedef struct renderLight_s {
         Vec3 position;
         Quat rotation;
+
+        Vec3 background;
+        float ambient;
+        float punctual;
     }renderLight_t;
 
     typedef struct renderView_s {
@@ -33,12 +37,17 @@ namespace CG {
         float far;
     }renderView_t;
 
+    typedef struct renderSkybox_s {
+        RenderModel *model;
+    }renderSkybox_t;
+
     class RenderWorld {
     public:
         virtual ~RenderWorld() {}
 
         virtual uint32_t AddEntityDef(const renderEntity_t &entity) = 0;
         virtual uint32_t AddLightDef(const renderLight_t &light) = 0;
+        virtual uint32_t AddSkyboxDef(const renderSkybox_t &skybox) = 0;
 
         virtual void SetRenderView(const renderView_t &renderView) = 0;
         virtual void RenderScene() = 0;

@@ -14,17 +14,20 @@
 #include "../utility/list.h"
 
 namespace CG {
-    class RenderModelTriangle : public RenderModel {
-    public:
-        RenderModelTriangle();
 
-        bool InitFromFile(const char *filename);
-        int NumSurfaces() const;
-        const modelSurface_t *Surface(int surfaceNum) const;
-        void GenerateSurfaceTriangleExt();
-    private:
-        modelSurface_t surface;
-    };
+class RenderModelTriangle : public RenderModel {
+public:
+    RenderModelTriangle();
+
+    bool InitFromFile(const char *filename);
+    int NumSurfaces() const;
+    const modelSurface_t *Surface(int surfaceNum) const;
+    void GenerateSurfaceTriangleExt();
+    void SetMaterial(int surfaceNum, Material *material) {}
+private:
+    modelSurface_t surface;
+};
+
 }
 
 #endif /* model_triangle_h */

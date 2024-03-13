@@ -51,9 +51,11 @@ namespace CG {
         
         virtual int NumSurfaces() const = 0;
         
-        virtual const modelSurface_t *Surface(int nurfaceNum) const = 0;
+        virtual const modelSurface_t *Surface(int surfaceNum) const = 0;
 
         virtual void GenerateSurfaceTriangleExt() = 0;
+
+        virtual void SetMaterial(int surfaceNum, Material *material) = 0;
     };
 }
 

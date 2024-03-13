@@ -87,4 +87,75 @@ namespace CG {
     bool Math::IsTopLeft(const Vec2 &v) {
         return (v.y >= 0 && fabs(v.y) < EPSILON && v.x > 0) || v.y > 0;
     }
+
+    // Fundamentals of Computer Graphics, Fourth Edition, Chapter 8.7.3 
+    void Math::MatrixToQuat(const Mat4 &mat, Quat &rotation) {
+        float fourSquareMinus[] = {
+            mat[0][0] + mat[1][1] + mat[2][2],      // w
+            mat[0][0] - mat[1][1] - mat[2][2],      // x
+            mat[1][1] - mat[0][0] - mat[2][2],      // y
+            mat[2][2] - mat[0][0] - mat[1][1]       // z
+        };
+
+        int biggestIndex = 0;
+        for (int i = 1; i < 4; i++) {
+            if (fourSquareMinus[i] > fourSquareMinus[0]) {
+                fourSquareMinus[0] = fourSquareMinus[i];
+                biggestIndex = i;
+            }
+        }
+
+        float mult = InvSqrt(fourSquareMinus[0] + 1.0) * 0.5f;
+        float biggestValue = 0.25f / mult;
+        float x, y, z, w;
+
+        switch (biggestIndex) {
+        case 0:
+            w = biggestValue;
+            x = (mat[1][2] - mat[2][1]) * mult;
+            y = (mat[2][0] - mat[0][2]) * mult;
+            z = (mat[0][1] - mat[1][0]) * mult;
+            break;
+        case 1:
+            x = biggestValue;
+            w = (mat[1][2] - mat[2][1]) * mult;
+            y = (mat[0][1] + mat[1][0]) * mult;
+            z = (mat[2][0] + mat[0][2]) * mult;
+            break;
+        case 2:
+            y = biggestValue;
+            w = (mat[2][0] - mat[0][2]) * mult;
+            x = (mat[0][1] + mat[1][0]) * mult;
+            z = (mat[1][2] + mat[2][1]) * mult;
+            break;
+        case 3:
+            z = biggestValue;
+            w = (mat[0][1] - mat[1][0]) * mult;
+            x = (mat[2][0] + mat[0][2]) * mult;
+            y = (mat[1][2] + mat[2][1]) * mult;
+            break;
+        }
+    }
+
+    void Math::MatrixToRTS(const Mat4 &mat, Vec3 &translate, Quat &rotation, Vec3 &scale) {
+        MatrixToQuat(mat, rotation);
+
+        translate.x = mat[0][3];
+        translate.y = mat[1][3];
+        translate.z = mat[2][3];
+
+        // m00 = (1.0f - 2.0f * yy - 2.0f * zz) * scale.x
+        // m11 = (1.0f - 2.0f * xx - 2.0f * zz) * scale.y
+        // m22 = (1.0f - 2.0f * xx - 2.0f * yy) * scale.z
+        float temp = 0;
+        
+        temp = (1.0f - 2.0f * rotation.y * rotation.y - 2.0f * rotation.z * rotation.z);
+        scale.x = fabs(temp) > EPSILON ? (mat[0][0] / temp) : 0.0f;
+
+        temp = (1.0f - 2.0f * rotation.x * rotation.x - 2.0f * rotation.z * rotation.z);
+        scale.y = fabs(temp) > EPSILON ? (mat[1][1] / temp) : 0.0f;
+
+        temp = (1.0f - 2.0f * rotation.x * rotation.x - 2.0f * rotation.y * rotation.y);
+        scale.z = fabs(temp) > EPSILON ? (mat[2][2] / temp) : 0.0f;
+    }
 }

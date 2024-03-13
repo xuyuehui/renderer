@@ -5,70 +5,74 @@
 #include "../math/maths.h"
 
 #include "demo_bank.h"
-#include "demo_triangle.h"
+#include "demo_first.h"
 #include "demo_main.h"
+
+#include "../utility/str.h"
 
 using namespace CG;
 
 namespace Tutorial {
-    Demo::Demo() : app(NULL), window(NULL) {
+
+Demo::Demo() : app(NULL), window(NULL) {
+}
+
+int Demo::Run(CG::Application *app) {
+    Math::Init();
+
+    this->app = app;
+    this->Startup();
+
+    while (!app->ShouldClosed()) {
+        app->GetRenderer()->ClearColorBuffer(rgb(.0f, .0f, 0.0f));
+        this->OnUpdate();
+        app->GetRenderer()->SwapBuffer();
+
+        app->PoolEvents();
     }
 
-    int Demo::Run(CG::Application *app) {
-        Math::Init();
+    this->OnShutdown();
 
-        this->app = app;
-        this->Startup();
+    return 0;
+}
 
-        while (!app->ShouldClosed()) {
-            app->GetRenderer()->ClearColorBuffer(rgb(.0f, .0f, 0.0f));
-            this->OnUpdate();
-            app->GetRenderer()->SwapBuffer();
+void Demo::Startup() {
+    int w = 512;
+    int h = 512;
 
-            app->PoolEvents();
-        }
-
-        this->OnShutdown();
-
-        return 0;
-    }
-
-    void Demo::Startup() {
-        int w = 512;
-        int h = 512;
-
-        window = CreateRenderWindow(w, h, "rendering");
-        app->GetRenderer()->Init(window);
+    window = CreateRenderWindow(w, h, "rendering");
+    app->GetRenderer()->Init(window);
         
-        OnInit();
+    OnInit();
+}
+
+void Demo::OnInit() {
+}
+
+void Demo::OnShutdown() {
+}
+
+Demo *InitializeDemo(int argc, char **argv) {
+    const char *demoName = DemoBank::s_name;
+    for (int i = 1; i < argc; i++) {
+        if (argv[i][0] == '+') {
+            demoName = &argv[i][1];
+            break;
+        }
     }
 
-    void Demo::OnInit() {
+    Demo *demo = NULL;
+    if (Str::EqualTo(demoName, DemoFirst::s_name)){
+        demo = new DemoFirst();
+    }
+    else if (Str::EqualTo(demoName, DemoMain::s_name)) {
+        demo = new DemoMain();
+    }
+    else {
+        demo = new DemoBank();
     }
 
-    void Demo::OnShutdown() {
-    }
+    return demo;
+}
 
-    Demo *InitializeDemo(int argc, char **argv) {
-        const char *demoName = DemoBank::s_name;
-        for (int i = 1; i < argc; i++) {
-            if (argv[i][0] == '+') {
-                demoName = &argv[i][1];
-                break;
-            }
-        }
-
-        Demo *demo = NULL;
-        if (strncmp(demoName, DemoTriangle::s_name, strlen(DemoTriangle::s_name)) == 0){
-            demo = new DemoTriangle();
-        }
-        else if (strncmp(demoName, DemoMain::s_name, strlen(DemoTriangle::s_name)) == 0) {
-            demo = new DemoMain();
-        }
-        else {
-            demo = new DemoBank();
-        }
-
-        return demo;
-    }
 }

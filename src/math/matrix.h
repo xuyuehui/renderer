@@ -67,6 +67,9 @@ namespace CG {
         Mat4 &TransportSelf();
         Mat4 Inverse() const;
         bool InverseSelf();
+
+        void Zero();
+        void Indentity();
     private:
         Vec4 mat[4];
     };
@@ -163,6 +166,17 @@ namespace CG {
         assert(r);
 
         return invMat;
+    }
+
+    inline void Mat4::Zero() {
+        for (int i = 0; i < 4; i++) {
+            mat[i].Zero();
+        }
+    }
+
+    inline void Mat4::Indentity() {
+        Zero();
+        mat[0][0] = mat[1][1] = mat[2][2] = mat[3][3] = 1.0f;
     }
 }
 

@@ -15,7 +15,6 @@ namespace CG {
         ~RenderWorld_Soft();
 
         void RenderScene();
-
     private:
         SoftRenderer *renderer;
     };

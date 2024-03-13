@@ -146,7 +146,7 @@
     <ClCompile Include="demo\demo.cpp" />
     <ClCompile Include="demo\demo_bank.cpp" />
     <ClCompile Include="demo\demo_main.cpp" />
-    <ClCompile Include="demo\demo_triangle.cpp" />
+    <ClCompile Include="demo\demo_first.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\angles.cpp" />
     <ClCompile Include="math\maths.cpp" />
@@ -155,13 +155,19 @@
     <ClCompile Include="math\vector.cpp" />
     <ClCompile Include="platform\win32.cpp" />
     <ClCompile Include="renderer\image\bmp.cpp" />
+    <ClCompile Include="renderer\image\image.cpp" />
+    <ClCompile Include="renderer\image\tga.cpp" />
     <ClCompile Include="renderer\material.cpp" />
     <ClCompile Include="renderer\modelmanager.cpp" />
+    <ClCompile Include="renderer\scene_loader.cpp" />
+    <ClCompile Include="utility\str.cpp" />
     <ClInclude Include="math\angles.h" />
     <ClInclude Include="renderer\image\bmp.h" />
+    <ClInclude Include="renderer\image\image.h" />
+    <ClInclude Include="renderer\image\tga.h" />
     <ClInclude Include="renderer\material.h" />
     <ClInclude Include="renderer\modelmanager.h" />
-    <ClCompile Include="renderer\model_internal.cpp" />
+    <ClCompile Include="renderer\model_local.cpp" />
     <ClCompile Include="renderer\model_triangle.cpp" />
     <ClCompile Include="renderer\render_light.cpp" />
     <ClCompile Include="renderer\render_entity.cpp" />
@@ -186,13 +192,13 @@
     <ClInclude Include="demo\demo.h" />
     <ClInclude Include="demo\demo_bank.h" />
     <ClInclude Include="demo\demo_main.h" />
-    <ClInclude Include="demo\demo_triangle.h" />
+    <ClInclude Include="demo\demo_first.h" />
     <ClInclude Include="math\maths.h" />
     <ClInclude Include="math\matrix.h" />
     <ClInclude Include="math\quat.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="platform\platform.h" />
-    <ClInclude Include="renderer\model_internal.h" />
+    <ClInclude Include="renderer\model_local.h" />
     <ClInclude Include="renderer\model.h" />
     <ClInclude Include="renderer\model_triangle.h" />
     <ClInclude Include="renderer\render_light.h" />
@@ -200,6 +206,7 @@
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="renderer\renderworld.h" />
     <ClInclude Include="renderer\renderworld_base.h" />
+    <ClInclude Include="renderer\scene_loader.h" />
     <ClInclude Include="renderer\shader.h" />
     <ClInclude Include="renderer\shadermanager.h" />
     <ClInclude Include="renderer\soft\font.h" />
@@ -214,8 +221,12 @@
     <ClInclude Include="renderer\texture.h" />
     <ClInclude Include="renderer\texturemanager.h" />
     <ClInclude Include="shared.h" />
+    <ClInclude Include="utility\str.h" />
     <ClInclude Include="utility\utility.h" />
     <ClInclude Include="utility\list.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

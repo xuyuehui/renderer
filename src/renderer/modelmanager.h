@@ -12,7 +12,7 @@ namespace CG {
         void Init();
         void Shutdown();
 
-        RenderModel *GetModel(const char *filename);
+        RenderModel *LoadModel(const char *filename);
     };
 }
 

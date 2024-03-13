@@ -27,7 +27,7 @@ namespace CG {
         void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
         void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
 
-        RenderWorld *CreateRenderWorld();
+        RenderWorld *CreateRenderWorld(shadingMode_t mode);
 
         ShaderManager *GetShaderManager() const;
         ModelManager *GetModelManager() const;

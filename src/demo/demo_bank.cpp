@@ -2,37 +2,60 @@
 #include "../platform/platform.h"
 #include "../renderer/renderer.h"
 #include "../math/maths.h"
+#include "../shared.h"
+#include "../utility/utility.h"
+#include "../renderer/modelmanager.h"
+#include "../renderer/model.h"
+#include "../renderer/renderworld.h"
 #include "../math/vector.h"
-#include "../math/matrix.h"
-#include "../math/quat.h"
+#include "../renderer/model_triangle.h"
 
 using namespace CG;
-using namespace std;
 
 namespace Tutorial {
-    const char *DemoBank::s_name = "blank";
 
-    void DemoBank::OnInit() {
-        Mat4 projMat = Math::ProjectMatrix(PI / 3, 1.0f, 0.1f, 1000.0f);
-        Mat4 viewMat = Math::ViewMatrix(Vec3(.0f, .0f, -3.0f), Vec3(.0f, .0f, .0f), Vec3(.0f, 1.0f, 0.0f));
-        Mat4 modelMat = Math::FromRTS(Vec3(0.0f, 0.0f, 0.0f), Quat::Indentity(), Vec3(1.0f, 1.0f, 1.0f));
-        
-        Mat4 mvpMat = projMat * viewMat * modelMat;
-        
-        Vec4 v1(1.000000f, -1.000000f, 100.000000f, 1.0f);
-        Vec4 v2(-1.000000f, -3.000000f, 0.0001f, 1.0f);
-        Vec4 v3(-1.000000f, -2.000000f, 500.000000f, 1.0f);
-        
-        Vec4 tv1 = projMat * viewMat * modelMat * v1;
-        Vec4 tv2 = projMat * viewMat * modelMat * v2;
-        Vec4 tv3 = projMat * viewMat * modelMat * v3;
-        
-        printf("v1 (%.2f, %.2f, %.5f, %.2f) -> (%.2f, %.2f, %.5f, %.2f)\n", v1.x, v1.y, v1.z, v1.w, tv1.x, tv1.y, tv1.z, tv1.w);
-        printf("v2 (%.2f, %.2f, %.5f, %.2f) -> (%.2f, %.2f, %.5f, %.2f)\n", v2.x, v2.y, v2.z, v2.w, tv2.x, tv2.y, tv2.z, tv2.w);
-        printf("v3 (%.2f, %.2f, %.5f, %.2f) -> (%.2f, %.2f, %.5f, %.2f)\n", v3.x, v3.y, v3.z, v3.w, tv3.x, tv3.y, tv3.z, tv3.w);
+const char *DemoBank::s_name = "blank";
+
+DemoBank::DemoBank() : renderWorld(NULL), renderEntity(NULL), camera(NULL) {
+}
+
+void DemoBank::OnInit() {
+    renderWorld = app->GetRenderer()->CreateRenderWorld(SHADING_BLINN);
+
+    renderEntity = new renderEntity_t();
+
+    renderEntity->model = new RenderModelTriangle();
+
+    renderEntity->position = Vec3(0.0f, 0.0f, 10.0f);
+    renderEntity->rotation = Quat::Indentity();
+    renderEntity->scale = Vec3(1.0f, 1.0f, 1.0f);
+
+    renderWorld->AddEntityDef(*renderEntity);
+
+    camera = new renderView_t();
+
+    camera->position = Vec3(.0f, .0f, -3.0f);
+    camera->target = Vec3(.0f, .0f, .0f);
+    camera->fovY = PI / 3;
+    camera->aspect = 1.0f;
+    camera->near = 0.1f;
+    camera->far = 1000.0f;
+    camera->up = Vec3(.0f, 1.0f, 0.0f);
+
+    renderWorld->SetRenderView(*camera);
+}
+
+void DemoBank::OnUpdate() {
+    renderWorld->RenderScene();
+}
+
+void DemoBank::OnShutdown() {
+    if (renderEntity != NULL) {
+        delete renderEntity->model;
     }
 
-    void DemoBank::OnUpdate(){
-        app->GetRenderer()->DrawText("hello world 1234", Vec2(100, 100), 6, color_t(255, 0, 0), 0.5f);
-    }
+    delete renderEntity;
+    delete camera;
+}
+
 }

@@ -18,20 +18,23 @@ namespace CG {
 #define PI 3.14159265358979323846264338327950288f
 #define EPSILON 1e-6f
 
-    typedef unsigned char			byte;
-    typedef unsigned short			uint16;
-    typedef short					int16;
-    typedef unsigned int			uint32;
-    typedef int						int32;
+#define MAX_BUFFER_SIZE 256
 
-    typedef unsigned short			word;
-    typedef unsigned int			dword;
-    typedef unsigned long			ulong;
+typedef unsigned char			byte;
+typedef unsigned short			uint16;
+typedef short					int16;
+typedef unsigned int			uint32;
+typedef int						int32;
 
-    const uint32 RF_DOUBLE_SIDED            = 0x00000001;
-    const uint32 RF_WIREFRAME_MODE          = 0x00000002;
-    const uint32 RF_DEPTH_TEST              = 0x00000004;
-    const uint32 RF_TRANSPARENT             = 0x00000008;
+typedef unsigned short			word;
+typedef unsigned int			dword;
+typedef unsigned long			ulong;
+
+const uint32 RF_DOUBLE_SIDED            = 0x00000001;
+const uint32 RF_WIREFRAME_MODE          = 0x00000002;
+const uint32 RF_DEPTH_TEST              = 0x00000004;
+const uint32 RF_TRANSPARENT             = 0x00000008;
+
 }
 
 #endif

@@ -5,19 +5,21 @@
 #include <string>
 
 namespace CG {
-    class Texture;
 
-    class TextureManager {
-    public:
-        TextureManager();
+class Texture;
 
-        void Init();
-        void Shutdown();
+class TextureManager {
+public:
+    TextureManager();
 
-        Texture *LoadTexture(const char *filename);
-    private:
-        std::map<std::string, Texture *> textures;
-    };
+    void Init();
+    void Shutdown();
+
+    Texture *LoadTexture(const char *filename);
+private:
+    std::map<std::string, Texture *> textures;
+};
+
 };
 
 #endif

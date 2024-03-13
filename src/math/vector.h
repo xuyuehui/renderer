@@ -70,10 +70,12 @@ namespace CG {
         const Vec2 &ToVec2() const;
         Vec2 &ToVec2();
 
+        void Zero();
+
         static Vec3 Lerp(const Vec3 &src, const Vec3 &dst, float ratio);
     };
 
-    inline Vec3::Vec3() : x(.0f), y(.0f), z(.0f){
+    inline Vec3::Vec3() {
     }
 
     inline Vec3::Vec3(float x, float y, float z) {
@@ -166,6 +168,10 @@ namespace CG {
         return *reinterpret_cast<Vec2 *>(this);
     }
 
+    inline void Vec3::Zero() {
+        x = y = z = 0.0f;
+    }
+
     inline Vec3 Vec3::Lerp(const Vec3 &src, const Vec3 &dst, float ratio) {
         ratio = clamp(.0f, 1.0f, ratio);
         return Vec3(src.x * (1.0f - ratio) + dst.x * ratio,
@@ -199,11 +205,13 @@ namespace CG {
 
         const Vec2 &ToVec2() const;
         Vec2 &ToVec2();
+
+        void Zero();
         
         static Vec4 Lerp(const Vec4 &src, const Vec4& dst, float ratio);
     };
 
-    inline Vec4::Vec4() : x(.0f), y(.0f), z(.0f), w(.0f) {
+    inline Vec4::Vec4() {
     }
 
     inline Vec4::Vec4(float x, float y, float z, float w) {
@@ -268,6 +276,10 @@ namespace CG {
 
     inline Vec2 &Vec4::ToVec2() {
         return *reinterpret_cast<Vec2 *>(this);
+    }
+
+    inline void Vec4::Zero() {
+        x = y = z = w = 0.0f;
     }
 
     inline Vec4 Vec4::Lerp(const Vec4 &src, const Vec4 &dst, float ratio) {

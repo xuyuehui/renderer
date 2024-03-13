@@ -1,8 +1,9 @@
 #include "modelmanager.h"
 #include "model.h"
 #include "../shared.h"
+#include "../utility/str.h"
 
-#include "model_internal.h"
+#include "model_local.h"
 
 namespace CG {
     ModelManager::ModelManager() {
@@ -17,12 +18,24 @@ namespace CG {
     void ModelManager::Shutdown() {
     }
 
-    RenderModel *ModelManager::GetModel(const char *filename) {
+    RenderModel *ModelManager::LoadModel(const char *filename) {
         RenderModel *model;
 
-        model = new RenderModelInternal();
+        const char *ext = Str::FileExtension(filename);
+
+        if (Str::EqualTo(ext, "txt")) {
+            model = new RenderModelSimple();
+        }
+        else if (Str::EqualTo(ext, "obj")) {
+            model = new RenderModelObj();
+        }
+        else {
+            assert(false);
+            return NULL;
+        }
+
         model->InitFromFile(filename);
 
         return model;
     }
-}
+} 
