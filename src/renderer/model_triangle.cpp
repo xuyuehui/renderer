@@ -21,19 +21,19 @@ RenderModelTriangle::RenderModelTriangle() {
     surface.geometry->numVerts = 3;
     surface.geometry->verts = new vertex_t[3]{
         {
-            .xyz = Vec3(-1.0f, 0.0f, 1.0f),
+            .xyz = Vec3(-1.0f, 0.0f, 0.0f),
             .normal = Vec3(0.0f, 0.0f, -1.0f),
             .color = Vec4(1.0f, 0.0f, 0.0f, 1.0f),
         },
 
         {
-            .xyz = Vec3(0.0f, 1.0f, 2.0f),
+            .xyz = Vec3(0.0f, 1.0f, 0.0f),
             .normal = Vec3(0.0f, 0.0f, -1.0f),
             .color = Vec4(0.0f, 1.0f, 0.0f, 1.0f),
         },
 
         {
-            .xyz = Vec3(1.0f, 0.0f, 1.0f),
+            .xyz = Vec3(1.0f, 0.0f, 0.0f),
             .normal = Vec3(0.0f, 0.0f, -1.0f),
             .color = Vec4(0.0f, 0.0f, 1.0f, 1.0f),
         }

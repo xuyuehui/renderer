@@ -13,32 +13,34 @@
 #include "frame_buffer.h"
 
 namespace CG {
-    RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
-        this->renderer = dynamic_cast<SoftRenderer*>(renderer);
-    }
 
-    RenderWorld_Soft::~RenderWorld_Soft() {
-    }
+RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
+    this->renderer = dynamic_cast<SoftRenderer*>(renderer);
+}
 
-    void RenderWorld_Soft::RenderScene() {
-        Mat4 projMat = Math::ProjectMatrix(primaryRenderView.fovY, primaryRenderView.aspect, primaryRenderView.near, primaryRenderView.far);
-        Mat4 viewMat = Math::ViewMatrix(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
+RenderWorld_Soft::~RenderWorld_Soft() {
+}
 
-        drawSurfaceContext_t drawSrfContext;
+void RenderWorld_Soft::RenderScene() {
+    Mat4 projMat = Math::Perspective(primaryRenderView.fovY, primaryRenderView.aspect, primaryRenderView.near, primaryRenderView.far);
+    Mat4 viewMat = Math::LookAt(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
 
-        drawSrfContext.proj = projMat;
-        drawSrfContext.view = viewMat;
+    drawSurfaceContext_t drawSrfContext;
 
-        for (int i = 0; i < entities.Num(); i++) {
-            const RenderEntity *entity = entities[i];
-            RenderModel *model = entity->RenderParams().model;
+    drawSrfContext.proj = projMat;
+    drawSrfContext.view = viewMat;
 
-            drawSrfContext.model = entity->Transform();
+    for (int i = 0; i < entities.Num(); i++) {
+        const RenderEntity *entity = entities[i];
+        RenderModel *model = entity->RenderParams().model;
 
-            for (int i = 0; i < model->NumSurfaces(); i++) {
-                const modelSurface_t *surface = model->Surface(i);
-                renderer->DrawSurface(surface, drawSrfContext);
-            }
+        drawSrfContext.model = entity->Transform();
+
+        for (int i = 0; i < model->NumSurfaces(); i++) {
+            const modelSurface_t *surface = model->Surface(i);
+            renderer->DrawSurface(surface, drawSrfContext);
         }
     }
+}
+
 }

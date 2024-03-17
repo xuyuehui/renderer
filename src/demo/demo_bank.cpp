@@ -9,6 +9,7 @@
 #include "../renderer/renderworld.h"
 #include "../math/vector.h"
 #include "../renderer/model_triangle.h"
+#include "../math/angles.h"
 
 using namespace CG;
 
@@ -26,7 +27,8 @@ void DemoBank::OnInit() {
 
     renderEntity->model = new RenderModelTriangle();
 
-    renderEntity->position = Vec3(0.0f, 0.0f, 10.0f);
+    renderEntity->orginal.Indentity();
+    renderEntity->position = Vec3(0.0f, 0.0f, 0.0f);
     renderEntity->rotation = Quat::Indentity();
     renderEntity->scale = Vec3(1.0f, 1.0f, 1.0f);
 
@@ -36,7 +38,7 @@ void DemoBank::OnInit() {
 
     camera->position = Vec3(.0f, .0f, -3.0f);
     camera->target = Vec3(.0f, .0f, .0f);
-    camera->fovY = PI / 3;
+    camera->fovY = Math::PI / 3;
     camera->aspect = 1.0f;
     camera->near = 0.1f;
     camera->far = 1000.0f;

@@ -37,8 +37,8 @@ int Demo::Run(CG::Application *app) {
 }
 
 void Demo::Startup() {
-    int w = 512;
-    int h = 512;
+    int w = 800;
+    int h = 600;
 
     window = CreateRenderWindow(w, h, "rendering");
     app->GetRenderer()->Init(window);

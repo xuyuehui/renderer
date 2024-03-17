@@ -4,54 +4,59 @@
 #include "../shared.h"
 #include "../math/vector.h"
 #include "../math/quat.h"
+#include "../math/matrix.h"
 #include "../utility/utility.h"
 
 namespace CG {
-    class RenderModel;
 
-    typedef struct renderEntity_s {
-        RenderModel *model;
+class RenderModel;
 
-        Vec3 position;
-        Quat rotation;
-        Vec3 scale;
-    } renderEntity_t;
+typedef struct renderEntity_s {
+    RenderModel *model;
 
-    typedef struct renderLight_s {
-        Vec3 position;
-        Quat rotation;
+    Vec3 position;
+    Quat rotation;
+    Vec3 scale;
 
-        Vec3 background;
-        float ambient;
-        float punctual;
-    }renderLight_t;
+    Mat4 orginal;
+} renderEntity_t;
 
-    typedef struct renderView_s {
-        Vec3 position;
-        Vec3 target;
-        Vec3 up;
+typedef struct renderLight_s {
+    Vec3 position;
+    Quat rotation;
 
-        float fovY;
-        float aspect;
-        float near;
-        float far;
-    }renderView_t;
+    Vec3 background;
+    float ambient;
+    float punctual;
+}renderLight_t;
 
-    typedef struct renderSkybox_s {
-        RenderModel *model;
-    }renderSkybox_t;
+typedef struct renderView_s {
+    Vec3 position;
+    Vec3 target;
+    Vec3 up;
 
-    class RenderWorld {
-    public:
-        virtual ~RenderWorld() {}
+    float fovY;
+    float aspect;
+    float near;
+    float far;
+}renderView_t;
 
-        virtual uint32_t AddEntityDef(const renderEntity_t &entity) = 0;
-        virtual uint32_t AddLightDef(const renderLight_t &light) = 0;
-        virtual uint32_t AddSkyboxDef(const renderSkybox_t &skybox) = 0;
+typedef struct renderSkybox_s {
+    RenderModel *model;
+}renderSkybox_t;
 
-        virtual void SetRenderView(const renderView_t &renderView) = 0;
-        virtual void RenderScene() = 0;
-    };
+class RenderWorld {
+public:
+    virtual ~RenderWorld() {}
+
+    virtual uint32_t AddEntityDef(const renderEntity_t &entity) = 0;
+    virtual uint32_t AddLightDef(const renderLight_t &light) = 0;
+    virtual uint32_t AddSkyboxDef(const renderSkybox_t &skybox) = 0;
+
+    virtual void SetRenderView(const renderView_t &renderView) = 0;
+    virtual void RenderScene() = 0;
+};
+
 }
 
 #endif

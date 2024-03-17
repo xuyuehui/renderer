@@ -4,52 +4,54 @@
 #include "../shared.h"
 
 namespace CG {
-    class Quat {
-    public:
-        float x;
-        float y;
-        float z;
-        float w;
 
-        Quat();
-        Quat(float x, float y, float z, float w);
+class Quat {
+public:
+    float x;
+    float y;
+    float z;
+    float w;
 
-        float operator[] (int index) const;
-        float &operator[] (int index);
+    Quat();
+    Quat(float x, float y, float z, float w);
 
-        Quat &operator= (const Quat &a);
+    float operator[] (int index) const;
+    float &operator[] (int index);
 
-        static Quat Indentity();
-    };
+    Quat &operator= (const Quat &a);
 
-    inline Quat::Quat() : x(.0f), y(.0f), z(.0f), w(.0f) {
-    }
+    static Quat Indentity();
+};
 
-    inline Quat::Quat(float x, float y, float z, float w) {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->w = w;
-    }
+inline Quat::Quat() : x(.0f), y(.0f), z(.0f), w(.0f) {
+}
 
-    inline float Quat::operator[](int index) const {
-        assert(index >= 0 && index < 4);
-        return (&x)[index];
-    }
+inline Quat::Quat(float x, float y, float z, float w) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->w = w;
+}
 
-    inline float & Quat::operator[](int index) {
-        assert(index >= 0 && index < 4);
-        return (&x)[index];
-    }
+inline float Quat::operator[](int index) const {
+    assert(index >= 0 && index < 4);
+    return (&x)[index];
+}
 
-    inline Quat &Quat::operator=(const Quat &a){
-        x = a.x;
-        y = a.y;
-        z = a.z;
-        w = a.w;
+inline float & Quat::operator[](int index) {
+    assert(index >= 0 && index < 4);
+    return (&x)[index];
+}
 
-        return *this;
-    }
+inline Quat &Quat::operator=(const Quat &a){
+    x = a.x;
+    y = a.y;
+    z = a.z;
+    w = a.w;
+
+    return *this;
+}
+
 }
 
 #endif

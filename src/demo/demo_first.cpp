@@ -22,9 +22,13 @@ DemoFirst::DemoFirst() : renderWorld(NULL), renderEntity(NULL), camera(NULL){
 void DemoFirst::OnInit() {
     renderWorld = app->GetRenderer()->CreateRenderWorld(SHADING_BLINN);
 
+    int width, height;
+    window->GetSize(width, height);
+
     renderEntity = new CG::renderEntity_t();
 
     renderEntity->model = app->GetRenderer()->GetModelManager()->LoadModel("./assets/cube.txt");
+    renderEntity->orginal.Indentity();
     renderEntity->position = Vec3(0.0f, 0.0f, 10.0f);
     renderEntity->rotation = Quat::Indentity();
     renderEntity->scale = Vec3(1.0f, 1.0f, 1.0f);
@@ -35,8 +39,8 @@ void DemoFirst::OnInit() {
 
     camera->position = Vec3(.0f, .0f, -3.0f);
     camera->target = Vec3(.0f, .0f, .0f);
-    camera->fovY = PI / 3;
-    camera->aspect = 1.0f;
+    camera->fovY = Math::PI / 3;
+    camera->aspect = (float)width / height;
     camera->near = 0.1f;
     camera->far = 1000.0f;
     camera->up = Vec3(.0f, 1.0f, 0.0f);

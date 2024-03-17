@@ -31,10 +31,7 @@ Texture::~Texture() {
     delete[] data;
 }
 
-Vec4 Texture::ColorAt(int x, int y) const {
-    assert(x >= 0 && x < width);
-    assert(y >= 0 && y < height);
-        
+Vec4 Texture::ColorAt(int x, int y) const {        
     x = clamp(x, 0, width-1);
     y = clamp(y, 0, height-1);
         

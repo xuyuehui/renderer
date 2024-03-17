@@ -299,8 +299,10 @@ void CreateBinnScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
             model->SetMaterial(0, material);
 
             renderEntity_t *entity = new renderEntity_t();
-
-            Math::MatrixToRTS(transform, entity->position, entity->rotation, entity->scale);
+            entity->orginal = transform;
+            entity->position = Vec3(0.0f, 0.0f, 0.0f);
+            entity->rotation = Quat::Indentity();
+            entity->scale = Vec3(1.0f, 1.0f, 1.0f);
 
             entity->model = model;
             scene->entities.push_back(entity);

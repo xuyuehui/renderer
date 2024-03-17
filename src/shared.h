@@ -15,9 +15,6 @@ namespace CG {
 
 #define __unused_variable(var) (void(var))
 
-#define PI 3.14159265358979323846264338327950288f
-#define EPSILON 1e-6f
-
 #define MAX_BUFFER_SIZE 256
 
 typedef unsigned char			byte;

@@ -20,8 +20,8 @@ namespace CG {
             int w = 0, h = 0;
             texture->GetSize(w, h);
             
-            float x = clamp(texcoord.x, .0f, 1.0f) * w;
-            float y = clamp(texcoord.y, .0f, 1.0f) * h;
+            float x = clamp(texcoord.x, .0f, 1.0f) * (w-1);
+            float y = clamp(texcoord.y, .0f, 1.0f) * (h-1);
             
             float stepX = x - floor(x);
             float stepY = y - floor(y);
@@ -38,8 +38,8 @@ namespace CG {
             int w = 0, h = 0;
             texture->GetSize(w, h);
             
-            int x = floor(clamp(texcoord.x, .0f, 1.0f) * w);
-            int y = floor(clamp(texcoord.y, .0f, 1.0f) * h);
+            int x = floor(clamp(texcoord.x, .0f, 1.0f) * (w-1));
+            int y = floor(clamp(texcoord.y, .0f, 1.0f) * (h-1));
             
             return texture->ColorAt(x, y);
         }

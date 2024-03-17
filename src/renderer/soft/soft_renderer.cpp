@@ -55,7 +55,7 @@ namespace CG {
     static inline bool IsInsidePlane(const Vec4 &pos, clipPlane_t plane) {
         switch (plane) {
         case POSITIVE_W:
-            return pos.w >= EPSILON;
+            return pos.w >= Math::EPSILON;
         case POSITIVE_X:
             return pos.x <= pos.w;
         case NEGATIVE_X:
@@ -77,7 +77,7 @@ namespace CG {
     static inline float GetIntersetRatio(const Vec4 &prev, const Vec4 &curr, clipPlane_t plane) {
         switch (plane) {
         case POSITIVE_W:
-            return (prev.w - EPSILON) / (prev.w - curr.w);
+            return (prev.w - Math::EPSILON) / (prev.w - curr.w);
         case POSITIVE_X:
             return (prev.w - prev.x) / ((prev.w - prev.x) - (curr.w - curr.x));
         case NEGATIVE_X:
@@ -250,13 +250,15 @@ namespace CG {
         v.z *= rw;
     }
 
-    inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color) {
+    inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color, float depth) {
         byte *colorBuffer = frameBuffer->GetColorBuffer();
-        int colorPos = (frameBuffer->GetWidth() * y + x) * 3;
+        int index = (frameBuffer->GetWidth() * y + x) ;
 
-        colorBuffer[colorPos + 0] = Float2ByteColor(color.x);
-        colorBuffer[colorPos + 1] = Float2ByteColor(color.y);
-        colorBuffer[colorPos + 2] = Float2ByteColor(color.z);
+        colorBuffer[index * 3 + 0] = Float2ByteColor(color.x);
+        colorBuffer[index * 3 + 1] = Float2ByteColor(color.y);
+        colorBuffer[index * 3 + 2] = Float2ByteColor(color.z);
+
+        frameBuffer->GetDepthBuffer()[index] = depth;
     }
 
     static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, ishaderVarying_t **verts, IProgram *program) {
@@ -271,9 +273,9 @@ namespace CG {
             for (int y = bbox.minY; y <= bbox.maxY; y++) {
                 Vec2 point(x + 0.5f, y + 0.5f);
                 Vec3 weights = CalculateWeight(screenCoords, point);
-                bool w0 = weights.x > -EPSILON;
-                bool w1 = weights.y > -EPSILON;
-                bool w2 = weights.z > -EPSILON;
+                bool w0 = weights.x > -Math::EPSILON;
+                bool w1 = weights.y > -Math::EPSILON;
+                bool w2 = weights.z > -Math::EPSILON;
 
                 // 判断点是否在三角形里
                 if (!w0 || !w1 || !w2) {
@@ -299,7 +301,7 @@ namespace CG {
 
                 Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(&fa);
 
-                DrawPixel(frameBuffer, x, y, color);
+                DrawPixel(frameBuffer, x, y, color, depth);
             }
         }
 

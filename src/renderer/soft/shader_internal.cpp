@@ -5,6 +5,8 @@ namespace CG {
         const shaderVaryingLocal_t *inVarying = static_cast<const shaderVaryingLocal_t *>(in);
         shaderVaryingLocal_t *outVarying = static_cast<shaderVaryingLocal_t *>(out);
 
+        Vec4 pos = inVarying->model * inVarying->position;
+
         outVarying->position = inVarying->mvp * inVarying->position;
         outVarying->texcoord = inVarying->texcoord;
         outVarying->color = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
