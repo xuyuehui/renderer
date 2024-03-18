@@ -586,7 +586,7 @@ renderScene_t *SceneLoader::LoadScene(Renderer *renderer, const char *filename, 
         CreatePbrmScene(renderer, file, scene, root);
     }
     else if (Str::EqualTo(sceneType, "pbrs")) {
-        CreatePbrmScene(renderer, file, scene, root);
+        CreatePbrsScene(renderer, file, scene, root);
     }
     else {
         assert(false);

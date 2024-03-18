@@ -132,38 +132,47 @@ public:
     virtual void Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const = 0;
     virtual Vec4 Fragment(const fragmentArgs_t *in) const = 0;
 
-    const char *ID() const;
-
     static Vec4 Sample2D(const Texture *texture, const Vec2 &texcoord);
-protected:
-    string id;
 };
-
-inline const char *Shader_Soft::ID() const {
-    return id.c_str();
-}
 
 namespace Blinn {
 
 class ShaderBlinnBase : public Shader_Soft {
+protected:
+    static const Texture *TexDiffuse(const fragmentArgs_t *in);
 };
+
+inline const Texture *ShaderBlinnBase::TexDiffuse(const fragmentArgs_t *in) {
+    return in->textures[0];
+}
 
 }
 
 namespace Pbrm {
 
 class ShaderPbrmBase : public Shader_Soft {
+public:
+    static const Texture *TexBaseColor(const fragmentArgs_t *in);
 };
+
+inline const Texture *ShaderPbrmBase::TexBaseColor(const fragmentArgs_t *in) {
+    return in->textures[0];
+}
 
 }
 
 namespace Pbrs {
 
 class ShaderPbrsBase : public Shader_Soft {
+public:
+    static const Texture *TexDiffuse(const fragmentArgs_t *in);
 };
 
+inline const Texture *ShaderPbrsBase::TexDiffuse(const fragmentArgs_t *in) {
+    return in->textures[0];
 }
 
+}
 
 }
 

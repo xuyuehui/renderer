@@ -17,7 +17,7 @@ void UnlitShader::Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) cons
 
 Vec4 UnlitShader::Fragment(const fragmentArgs_t *in) const {
     const shaderVaryingLocal_t *inVarying = static_cast<const shaderVaryingLocal_t *>(in->varying);
-    return Sample2D(in->textures[0], inVarying->texcoord) * inVarying->color;
+    return Sample2D(TexDiffuse(in), inVarying->texcoord) * inVarying->color;
 }
 
 }

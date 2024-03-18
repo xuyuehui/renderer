@@ -23,7 +23,7 @@ void DemoMain::OnInit() {
     Mat4 scale = Mat4::FromScale(0.331f, 0.331f, 0.331f);
     Mat4 root = scale * rotation * translation;
     scene = SceneLoader::LoadScene(app->GetRenderer(), "assets/vivi/vivi.scn", root);
-    renderWorld = app->GetRenderer()->CreateRenderWorld(SHADING_BLINN);
+    renderWorld = app->GetRenderer()->CreateRenderWorld((shadingMode_t)scene->shadingMode);
 
     int width, height;
     window->GetSize(width, height);

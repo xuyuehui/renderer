@@ -9,15 +9,9 @@ namespace Blinn {
 
 class UnlitShader : public ShaderBlinnBase {
 public:
-    UnlitShader(string id);
-
     void Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const;
     Vec4 Fragment(const fragmentArgs_t *in) const;
 };
-
-inline UnlitShader::UnlitShader(string id) {
-    this->id = id;
-}
 
 }
 

@@ -1,7 +1,7 @@
 #ifndef SHADERMANAGER_SOFT_H
 #define SHADERMANAGER_SOFT_H
 
-#include <vector>
+#include <map>
 #include "../shadermanager.h"
 
 using namespace std;
@@ -20,7 +20,7 @@ public:
 
     Shader *LoadShader(const char *filename);
 private:
-    vector<Shader_Soft *> shaders;
+    map<string, Shader_Soft *> shaders;
 };
 
 }

@@ -6,6 +6,14 @@
 namespace CG {
 
 namespace Pbrm {
+
+class UnlitShader : public ShaderPbrmBase {
+public:
+    void Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const;
+    Vec4 Fragment(const fragmentArgs_t *in) const;
+};
+
+
 }
 
 }

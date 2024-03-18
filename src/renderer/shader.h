@@ -8,8 +8,6 @@ namespace CG {
 class Shader {
 public:
     virtual ~Shader() {}
-
-    virtual const char *ID() const = 0;
 protected:
 };
 
