@@ -7,20 +7,22 @@
 using namespace std;
 
 namespace CG {
-    class Shader_Soft;
 
-    class ShaderManager_Soft : public ShaderManager {
-    public:
-        ShaderManager_Soft();
-        ~ShaderManager_Soft();
+class Shader_Soft;
 
-        void Init();
-        void Shutdown();
+class ShaderManager_Soft : public ShaderManager {
+public:
+    ShaderManager_Soft();
+    ~ShaderManager_Soft();
 
-        Shader *LoadShader(const char *filename);
-    private:
-        vector<Shader_Soft *> shaders;
-    };
+    void Init();
+    void Shutdown();
+
+    Shader *LoadShader(const char *filename);
+private:
+    vector<Shader_Soft *> shaders;
+};
+
 }
 
 #endif // !SHADERMANAGER_SOFT_H

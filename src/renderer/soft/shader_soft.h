@@ -9,88 +9,162 @@
 using namespace std;
 
 namespace CG {
-    class Texture;
-    typedef struct vertex_s vertex_t;
-    typedef struct drawSurfaceContext_s drawSurfaceContext_t;
 
-    static const int MAX_VARYINGS = 10;
-    static const int MAX_TEXTURES = 5;
+class Texture;
+class Material;
+typedef struct vertex_s vertex_t;
+typedef struct drawSurfaceContext_s drawSurfaceContext_t;
 
-    typedef struct ishaderVarying_s {
-        Vec4 position;
-    }ishaderVarying_t;
+static const int MAX_VARYINGS = 10;
+static const int MAX_TEXTURES = 8;
 
-    typedef struct fragmentArgs_s {
-        ishaderVarying_t *varying;
-        Texture *textures[MAX_TEXTURES];
-    }fragmentArgs_t;
+typedef struct ishaderVarying_s {
+    Vec4 position;
+}ishaderVarying_t;
 
-    Vec4 Sample2D(const Texture *texture, const Vec2 &texcoord);
+typedef struct fragmentArgs_s {
+    ishaderVarying_t *varying;
+    Texture *textures[MAX_TEXTURES];
+}fragmentArgs_t;
 
-    typedef struct shaderVaryingBase_s : public ishaderVarying_t {
-        Mat4 model;
-        Mat4 view;
-        Mat4 proj;
-    }shaderVaryingBase_t;
 
-    typedef struct shaderVaryingLocal_s : public shaderVaryingBase_t {
-        Mat4 mvp;
+typedef struct shaderVaryingBase_s : public ishaderVarying_t {
+    Mat4 model;
+    Mat4 view;
+    Mat4 proj;
+}shaderVaryingBase_t;
 
-        Vec2 texcoord;
-        Vec4 color;
-        Vec3 normal;
-    }shaderVaryingLocal_t;
+typedef struct shaderVaryingLocal_s : public shaderVaryingBase_t {
+    Mat4 mvp;
 
-    class IProgram {
-    public:
-        Shader *shader;
-        ishaderVarying_t *shaderVarying;
+    Vec2 texcoord;
+    Vec4 color;
+    Vec3 normal;
+}shaderVaryingLocal_t;
 
-        ishaderVarying_t *inVaryings[MAX_VARYINGS];
-        ishaderVarying_t *outVaryings[MAX_VARYINGS];
+class IProgram {
+public:
+    Shader *shader;
+    ishaderVarying_t *shaderVarying;
 
-        bool doubleSided;
+    ishaderVarying_t *inVaryings[MAX_VARYINGS];
+    ishaderVarying_t *outVaryings[MAX_VARYINGS];
 
-        Texture *textures[MAX_TEXTURES];
-    public:
-        virtual ~IProgram() {}
+    bool doubleSided;
 
-        virtual void Setup(ishaderVarying_t *in, const vertex_t &v, const drawSurfaceContext_t &drawContext) = 0;
-        virtual void Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, ishaderVarying_t *out) = 0;
-        virtual void Interpolate(ishaderVarying_t *src, ishaderVarying_t *dst, float ratio, ishaderVarying_t *out) = 0;
-        virtual void CopyFrom(const ishaderVarying_t *src, ishaderVarying_t *dst) = 0;
-    };
+    Texture *textures[MAX_TEXTURES];
+public:
+    virtual ~IProgram() {}
 
-    class ProgramLocal : public IProgram {
-    public:
-        ProgramLocal();
-        virtual ~ProgramLocal();
-        
-        void Setup(ishaderVarying_t *in, const vertex_t &v, const drawSurfaceContext_t &drawContext);
-        void Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, ishaderVarying_t *out);
-        void Interpolate(ishaderVarying_t *src, ishaderVarying_t *dst, float ratio, ishaderVarying_t *out);
-        void CopyFrom(const ishaderVarying_t *src, ishaderVarying_t *dst);
-    protected:
-        shaderVaryingLocal_t ins[MAX_VARYINGS];
-        shaderVaryingLocal_t outs[MAX_VARYINGS];
-        shaderVaryingLocal_t shaderArgs;
-    };
+    virtual void SetupMaterial(const Material *material) = 0;
+    virtual void SetupVertex(ishaderVarying_t *in, const vertex_t &v, const drawSurfaceContext_t &drawContext) = 0;
+    virtual void Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, ishaderVarying_t *out) = 0;
+    virtual void Interpolate(ishaderVarying_t *src, ishaderVarying_t *dst, float ratio, ishaderVarying_t *out) = 0;
+    virtual void CopyFrom(const ishaderVarying_t *src, ishaderVarying_t *dst) = 0;
+};
 
-    class Shader_Soft : public Shader {
-    public:
-        virtual ~Shader_Soft() {}
+class ProgramBase : public IProgram {
+public:
+    virtual ~ProgramBase() {}
 
-        virtual void Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const = 0;
-        virtual Vec4 Fragment(const fragmentArgs_t *in) const = 0;
+    void Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, ishaderVarying_t *out);
+    void Interpolate(ishaderVarying_t *src, ishaderVarying_t *dst, float ratio, ishaderVarying_t *out);
+    void CopyFrom(const ishaderVarying_t *src, ishaderVarying_t *dst);
+};
 
-        const char *ID() const;
-    protected:
-        string id;
-    };
+class ProgramBlinn : public ProgramBase {
+public:
+    ProgramBlinn();
+    virtual ~ProgramBlinn();
 
-    inline const char *Shader_Soft::ID() const {
-        return id.c_str();
-    }
+    void SetupMaterial(const Material *material);
+    void SetupVertex(ishaderVarying_t *in, const vertex_t &v, const drawSurfaceContext_t &drawContext);
+public:
+    static Material *defaultMat;
+    static Shader *defaultShader;
+
+protected:
+    shaderVaryingLocal_t ins[MAX_VARYINGS];
+    shaderVaryingLocal_t outs[MAX_VARYINGS];
+    shaderVaryingLocal_t shaderArgs;
+};
+
+class ProgramPbrm : public ProgramBase {
+public:
+    ProgramPbrm();
+    virtual ~ProgramPbrm();
+
+    void SetupMaterial(const Material *material);
+    void SetupVertex(ishaderVarying_t *in, const vertex_t &v, const drawSurfaceContext_t &drawContext);
+
+public:
+    static Material *defaultMat;
+    static Shader *defaultShader;
+
+protected:
+    shaderVaryingLocal_t ins[MAX_VARYINGS];
+    shaderVaryingLocal_t outs[MAX_VARYINGS];
+    shaderVaryingLocal_t shaderArgs;
+};
+
+class ProgramPbrs : public ProgramBase {
+public:
+    ProgramPbrs();
+    virtual ~ProgramPbrs();
+
+    void SetupMaterial(const Material *material);
+    void SetupVertex(ishaderVarying_t *in, const vertex_t &v, const drawSurfaceContext_t &drawContext);
+
+public:
+    static Material *defaultMat;
+    static Shader *defaultShader;
+
+protected:
+    shaderVaryingLocal_t ins[MAX_VARYINGS];
+    shaderVaryingLocal_t outs[MAX_VARYINGS];
+    shaderVaryingLocal_t shaderArgs;
+};
+
+class Shader_Soft : public Shader {
+public:
+    virtual ~Shader_Soft() {}
+
+    virtual void Vertex(const ishaderVarying_t *in, ishaderVarying_t *out) const = 0;
+    virtual Vec4 Fragment(const fragmentArgs_t *in) const = 0;
+
+    const char *ID() const;
+
+    static Vec4 Sample2D(const Texture *texture, const Vec2 &texcoord);
+protected:
+    string id;
+};
+
+inline const char *Shader_Soft::ID() const {
+    return id.c_str();
+}
+
+namespace Blinn {
+
+class ShaderBlinnBase : public Shader_Soft {
+};
+
+}
+
+namespace Pbrm {
+
+class ShaderPbrmBase : public Shader_Soft {
+};
+
+}
+
+namespace Pbrs {
+
+class ShaderPbrsBase : public Shader_Soft {
+};
+
+}
+
+
 }
 
 #endif

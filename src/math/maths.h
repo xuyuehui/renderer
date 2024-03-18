@@ -14,10 +14,10 @@ class Vec4;
 class Mat4;
 class Quat;
 
-// https://github.com/id-Software/DOOM-3
 class Math {
 public:
     static void Init();
+
     static Mat4 FromTRS(const Vec3 &translate, const Quat &rotation, const Vec3 &scale);
     static Mat4 Perspective(float fovY, float aspect, float near, float far);
     static Mat4 LookAt(const Vec3 &eye, const Vec3 &target, const Vec3 &up);
@@ -61,6 +61,7 @@ public:
     static const float EPSILON;
 };
 
+// https://github.com/id-Software/DOOM-3
 inline float Math::InvSqrt(float x) {
     dword a = ((union _flint *)(&x))->i;
     union _flint seed;

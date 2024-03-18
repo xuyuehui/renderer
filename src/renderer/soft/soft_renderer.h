@@ -6,111 +6,108 @@
 #include "../../math/matrix.h"
 
 namespace CG {
-    class FrameBuffer;
-    class ShaderManager;
-    class Shader;
-    class TextureManager;
-    class ModelManager;
-    class Material;
-    class ProgramLocal;
 
-    class SoftRenderer : public Renderer {
-    public:
-        SoftRenderer();
-        ~SoftRenderer();
+class FrameBuffer;
+class ShaderManager;
+class Shader;
+class TextureManager;
+class ModelManager;
+class Material;
+class ProgramBlinn;
 
-        void Init(Window *window);
-        void ClearColorBuffer(const rgb &color);
-        void ClearDepthBuffer(float depth);
-        void SwapBuffer();
+class SoftRenderer : public Renderer {
+public:
+    SoftRenderer();
+    ~SoftRenderer();
 
-        void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
-        void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
+    void Init(Window *window);
+    void ClearColorBuffer(const rgb &color);
+    void ClearDepthBuffer(float depth);
+    void SwapBuffer();
 
-        RenderWorld *CreateRenderWorld(shadingMode_t mode);
+    void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth);
+    void DrawText(const char *text, const Vec2 &pos, float size, const color_t &color, float gap);
 
-        ShaderManager *GetShaderManager() const;
-        ModelManager *GetModelManager() const;
-        TextureManager *GetTextureManager() const;
+    RenderWorld *CreateRenderWorld(shadingMode_t mode);
 
-        void SetRenderFlags(uint32 f);
-        void UnsetRenderFlags(uint32 f);
-        bool HasRenderFlags(uint32 f) const;
+    ShaderManager *GetShaderManager() const;
+    ModelManager *GetModelManager() const;
+    TextureManager *GetTextureManager() const;
 
-        void SetAntiAliasingType(antiAliasingType_t aa, uint32 opt);
-        antiAliasingType_t GetAntiAliasingType() const;
-        uint32 GetAntiAliasingLevel() const;
+    void SetRenderFlags(uint32 f);
+    void UnsetRenderFlags(uint32 f);
+    bool HasRenderFlags(uint32 f) const;
 
-        void DrawSurface(const modelSurface_t *surface, const drawSurfaceContext_t &context);
-    public:
-        // 已经准备好的缓冲区
-        FrameBuffer *GetFrontFrameBuffer() const;
+    void SetAntiAliasingType(antiAliasingType_t aa, uint32 opt);
+    antiAliasingType_t GetAntiAliasingType() const;
+    uint32 GetAntiAliasingLevel() const;
 
-        // 当前帧正在更改的缓冲区
-        FrameBuffer *GetBackFrameBuffer() const;
-    private:
-        FrameBuffer *buffers[2];
-        byte bufferIndex;
-        bool needUpdated;
+    void DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface, const drawSurfaceContext_t &context);
+public:
+    // 已经准备好的缓冲区
+    FrameBuffer *GetFrontFrameBuffer() const;
 
-        Window *window;
+    // 当前帧正在更改的缓冲区
+    FrameBuffer *GetBackFrameBuffer() const;
+private:
+    FrameBuffer *buffers[2];
+    byte bufferIndex;
+    bool needUpdated;
 
-        ShaderManager *shaderManager;
-        ModelManager *modelManager;
-        TextureManager *textureManager;
+    Window *window;
 
-        Material *defaultMat;
-        Shader *defaultShader;
+    ShaderManager *shaderManager;
+    ModelManager *modelManager;
+    TextureManager *textureManager;
 
-        ProgramLocal *program;
+    uint32 renderFlags;
+    uint32 antiAlias;
+};
 
-        uint32 renderFlags;
-        uint32 antiAlias;
-    };
+inline FrameBuffer *SoftRenderer::GetFrontFrameBuffer() const {
+    return buffers[bufferIndex];
+}
 
-    inline FrameBuffer *SoftRenderer::GetFrontFrameBuffer() const {
-        return buffers[bufferIndex];
-    }
+inline FrameBuffer *SoftRenderer::GetBackFrameBuffer() const {
+    return buffers[bufferIndex ^ 1];
+}
 
-    inline FrameBuffer *SoftRenderer::GetBackFrameBuffer() const {
-        return buffers[bufferIndex ^ 1];
-    }
+inline ShaderManager *SoftRenderer::GetShaderManager() const {
+    return shaderManager;
+}
 
-    inline ShaderManager *SoftRenderer::GetShaderManager() const {
-        return shaderManager;
-    }
+inline ModelManager *SoftRenderer::GetModelManager() const {
+    return modelManager;
+}
 
-    inline ModelManager *SoftRenderer::GetModelManager() const {
-        return modelManager;
-    }
+inline TextureManager *SoftRenderer::GetTextureManager() const {
+    return textureManager;
+}
 
-    inline TextureManager *SoftRenderer::GetTextureManager() const {
-        return textureManager;
-    }
+inline void SoftRenderer::SetRenderFlags(uint32 f) {
+    renderFlags |= f;
+}
 
-    inline void SoftRenderer::SetRenderFlags(uint32 f) {
-        renderFlags |= f;
-    }
+inline void SoftRenderer::UnsetRenderFlags(uint32 f) {
+    renderFlags &= ~(f);
+}
 
-    inline void SoftRenderer::UnsetRenderFlags(uint32 f) {
-        renderFlags &= ~(f);
-    }
+inline bool SoftRenderer::HasRenderFlags(uint32 f) const {
+    return (renderFlags & f) != 0;
+}
 
-    inline bool SoftRenderer::HasRenderFlags(uint32 f) const {
-        return (renderFlags & f) != 0;
-    }
+inline void SoftRenderer::SetAntiAliasingType(antiAliasingType_t aa, uint32 opt) {
+    antiAlias = (aa << 16) | opt;
+}
 
-    inline void SoftRenderer::SetAntiAliasingType(antiAliasingType_t aa, uint32 opt) {
-        antiAlias = (aa << 16) | opt;
-    }
+inline antiAliasingType_t SoftRenderer::GetAntiAliasingType() const {
+    return (antiAliasingType_t)((antiAlias >> 16) & 0x00000FFFF);
+}
 
-    inline antiAliasingType_t SoftRenderer::GetAntiAliasingType() const {
-        return (antiAliasingType_t)((antiAlias >> 16) & 0x00000FFFF);
-    }
+inline uint32 SoftRenderer::GetAntiAliasingLevel() const {
+    return antiAlias & 0x00000FFFF;
+}
 
-    inline uint32 SoftRenderer::GetAntiAliasingLevel() const {
-        return antiAlias & 0x00000FFFF;
-    }
 }
 
 #endif

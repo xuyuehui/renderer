@@ -35,7 +35,8 @@ typedef struct drawSurfaceContext_s {
 
 typedef enum {
     SHADING_BLINN,
-    SHADING_PBR,
+    SHADING_PBRM,
+    SHADING_PBRS,
 }shadingMode_t;
 
 class Renderer {
@@ -48,7 +49,7 @@ public:
 
     virtual void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth) = 0;
     virtual void DrawText(const char *text, const Vec2& pos, float size, const color_t &color, float gap) = 0;
-    virtual void DrawSurface(const modelSurface_t *surface, const drawSurfaceContext_t &context) = 0;
+    virtual void DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface, const drawSurfaceContext_t &context) = 0;
 
     virtual RenderWorld *CreateRenderWorld(shadingMode_t mode) = 0;
 

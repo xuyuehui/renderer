@@ -228,26 +228,27 @@ RenderModelSimple::decl_t RenderModelSimple::ReadDecl(const char *filename) {
 }
 
 void RenderModelSimple::ReadMaterial(const decl_t &desc) {
-    surface.material = new Material();
+    BlinnMaterial *material = new BlinnMaterial();
+    surface.material = material;
 
     Renderer *renderer = App()->GetRenderer();
 
     surface.material->shader = renderer->GetShaderManager()->LoadShader("internal/unlit");
 
-    if (!desc.emissionMap.empty()) {
-        surface.material->emission = renderer->GetTextureManager()->LoadTexture(desc.emissionMap.c_str());
+    if (!desc.diffuseMap.empty()) {
+        material->diffuseMap = renderer->GetTextureManager()->LoadTexture(desc.diffuseMap.c_str());
     }
 
-    if (!desc.diffuseMap.empty()) {
-        surface.material->diffuse = renderer->GetTextureManager()->LoadTexture(desc.diffuseMap.c_str());
+    if (!desc.emissionMap.empty()) {
+        material->emissionMap = renderer->GetTextureManager()->LoadTexture(desc.emissionMap.c_str());
     }
 
     if (!desc.specularMap.empty()) {
-        surface.material->specular = renderer->GetTextureManager()->LoadTexture(desc.specularMap.c_str());
+        material->specularMap = renderer->GetTextureManager()->LoadTexture(desc.specularMap.c_str());
     }
 
     if (!desc.normalMap.empty()) {
-        surface.material->normal = renderer->GetTextureManager()->LoadTexture(desc.normalMap.c_str());
+        material->normalMap = renderer->GetTextureManager()->LoadTexture(desc.normalMap.c_str());
     }
 }
 

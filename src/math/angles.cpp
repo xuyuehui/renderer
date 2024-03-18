@@ -2,6 +2,7 @@
 
 namespace CG {
 
+// Fundamentals of Computer Graphics, Fourth Edition, Chapter 8.7.5
 Quat Angles::ToQuat() const {
     float sx, cx, sy, cy, sz, cz;
     float sxcy, cxcy, sxsy, cxsy;

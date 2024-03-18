@@ -160,6 +160,8 @@
     <ClCompile Include="renderer\material.cpp" />
     <ClCompile Include="renderer\modelmanager.cpp" />
     <ClCompile Include="renderer\scene_loader.cpp" />
+    <ClCompile Include="renderer\soft\shader_pbrm_internal.cpp" />
+    <ClCompile Include="renderer\soft\shader_pbrs_internal.cpp" />
     <ClCompile Include="utility\str.cpp" />
     <ClInclude Include="math\angles.h" />
     <ClInclude Include="renderer\image\bmp.h" />
@@ -181,7 +183,7 @@
     <ClCompile Include="renderer\soft\rasterizer.cpp" />
     <ClCompile Include="renderer\soft\renderworld_soft.cpp" />
     <ClCompile Include="renderer\soft\shadermanager_soft.cpp" />
-    <ClCompile Include="renderer\soft\shader_internal.cpp" />
+    <ClCompile Include="renderer\soft\shader_blinn_internal.cpp" />
     <ClCompile Include="renderer\soft\shader_soft.cpp" />
     <ClCompile Include="renderer\soft\soft_renderer.cpp" />
     <ClCompile Include="renderer\texture.cpp" />
@@ -215,7 +217,9 @@
     <ClInclude Include="renderer\soft\rasterizer.h" />
     <ClInclude Include="renderer\soft\renderworld_soft.h" />
     <ClInclude Include="renderer\soft\shadermanager_soft.h" />
-    <ClInclude Include="renderer\soft\shader_internal.h" />
+    <ClInclude Include="renderer\soft\shader_blinn_internal.h" />
+    <ClInclude Include="renderer\soft\shader_pbrm_internal.h" />
+    <ClInclude Include="renderer\soft\shader_pbrs_internal.h" />
     <ClInclude Include="renderer\soft\shader_soft.h" />
     <ClInclude Include="renderer\soft\soft_renderer.h" />
     <ClInclude Include="renderer\texture.h" />

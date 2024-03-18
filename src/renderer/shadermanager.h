@@ -4,17 +4,23 @@
 #include "../shared.h"
 
 namespace CG {
-    class Shader;
 
-    class ShaderManager {
-    public:
-        virtual ~ShaderManager() {}
+extern const char *defaultBlinnShaderName;
+extern const char *defaultPbrmShaderName;
+extern const char *defaultPbrsShaderName;
 
-        virtual void Init() = 0;
-        virtual void Shutdown() = 0;
+class Shader;
 
-        virtual Shader *LoadShader(const char *filename) = 0;
-    };
+class ShaderManager {
+public:
+    virtual ~ShaderManager() {}
+
+    virtual void Init() = 0;
+    virtual void Shutdown() = 0;
+
+    virtual Shader *LoadShader(const char *filename) = 0;
+};
+
 }
 
 #endif

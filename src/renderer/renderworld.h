@@ -10,6 +10,7 @@
 namespace CG {
 
 class RenderModel;
+class IProgram;
 
 typedef struct renderEntity_s {
     RenderModel *model;
@@ -55,6 +56,8 @@ public:
 
     virtual void SetRenderView(const renderView_t &renderView) = 0;
     virtual void RenderScene() = 0;
+
+    virtual IProgram *GetProgram() const = 0;
 };
 
 }

@@ -38,9 +38,45 @@ void RenderWorld_Soft::RenderScene() {
 
         for (int i = 0; i < model->NumSurfaces(); i++) {
             const modelSurface_t *surface = model->Surface(i);
-            renderer->DrawSurface(surface, drawSrfContext);
+            renderer->DrawSurface(this, surface, drawSrfContext);
         }
     }
+}
+
+RenderWorldBlinn_Soft::RenderWorldBlinn_Soft(Renderer *renderer) : RenderWorld_Soft(renderer) {
+    program = new ProgramBlinn();
+}
+
+RenderWorldBlinn_Soft::~RenderWorldBlinn_Soft() {
+    delete program;
+}
+
+IProgram *RenderWorldBlinn_Soft::GetProgram() const {
+    return program;
+}
+
+RenderWorldPbrm_Soft::RenderWorldPbrm_Soft(Renderer *renderer) : RenderWorld_Soft(renderer) {
+    program = new ProgramPbrm();
+}
+
+RenderWorldPbrm_Soft::~RenderWorldPbrm_Soft() {
+    delete program;
+}
+
+IProgram *RenderWorldPbrm_Soft::GetProgram() const {
+    return program;
+}
+
+RenderWorldPbrs_Soft::RenderWorldPbrs_Soft(Renderer *renderer) : RenderWorld_Soft(renderer) {
+    program = new ProgramPbrs();
+}
+
+RenderWorldPbrs_Soft::~RenderWorldPbrs_Soft() {
+    delete program;
+}
+
+IProgram *RenderWorldPbrs_Soft::GetProgram() const {
+    return program;
 }
 
 }
