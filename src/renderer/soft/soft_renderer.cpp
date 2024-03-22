@@ -28,15 +28,19 @@ static inline byte Float2ByteColor(float v) {
 }
 
 // https://www.khronos.org/registry/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf subsection 2.12.1
-static inline void ViewportMapping(int width, int height, Vec4 &pos) {
+static inline Vec3 ViewportMapping(int width, int height, const Vec4 &pos) {
+    Vec3 point;
+
     // [-1, 1] -> [0, w]
-    pos.x = (pos.x + 1) * 0.5f * width;
+    point.x = (pos.x + 1) * 0.5f * width;
 
     // [-1, 1] -> [0, h]
-    pos.y = (pos.y + 1) * 0.5f * height;
+    point.y = (pos.y + 1) * 0.5f * height;
 
     // [-1, 1] ->[0, 1]
-    pos.z = (pos.z + 1) * 0.5f;
+    point.z = (pos.z + 1) * 0.5f;
+
+    return point;
 }
 
 static inline bool IsVertexVisible(const Vec4 &v) {
@@ -96,30 +100,35 @@ static inline float GetIntersetRatio(const Vec4 &prev, const Vec4 &curr, clipPla
     return .0f;
 }
 
-static inline int ClipAgainstPlane(clipPlane_t plane, ishaderVarying_t *inVertices[MAX_VARYINGS], int numInVert, ishaderVarying_t *outVeritces[MAX_VARYINGS], IProgram *program) {
+static inline int ClipAgainstPlane(clipPlane_t plane, Vec4 inCoords[MAX_VARYINGS], ishaderVarying_t *inVaryings[MAX_VARYINGS], int numInVert, Vec4 outCoords[MAX_VARYINGS], ishaderVarying_t *outVaryings[MAX_VARYINGS], IProgram *program) {
     int outNumVert = 0;
 
     for (int i = 0; i < numInVert; i++) {
         int currIndex = i;
         int prevIndex = (i - 1 + numInVert) % numInVert;
 
-        ishaderVarying_t *curr = inVertices[currIndex];
-        ishaderVarying_t *prev = inVertices[prevIndex];
+        Vec4 &currCoord = inCoords[currIndex];
+        Vec4 &prevCoord = inCoords[prevIndex];
+        ishaderVarying_t *currVarying = inVaryings[currIndex];
+        ishaderVarying_t *prevVarying = inVaryings[prevIndex];
 
         // 判断当前边的两个点与裁截面的关系
-        bool isCurrInside = IsInsidePlane(curr->position, plane);
-        bool isPrevInside = IsInsidePlane(prev->position, plane);
+        bool isCurrInside = IsInsidePlane(currCoord, plane);
+        bool isPrevInside = IsInsidePlane(prevCoord, plane);
 
         // 一个在外，一个在内，计算线段和面相交的点，取代被裁掉的点
         if (isCurrInside != isPrevInside) {
-            float ratio = GetIntersetRatio(prev->position, curr->position, plane);
-            program->Interpolate(prev, curr, ratio, outVeritces[outNumVert]);
+            float ratio = GetIntersetRatio(prevCoord, currCoord, plane);
+            program->Interpolate(prevVarying, currVarying, ratio, outVaryings[outNumVert]);
+            outCoords[outNumVert] = Vec4::Lerp(prevCoord, currCoord, ratio);
 
             outNumVert++;
         }
 
         if (isCurrInside) {
-            program->CopyFrom(curr, outVeritces[outNumVert]);
+            program->CopyFrom(currVarying, outVaryings[outNumVert]);
+            outCoords[outNumVert] = currCoord;
+
             outNumVert++;
         }
 
@@ -131,52 +140,56 @@ static inline int ClipAgainstPlane(clipPlane_t plane, ishaderVarying_t *inVertic
 
 // 齐次坐标空间下的三角形裁剪
 // https://zhuanlan.zhihu.com/p/162190576
-static inline int ClipTriangle(ishaderVarying_t *inVertices[MAX_VARYINGS], ishaderVarying_t *outVeritces[MAX_VARYINGS], IProgram *program) {
-    bool visible0 = IsVertexVisible(inVertices[0]->position);
-    bool visible1 = IsVertexVisible(inVertices[1]->position);
-    bool visible2 = IsVertexVisible(inVertices[2]->position);
+static inline int ClipTriangle(Vec4 inCoords[MAX_VARYINGS], ishaderVarying_t *inVaryings[MAX_VARYINGS], Vec4 outCoords[MAX_VARYINGS], ishaderVarying_t *outVaryings[MAX_VARYINGS], IProgram *program) {
+    bool visible0 = IsVertexVisible(inCoords[0]);
+    bool visible1 = IsVertexVisible(inCoords[1]);
+    bool visible2 = IsVertexVisible(inCoords[2]);
 
     // 都是可见，则不需要裁剪
     if (visible0 && visible1 && visible2) {
-        program->CopyFrom(inVertices[0], outVeritces[0]);
-        program->CopyFrom(inVertices[1], outVeritces[1]);
-        program->CopyFrom(inVertices[2], outVeritces[2]);
+        outCoords[0] = inCoords[0];
+        outCoords[1] = inCoords[1];
+        outCoords[2] = inCoords[2];
+
+        program->CopyFrom(inVaryings[0], outVaryings[0]);
+        program->CopyFrom(inVaryings[1], outVaryings[1]);
+        program->CopyFrom(inVaryings[2], outVaryings[2]);
         return 3;
     }
 
     int numVert = 3;
 
-    numVert = ClipAgainstPlane(POSITIVE_W, inVertices, numVert, outVeritces, program);
+    numVert = ClipAgainstPlane(POSITIVE_W, inCoords, inVaryings, numVert, outCoords, outVaryings, program);
     if (numVert < 3) {
         return 0;
     }
 
-    numVert = ClipAgainstPlane(POSITIVE_X, outVeritces, numVert, inVertices, program);
+    numVert = ClipAgainstPlane(POSITIVE_X, outCoords, outVaryings, numVert, inCoords, inVaryings, program);
     if (numVert < 3) {
         return 0;
     }
 
-    numVert = ClipAgainstPlane(NEGATIVE_X, inVertices, numVert, outVeritces, program);
+    numVert = ClipAgainstPlane(NEGATIVE_X, inCoords, inVaryings, numVert, outCoords, outVaryings, program);
     if (numVert < 3) {
         return 0;
     }
 
-    numVert = ClipAgainstPlane(POSITIVE_Y, outVeritces, numVert, inVertices, program);
+    numVert = ClipAgainstPlane(POSITIVE_Y, outCoords, outVaryings, numVert, inCoords, inVaryings, program);
     if (numVert < 3) {
         return 0;
     }
 
-    numVert = ClipAgainstPlane(NEGATIVE_Y, inVertices, numVert, outVeritces, program);
+    numVert = ClipAgainstPlane(NEGATIVE_Y, inCoords, inVaryings, numVert, outCoords, outVaryings, program);
     if (numVert < 3) {
         return 0;
     }
 
-    numVert = ClipAgainstPlane(POSITIVE_Z, outVeritces, numVert, inVertices, program);
+    numVert = ClipAgainstPlane(POSITIVE_Z, outCoords, outVaryings, numVert, inCoords, inVaryings, program);
     if (numVert < 3) {
         return 0;
     }
 
-    numVert = ClipAgainstPlane(NEGATIVE_Z, inVertices, numVert, outVeritces, program);
+    numVert = ClipAgainstPlane(NEGATIVE_Z, inCoords, inVaryings, numVert, outCoords, outVaryings, program);
     if (numVert < 3) {
         return 0;
     }
@@ -199,19 +212,19 @@ static inline bool isBackface_0(const Vec4 &v0, const Vec4 &v1, const Vec4 &v2) 
 }
 
 // 获取三角形三个顶点覆盖的Bounding Box
-static inline bbox_t FindBoundingBox(ishaderVarying_t **verts, int width, int height) {
+static inline bbox_t FindBoundingBox(Vec3 *points, int width, int height) {
     bbox_t bbox;
 
-    bbox.minX = max(min(verts[0]->position.x, min(verts[1]->position.x, verts[2]->position.x)), 0);
-    bbox.maxX = min(max(verts[0]->position.x, max(verts[1]->position.x, verts[2]->position.x)), width - 1);
-    bbox.minY = max(min(verts[0]->position.y, min(verts[1]->position.y, verts[2]->position.y)), 0);
-    bbox.maxY = min(max(verts[0]->position.y, max(verts[1]->position.y, verts[2]->position.y)), height - 1);
+    bbox.minX = max(min(points[0].x, min(points[1].x, points[2].x)), 0);
+    bbox.maxX = min(max(points[0].x, max(points[1].x, points[2].x)), width - 1);
+    bbox.minY = max(min(points[0].y, min(points[1].y, points[2].y)), 0);
+    bbox.maxY = min(max(points[0].y, max(points[1].y, points[2].y)), height - 1);
 
     return bbox;
 }
 
-static inline float InterpolateDepth(ishaderVarying_t **verts, const Vec3 &weights) {
-    return verts[0]->position.z * weights.x + verts[1]->position.z * weights.y + verts[2]->position.z * weights.z;
+static inline float InterpolateDepth(Vec3 *points, const Vec3 &weights) {
+    return points[0].z * weights.x + points[1].z * weights.y + points[2].z * weights.z;
 }
 
 /*
@@ -262,14 +275,14 @@ inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color,
     frameBuffer->GetDepthBuffer()[index] = depth;
 }
 
-static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, ishaderVarying_t **verts, IProgram *program) {
+static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, ishaderVarying_t **varyings, IProgram *program) {
     Vec2 screenCoords[3];
     for (int i = 0; i < 3; ++i) {
-        screenCoords[i] = verts[i]->position.ToVec2();
+        screenCoords[i] = points[i].ToVec2();
     }
 
     // perform rasterization
-    bbox_t bbox = FindBoundingBox(verts, frameBuffer->GetWidth(), frameBuffer->GetHeight());
+    bbox_t bbox = FindBoundingBox(points, frameBuffer->GetWidth(), frameBuffer->GetHeight());
     for (int x = bbox.minX; x <= bbox.maxX; x++) {
         for (int y = bbox.minY; y <= bbox.maxY; y++) {
             Vec2 point(x + 0.5f, y + 0.5f);
@@ -284,7 +297,7 @@ static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, ishaderVarying_t **v
             }
 
             int depthIndex = y * frameBuffer->GetWidth() + x;
-            float depth = InterpolateDepth(verts, weights);
+            float depth = InterpolateDepth(points, weights);
                 
             // 深度测试
             if (depth > frameBuffer->GetDepthBuffer()[depthIndex]) {
@@ -293,14 +306,9 @@ static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, ishaderVarying_t **v
 
             // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes.html
             // 根据重心坐标插值计算片元属性
-            program->Interpolate(verts, weights, program->shaderVarying);
+            program->Interpolate(varyings, weights, program->shaderVarying);
 
-            fragmentArgs_t fa;
-
-            fa.varying = program->shaderVarying;
-            memcpy(fa.textures, program->textures, sizeof(program->textures));
-
-            Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(&fa);
+            Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(program->shaderVarying, program->uniforms);
 
             DrawPixel(frameBuffer, x, y, color, depth);
         }
@@ -309,30 +317,32 @@ static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, ishaderVarying_t **v
     return true;
 }
 
-static inline bool RasterizeTriangle(FrameBuffer *frameBuffer, ishaderVarying_t** verts, IProgram *program) {
+static inline bool RasterizeTriangle(FrameBuffer *frameBuffer, Vec4 *verts, ishaderVarying_t **varyings, IProgram *program) {
     // perspective division
     for (int i = 0; i < 3; i++) {
-        PerspectiveDivision(verts[i]->position);
+        PerspectiveDivision(verts[i]);
     }
 
     // back face culling
-    bool backface = isBackface_0(verts[0]->position, verts[1]->position, verts[2]->position);
+    bool backface = isBackface_0(verts[0], verts[1], verts[2]);
     if (!program->doubleSided && backface) {
         return false;
     }
 
     // precompute reciprocals of w
     for (int i = 0; i < 3; i++) {
-        verts[i]->position.w = 1.0f / verts[i]->position.w;
+        verts[i].w = 1.0f / verts[i].w;
     }
 
     // viewport mapping
+    Vec3 points[3];
+   
     for (int i = 0; i < 3; ++i) {
-        ViewportMapping(frameBuffer->GetWidth(), frameBuffer->GetHeight(), verts[i]->position);
+        points[i] = ViewportMapping(frameBuffer->GetWidth(), frameBuffer->GetHeight(), verts[i]);
     }
 
     // draw triangle
-    DrawTriangle_0(frameBuffer, verts, program);
+    DrawTriangle_0(frameBuffer, points, varyings, program);
 
     return false;
 }
@@ -454,7 +464,7 @@ RenderWorld *SoftRenderer::CreateRenderWorld(shadingMode_t mode) {
     }
 }
 
-void SoftRenderer::DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface, const drawSurfaceContext_t &context) {
+void SoftRenderer::DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface) {
     if (!surface->geometry) {
         return;
     }
@@ -463,25 +473,29 @@ void SoftRenderer::DrawSurface(const RenderWorld *renderWorld, const modelSurfac
     IProgram *program = renderWorld->GetProgram();
     program->SetupMaterial(surface->material);
 
+    Shader_Soft *shader = dynamic_cast<Shader_Soft *>(program->shader);
+
     for (int i = 0, tidx = 0; i < surface->geometry->numIndexes; i += 3, tidx++) {
-        program->SetupVertex(program->inVaryings[0], surface->geometry->verts[surface->geometry->indexes[i + 0]], context);
-        program->SetupVertex(program->inVaryings[1], surface->geometry->verts[surface->geometry->indexes[i + 1]], context);
-        program->SetupVertex(program->inVaryings[2], surface->geometry->verts[surface->geometry->indexes[i + 2]], context);
+        program->SetupVertex(surface->geometry->verts[surface->geometry->indexes[i + 0]], program->attribs[0], program->inVaryings[0]);
+        program->SetupVertex(surface->geometry->verts[surface->geometry->indexes[i + 1]], program->attribs[1], program->inVaryings[1]);
+        program->SetupVertex(surface->geometry->verts[surface->geometry->indexes[i + 2]], program->attribs[2], program->inVaryings[2]);
 
-        // Vertex Processing
-        dynamic_cast<Shader_Soft *>(program->shader)->Vertex(program->inVaryings[0], program->outVaryings[0]);
-        dynamic_cast<Shader_Soft *>(program->shader)->Vertex(program->inVaryings[1], program->outVaryings[1]);
-        dynamic_cast<Shader_Soft *>(program->shader)->Vertex(program->inVaryings[2], program->outVaryings[2]);
+        // vertex processing
+        program->inCoords[0] = shader->Vertex(program->attribs[0], program->uniforms, program->inVaryings[0]);
+        program->inCoords[1] = shader->Vertex(program->attribs[1], program->uniforms, program->inVaryings[1]);
+        program->inCoords[2] = shader->Vertex(program->attribs[2], program->uniforms, program->inVaryings[2]);
 
-        // Cliping Triangle
-        int numVerices = ClipTriangle(program->outVaryings, program->inVaryings, program);
+        // cliping triangle
+        int numVerices = ClipTriangle(program->inCoords, program->inVaryings, program->outCoords, program->outVaryings, program);
         if (numVerices < 3) {
             continue;
         }
 
-        // Rasterize Triangle
+        // triangle assembly
         for (int i = 0; i < numVerices-2;) {
-            bool isCulled = RasterizeTriangle(frameBuffer, &program->inVaryings[i], program);
+
+            // rasterize triangle
+            bool isCulled = RasterizeTriangle(frameBuffer, &program->outCoords[i], &program->outVaryings[i], program);
             if (isCulled) {
                 break;
             }

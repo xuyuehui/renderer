@@ -9,9 +9,18 @@ class Renderer;
 class SoftRenderer;
 class Material;
 class Shader;
-class ProgramBlinn;
-class ProgramPbrm;
-class ProgramPbrs;
+
+namespace Blinn {
+class Program;
+}
+
+namespace Pbrm {
+class Program;
+}
+
+namespace Pbrs {
+class Program;
+}
 
 class RenderWorld_Soft : public RenderWorld_Base {
 public:
@@ -30,7 +39,7 @@ public:
 
     virtual IProgram *GetProgram() const;
 private:
-    ProgramBlinn *program;
+    Blinn::Program *program;
 };
 
 class RenderWorldPbrm_Soft : public RenderWorld_Soft {
@@ -40,7 +49,7 @@ public:
 
     virtual IProgram *GetProgram() const;
 private:
-    ProgramPbrm *program;
+    Pbrm::Program * program;
 };
 
 class RenderWorldPbrs_Soft : public RenderWorld_Soft {
@@ -50,7 +59,7 @@ public:
 
     virtual IProgram *GetProgram() const;
 private:
-    ProgramPbrs *program;
+    Pbrs::Program *program;
 };
 
 }

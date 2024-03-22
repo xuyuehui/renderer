@@ -12,6 +12,10 @@
 #include "msaa.h"
 #include "frame_buffer.h"
 
+#include "shader_soft_blinn.h"
+#include "shader_soft_pbrm.h"
+#include "shader_soft_pbrs.h"
+
 namespace CG {
 
 RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
@@ -25,26 +29,27 @@ void RenderWorld_Soft::RenderScene() {
     Mat4 projMat = Math::Perspective(primaryRenderView.fovY, primaryRenderView.aspect, primaryRenderView.near, primaryRenderView.far);
     Mat4 viewMat = Math::LookAt(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
 
-    drawSurfaceContext_t drawSrfContext;
+    IProgram *program = GetProgram();
 
-    drawSrfContext.proj = projMat;
-    drawSrfContext.view = viewMat;
+    program->uniforms->projMat = projMat;
+    program->uniforms->viewMat = viewMat;
+    program->uniforms->vpCameraMat = projMat * viewMat;
 
     for (int i = 0; i < entities.Num(); i++) {
         const RenderEntity *entity = entities[i];
         RenderModel *model = entity->RenderParams().model;
 
-        drawSrfContext.model = entity->Transform();
+        program->uniforms->modelMat = entity->Transform();
 
         for (int i = 0; i < model->NumSurfaces(); i++) {
             const modelSurface_t *surface = model->Surface(i);
-            renderer->DrawSurface(this, surface, drawSrfContext);
+            renderer->DrawSurface(this, surface);
         }
     }
 }
 
 RenderWorldBlinn_Soft::RenderWorldBlinn_Soft(Renderer *renderer) : RenderWorld_Soft(renderer) {
-    program = new ProgramBlinn();
+    program = new Blinn::Program();
 }
 
 RenderWorldBlinn_Soft::~RenderWorldBlinn_Soft() {
@@ -56,7 +61,7 @@ IProgram *RenderWorldBlinn_Soft::GetProgram() const {
 }
 
 RenderWorldPbrm_Soft::RenderWorldPbrm_Soft(Renderer *renderer) : RenderWorld_Soft(renderer) {
-    program = new ProgramPbrm();
+    program = new Pbrm::Program();
 }
 
 RenderWorldPbrm_Soft::~RenderWorldPbrm_Soft() {
@@ -68,7 +73,7 @@ IProgram *RenderWorldPbrm_Soft::GetProgram() const {
 }
 
 RenderWorldPbrs_Soft::RenderWorldPbrs_Soft(Renderer *renderer) : RenderWorld_Soft(renderer) {
-    program = new ProgramPbrs();
+    program = new Pbrs::Program();
 }
 
 RenderWorldPbrs_Soft::~RenderWorldPbrs_Soft() {

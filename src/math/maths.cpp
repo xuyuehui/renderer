@@ -37,7 +37,7 @@ Mat4 Math::FromTRS(const Vec3 &t, const Quat &r, const Vec3 &s) {
     Mat4 translation = Mat4::FromTranslate(t.x, t.y, t.z);
     Mat4 rotation = Mat4::FromQuat(r);
     Mat4 scale = Mat4::FromScale(s.x, s.y, s.z);
-    return scale * rotation * translation;
+    return translation * rotation * scale;
 }
 
 // Fundamentals of Computer Graphics, Fourth Edition, Chapter 7.3 | GAMES101 Lecture 05

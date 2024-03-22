@@ -2,8 +2,8 @@
 
 namespace CG {
 
-const char *defaultBlinnShaderName = "blinn/internal/unlit";
-const char *defaultPbrmShaderName = "pbrm/internal/unlit";
-const char *defaultPbrsShaderName = "pbrs/internal/unlit";
+const char *defaultBlinnShaderName = "blinn/internal/common";
+const char *defaultPbrmShaderName = "pbrm/internal/common";
+const char *defaultPbrsShaderName = "pbrs/internal/common";
 
 }

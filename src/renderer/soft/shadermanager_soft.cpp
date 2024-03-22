@@ -1,8 +1,8 @@
 #include "shadermanager_soft.h"
 #include "shader_soft.h"
-#include "shader_blinn_internal.h"
-#include "shader_pbrm_internal.h"
-#include "shader_pbrs_internal.h"
+#include "shader_lib_blinn.h"
+#include "shader_lib_pbrm.h"
+#include "shader_lib_pbrs.h"
 #include "../material.h"
 
 namespace CG {
@@ -14,21 +14,21 @@ ShaderManager_Soft::~ShaderManager_Soft() {
 }
 
 void ShaderManager_Soft::Init() {
-    shaders.insert(make_pair(defaultBlinnShaderName, new Blinn::UnlitShader()));
-    shaders.insert(make_pair(defaultPbrmShaderName, new Pbrm::UnlitShader()));
-    shaders.insert(make_pair(defaultPbrsShaderName, new Pbrs::UnlitShader()));
+    shaders.insert(make_pair(defaultBlinnShaderName, new Blinn::CommonShader()));
+    shaders.insert(make_pair(defaultPbrmShaderName, new Pbrm::CommonShader()));
+    shaders.insert(make_pair(defaultPbrsShaderName, new Pbrs::CommonShader()));
 
-    ProgramBlinn::defaultShader = LoadShader(defaultBlinnShaderName);
-    ProgramBlinn::defaultMat = new BlinnMaterial();
-    ProgramBlinn::defaultMat->shader = ProgramBlinn::defaultShader;
+    Blinn::Program::defaultShader = LoadShader(defaultBlinnShaderName);
+    Blinn::Program::defaultMat = new BlinnMaterial();
+    Blinn::Program::defaultMat->shader = Blinn::Program::defaultShader;
 
-    ProgramPbrm::defaultShader = LoadShader(defaultPbrmShaderName);
-    ProgramPbrm::defaultMat = new PbrmMaterial();
-    ProgramPbrm::defaultMat->shader = ProgramPbrm::defaultShader;
+    Pbrm::Program::defaultShader = LoadShader(defaultPbrmShaderName);
+    Pbrm::Program::defaultMat = new PbrmMaterial();
+    Pbrm::Program::defaultMat->shader = Pbrm::Program::defaultShader;
 
-    ProgramPbrs::defaultShader = LoadShader(defaultPbrsShaderName);
-    ProgramPbrs::defaultMat = new PbrsMaterial();
-    ProgramPbrs::defaultMat->shader = ProgramPbrs::defaultShader;
+    Pbrs::Program::defaultShader = LoadShader(defaultPbrsShaderName);
+    Pbrs::Program::defaultMat = new PbrsMaterial();
+    Pbrs::Program::defaultMat->shader = Pbrs::Program::defaultShader;
 }
 
 void ShaderManager_Soft::Shutdown() {
