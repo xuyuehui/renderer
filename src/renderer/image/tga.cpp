@@ -109,6 +109,15 @@ int TGA::LoadImage(const char *filename, image_t &image) {
         Image::FlipV<byte>(image, image.ldrData);
     }
 
+    if (header.channels >= 3) {
+        for (int r = 0; r < header.height; r++) {
+            for (int c = 0; c < header.width; c++) {
+                byte *pixel = Image::GetPixel<byte>(image, image.ldrData, r, c);
+                Image::Swap<byte>(&pixel[0], &pixel[2]);
+            }
+        }
+    }
+
     return IMAGE_OK;
 }
 

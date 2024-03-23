@@ -80,17 +80,24 @@ bool RenderModelObj::InitFromFile(const char *filename) {
 
     surface.geometry = new srfTriangles_t();
 
+    Vec3 bboxMin, bboxMax;
+    
+    bboxMin.Zero();
+    bboxMax.Zero();
+
     if (!vertices.empty()) {
         surface.geometry->numVerts = vertices.size();
         surface.geometry->verts = new vertex_t[vertices.size()];
 
         for (int i = 0; i < vertices.size(); i++) {
-            center += vertices[i];
+            bboxMin = Vec3::Min(bboxMin, vertices[i]);
+            bboxMax = Vec3::Max(bboxMax, vertices[i]);
+
             surface.geometry->verts[i].xyz = vertices[i];
             surface.geometry->verts[i].color = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        center *= (1.0f / vertices.size());
+        surface.center = (bboxMin + bboxMax) / 2;
     }
 
     if (!faces.empty()) {

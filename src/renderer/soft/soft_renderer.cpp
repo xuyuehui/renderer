@@ -275,7 +275,7 @@ inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color,
     frameBuffer->GetDepthBuffer()[index] = depth;
 }
 
-static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, ishaderVarying_t **varyings, IProgram *program) {
+static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, float *recipW, ishaderVarying_t **varyings, IProgram *program) {
     Vec2 screenCoords[3];
     for (int i = 0; i < 3; ++i) {
         screenCoords[i] = points[i].ToVec2();
@@ -306,7 +306,7 @@ static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, ishade
 
             // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes.html
             // 根据重心坐标插值计算片元属性
-            program->Interpolate(varyings, weights, program->shaderVarying);
+            program->Interpolate(varyings, weights, recipW, program->shaderVarying);
 
             Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(program->shaderVarying, program->uniforms);
 
@@ -329,9 +329,11 @@ static inline bool RasterizeTriangle(FrameBuffer *frameBuffer, Vec4 *verts, isha
         return false;
     }
 
+    float recipW[3];
+
     // precompute reciprocals of w
     for (int i = 0; i < 3; i++) {
-        verts[i].w = 1.0f / verts[i].w;
+        recipW[i] = 1.0f / verts[i].w;
     }
 
     // viewport mapping
@@ -342,7 +344,7 @@ static inline bool RasterizeTriangle(FrameBuffer *frameBuffer, Vec4 *verts, isha
     }
 
     // draw triangle
-    DrawTriangle_0(frameBuffer, points, varyings, program);
+    DrawTriangle_0(frameBuffer, points, recipW, varyings, program);
 
     return false;
 }

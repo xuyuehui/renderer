@@ -28,6 +28,8 @@ public:
     ~RenderWorld_Soft();
 
     void RenderScene();
+protected:
+    void SortDrawSurfaces(const Mat4 &viewMat);
 private:
     SoftRenderer *renderer;
 };

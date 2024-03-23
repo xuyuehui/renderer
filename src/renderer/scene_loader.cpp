@@ -408,8 +408,6 @@ void CreateBinnScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light->ambient = light.ambient;
     scene->light->punctual = light.punctual;
 
-    const char *prefix = "assets/";
-
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];
 
@@ -461,8 +459,6 @@ void CreatePbrmScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light = new renderLight_t();
     scene->light->ambient = light.ambient;
     scene->light->punctual = light.punctual;
-
-    const char *prefix = "assets/";
 
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];
@@ -519,8 +515,6 @@ void CreatePbrsScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light = new renderLight_t();
     scene->light->ambient = light.ambient;
     scene->light->punctual = light.punctual;
-
-    const char *prefix = "assets/";
 
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];

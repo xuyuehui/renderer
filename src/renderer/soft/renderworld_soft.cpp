@@ -18,6 +18,20 @@
 
 namespace CG {
 
+int DrawSurfaceSortCompare(const RenderWorld_Base::drawSurface_t *a, const RenderWorld_Base::drawSurface_t *b) {
+    if (a->surface->material->opaque && b->surface->material->opaque) {
+        return a->distance < b->distance ? -1 : 1;
+    }
+    else if (a->surface->material->opaque && !b->surface->material->opaque) {
+        return -1;
+    }
+    else if (!a->surface->material->opaque && b->surface->material->opaque) {
+        return 1;
+    }
+
+    return a->distance < b->distance ? 1 : -1;
+}
+
 RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
     this->renderer = dynamic_cast<SoftRenderer*>(renderer);
 }
@@ -25,9 +39,34 @@ RenderWorld_Soft::RenderWorld_Soft(Renderer *renderer) {
 RenderWorld_Soft::~RenderWorld_Soft() {
 }
 
+// 在摄像机空间下，进行Z值排序
+void RenderWorld_Soft::SortDrawSurfaces(const Mat4 &viewMat) {
+    drawSurfaces.Clear();
+    for (int i = 0; i < entities.Num(); i++) {
+        RenderModel *model = entities[i]->RenderParams().model;
+        const Mat4 &modelMat = entities[i]->Transform();
+
+        for (int j = 0; j < model->NumSurfaces(); j++) {
+            const modelSurface_t *surface = model->Surface(j);
+
+            if (surface && surface->geometry) {
+                Vec4 localPos(surface->center, 1);
+                Vec4 viewPos = viewMat * modelMat * localPos;
+
+                drawSurfaces.Append({ entities[i], surface, -viewPos.z });
+            }
+        }
+    }
+
+    drawSurfaces.Sort((List<drawSurface_t>::cmp_t *) & DrawSurfaceSortCompare);
+}
+
 void RenderWorld_Soft::RenderScene() {
+
     Mat4 projMat = Math::Perspective(primaryRenderView.fovY, primaryRenderView.aspect, primaryRenderView.near, primaryRenderView.far);
     Mat4 viewMat = Math::LookAt(primaryRenderView.position, primaryRenderView.target, primaryRenderView.up);
+
+    SortDrawSurfaces(viewMat);
 
     IProgram *program = GetProgram();
 
@@ -35,16 +74,10 @@ void RenderWorld_Soft::RenderScene() {
     program->uniforms->viewMat = viewMat;
     program->uniforms->vpCameraMat = projMat * viewMat;
 
-    for (int i = 0; i < entities.Num(); i++) {
-        const RenderEntity *entity = entities[i];
-        RenderModel *model = entity->RenderParams().model;
-
-        program->uniforms->modelMat = entity->Transform();
-
-        for (int i = 0; i < model->NumSurfaces(); i++) {
-            const modelSurface_t *surface = model->Surface(i);
-            renderer->DrawSurface(this, surface);
-        }
+    for (int i = 0; i < drawSurfaces.Num(); i++) {
+        drawSurface_t *drawSrf = &drawSurfaces[i];
+        program->uniforms->modelMat = drawSrf->entity->Transform();
+        renderer->DrawSurface(this, drawSrf->surface);
     }
 }
 

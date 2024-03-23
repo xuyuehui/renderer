@@ -49,31 +49,16 @@ void Program::SetupVertex(const vertex_t &v, ishaderVertexAttribs_t *attrib, ish
     localAttrib->normal = v.normal;
 }
 
-void Program::Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, ishaderVarying_t *out) {
-    int numOfFloats = sizeof(shaderVaryingPbrm_t) / sizeof(float);
-    float *dst = reinterpret_cast<float *>(out);
-    float *src0 = reinterpret_cast<float *>(in[0]);
-    float *src1 = reinterpret_cast<float *>(in[1]);
-    float *src2 = reinterpret_cast<float *>(in[2]);
-
-    for (int i = 0; i < numOfFloats; i++) {
-        dst[i] = src0[i] * weights.x + src1[i] * weights.y + src2[i] * weights.z;
-    }
+void Program::Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, float recipW[3], ishaderVarying_t *out) {
+    ProgramBase::InterpolateT<shaderVaryingPbrm_t>(in, weights, recipW, out);
 }
 
 void Program::Interpolate(ishaderVarying_t *src, ishaderVarying_t *dst, float ratio, ishaderVarying_t *out) {
-    int numOfFloats = sizeof(shaderVaryingPbrm_t) / sizeof(float);
-    float *outf = reinterpret_cast<float *>(out);
-    float *srcf = reinterpret_cast<float *>(src);
-    float *dstf = reinterpret_cast<float *>(dst);
-
-    for (int i = 0; i < numOfFloats; i++) {
-        outf[i] = srcf[i] * ratio + dstf[i] * (1.0f - ratio);
-    }
+    ProgramBase::InterpolateT<shaderVaryingPbrm_t>(src, dst, ratio, out);
 }
 
 void Program::CopyFrom(const ishaderVarying_t *src, ishaderVarying_t *dst) {
-    memcpy((void *)dst, src, sizeof(shaderVaryingPbrm_t));
+    ProgramBase::CopyFromT<shaderVaryingPbrm_t>(src, dst);
 }
 
 

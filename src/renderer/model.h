@@ -42,6 +42,7 @@ typedef struct modelSurface_s {
     Material *material;
     srfTriangles_t *geometry;
     srfTriangleExts_t *geometryExt;
+    Vec3 center;
 }modelSurface_t;
 
 class RenderModel {

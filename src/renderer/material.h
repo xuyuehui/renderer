@@ -16,6 +16,8 @@ public:
     bool doubleSided;
     bool enableBlend;
     bool alphaCutoff;
+
+    bool opaque;
 public:
     Material();
     virtual ~Material() {}

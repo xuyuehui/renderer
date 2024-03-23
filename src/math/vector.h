@@ -57,7 +57,9 @@ namespace CG {
         Vec3 operator-() const;
         Vec3 & operator= (const Vec3 &a);
         Vec3 operator-(const Vec3 &a) const;
+        Vec3 operator+ (const Vec3 &a) const;
         Vec3 operator* (float a) const;
+        Vec3 operator/ (float a) const;
         Vec3 &operator *= (float a);
         Vec3 &operator += (const Vec3 &a);
 
@@ -72,7 +74,11 @@ namespace CG {
 
         void Zero();
 
+        Vec3 Mudulate(const Vec3 &a) const;
+
         static Vec3 Lerp(const Vec3 &src, const Vec3 &dst, float ratio);
+        static Vec3 Min(const Vec3 &v1, const Vec3 &v2);
+        static Vec3 Max(const Vec3 &v1, const Vec3 &v2);
     };
 
     inline Vec3::Vec3() {
@@ -110,7 +116,16 @@ namespace CG {
         return Vec3(x - a.x, y - a.y, z - a.z);
     }
 
+    inline Vec3 Vec3::operator+(const Vec3 &a) const {
+        return Vec3(x + a.x, y + a.y, z + a.z);
+    }
+
     inline Vec3 Vec3::operator*(float a) const {
+        return Vec3(x * a, y * a, z * a);
+    }
+
+    inline Vec3 Vec3::operator/(float a) const {
+        a = 1.0f / a;
         return Vec3(x * a, y * a, z * a);
     }
 
@@ -172,11 +187,31 @@ namespace CG {
         x = y = z = 0.0f;
     }
 
+    inline Vec3 Vec3::Mudulate(const Vec3 &a) const {
+        return Vec3(x * a.x, y * a.y, z * a.z);
+    }
+
     inline Vec3 Vec3::Lerp(const Vec3 &src, const Vec3 &dst, float ratio) {
         ratio = clamp(.0f, 1.0f, ratio);
         return Vec3(src.x * (1.0f - ratio) + dst.x * ratio,
                     src.y * (1.0f - ratio) + dst.y * ratio,
                     src.z * (1.0f - ratio) + dst.z * ratio);
+    }
+
+    inline Vec3 Vec3::Min(const Vec3 &v1, const Vec3 &v2) {
+        return Vec3(
+            min(v1.x, v2.x),
+            min(v1.y, v2.y),
+            min(v1.z, v2.z)
+        );
+    }
+
+    inline Vec3 Vec3::Max(const Vec3 &v1, const Vec3 &v2) {
+        return Vec3(
+            max(v1.x, v2.x),
+            max(v1.y, v2.y),
+            max(v1.z, v2.z)
+        );
     }
 
     typedef Vec3 rgb;

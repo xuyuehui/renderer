@@ -35,14 +35,14 @@ class ShaderPbrsBase : public Shader_Soft {
 public:
 };
 
-class Program : public IProgram {
+class Program : public ProgramBase {
 public:
     Program();
     virtual ~Program();
 
     void SetupMaterial(const Material *material);
     void SetupVertex(const vertex_t &v, ishaderVertexAttribs_t *attrib, ishaderVarying_t *varying);
-    void Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, ishaderVarying_t *out);
+    void Interpolate(ishaderVarying_t *in[3], const Vec3 &weights, float recipW[3], ishaderVarying_t *out);
     void Interpolate(ishaderVarying_t *src, ishaderVarying_t *dst, float ratio, ishaderVarying_t *out);
     void CopyFrom(const ishaderVarying_t *src, ishaderVarying_t *dst);
 public:

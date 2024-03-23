@@ -9,9 +9,16 @@ namespace CG {
 class RenderEntity;
 class RenderLight;
 class Renderer;
+typedef struct modelSurface_s modelSurface_t;
 
 class RenderWorld_Base : public RenderWorld {
 public:
+    typedef struct drawSurface_s {
+        RenderEntity *entity;
+        const modelSurface_t *surface;
+        float distance;
+    }drawSurface_t;
+
     RenderWorld_Base();
     virtual ~RenderWorld_Base();
 
@@ -23,6 +30,8 @@ public:
 protected:
     List<RenderEntity *> entities;
     List<RenderLight *> lights;
+
+    List<drawSurface_t> drawSurfaces;
 
     renderView_t primaryRenderView;
 };

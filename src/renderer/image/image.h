@@ -32,6 +32,7 @@ public:
     template <typename T> static void Swap(T *a, T *b);
     template <typename T> static void FlipH(image_t &image, T *data);
     template <typename T> static void FlipV(image_t &image, T *data);
+    template <typename T> static T* GetPixel(image_t &image, T *data, int row, int col);
 
     static byte ReadByte(std::fstream &file);
     static void ReadBytes(std::fstream &file, byte *buffer, int size);
@@ -75,6 +76,12 @@ void Image::FlipV(image_t &image, T *data) {
             }
         }
     }
+}
+
+template <typename T>
+T* Image::GetPixel(image_t &image, T *data, int row, int col) {
+    int index = (row * image.width + col) * image.channels;
+    return &data[index];
 }
 
 }

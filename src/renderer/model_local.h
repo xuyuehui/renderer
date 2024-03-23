@@ -19,7 +19,6 @@ public:
     void SetMaterial(int surfaceNum, Material *material);
 protected:
     modelSurface_t surface;
-    Vec3 center;
     Vec3 scale;
 };
 
