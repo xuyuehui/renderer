@@ -16,6 +16,7 @@ typedef struct vertex_s vertex_t;
 
 static const int MAX_VARYINGS = 10;
 static const int MAX_TEXTURES = 8;
+static const int MAX_LIGHTS = 4;
 
 typedef struct ishaderVarying_s {
 }ishaderVarying_t;
@@ -30,6 +31,11 @@ typedef struct ishaderUniforms_s {
     Mat4 projMat;
     Mat4 vpCameraMat;
     Mat4 vpLightMat;
+    Mat4 normalMat;
+
+    Vec3 cameraPos;
+    Vec3 lightDir;
+    float punctualIntensity;
 }ishaderUniforms_t;
 
 class IProgram {

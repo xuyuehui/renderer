@@ -8,10 +8,12 @@ Vec4 CommonShader::Vertex(const ishaderVertexAttribs_t *attribs, const ishaderUn
     const shaderVertexAttribsBlinn_t *localAttribs = static_cast<const shaderVertexAttribsBlinn_t *>(attribs);
     shaderVaryingBlinn_t *localVarying = static_cast<shaderVaryingBlinn_t *>(varyings);
 
-    localVarying->worldPosition = uniforms->modelMat * attribs->position;
+    Vec4 worldPos = uniforms->modelMat * attribs->position;
+    localVarying->worldPosition = worldPos.ToVec3();
     localVarying->texcoord = localAttribs->texcoord;
-    localVarying->depthPosition = uniforms->vpLightMat * localVarying->worldPosition;
-    Vec4 clipPosition = uniforms->vpCameraMat * localVarying->worldPosition;
+    localVarying->depthPosition = uniforms->vpLightMat * worldPos;
+    localVarying->normal = uniforms->normalMat * localAttribs->normal;
+    Vec4 clipPosition = uniforms->vpCameraMat * worldPos;
 
     return clipPosition;
 }
@@ -51,6 +53,28 @@ Vec4 CommonShader::Fragment(const ishaderVarying_t *varyings, const ishaderUnifo
     Vec3 color = emission;
     if (localUniforms->ambientIntensity > 0) {
         color += (diffuse * localUniforms->ambientIntensity);
+    }
+
+    if (localUniforms->punctualIntensity > 0) {
+        Vec3 lightDir = -localUniforms->lightDir;
+        float dotNL = normal.Dot(lightDir);
+
+        if (dotNL > 0) {
+            Vec3 viewDir = (localUniforms->cameraPos - localVarying->worldPosition).Normalized();
+            if (!specular.IsZero()) {
+                Vec3 halfDir = (lightDir + viewDir).Normalized();
+                float dotNH = normal.Dot(halfDir);
+                if (dotNH > 0) {
+                    float strength = pow(dotNH, shinness);
+                    specular *= strength;
+                }
+            }
+
+            diffuse *= dotNL;
+            Vec3 punctual = diffuse + specular;
+
+            color += (punctual * localUniforms->punctualIntensity);
+        }
     }
 
     return Vec4(color, alpha);

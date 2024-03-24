@@ -23,8 +23,7 @@ typedef struct renderEntity_s {
 } renderEntity_t;
 
 typedef struct renderLight_s {
-    Vec3 position;
-    Quat rotation;
+    Vec3 dir;
 
     Vec3 background;
     float ambient;

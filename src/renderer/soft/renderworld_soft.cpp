@@ -2,6 +2,7 @@
 #include "../../math/maths.h"
 #include "../../utility/utility.h"
 #include "../render_entity.h"
+#include "../render_light.h"
 #include "../model.h"
 #include "../material.h"
 #include "../../shared.h"
@@ -73,10 +74,21 @@ void RenderWorld_Soft::RenderScene() {
     program->uniforms->projMat = projMat;
     program->uniforms->viewMat = viewMat;
     program->uniforms->vpCameraMat = projMat * viewMat;
+    program->uniforms->cameraPos = primaryRenderView.position;
+
+    if (lights.Num() > 0) {
+        program->uniforms->lightDir = lights[0]->RenderParams().dir;
+        program->uniforms->punctualIntensity = lights[0]->RenderParams().punctual;
+    }
+    else {
+        program->uniforms->lightDir.Zero();
+        program->uniforms->punctualIntensity = 0.0f;
+    }
 
     for (int i = 0; i < drawSurfaces.Num(); i++) {
         drawSurface_t *drawSrf = &drawSurfaces[i];
         program->uniforms->modelMat = drawSrf->entity->Transform();
+        program->uniforms->normalMat = drawSrf->entity->Transform().Inverse().Transport();
         renderer->DrawSurface(this, drawSrf->surface);
     }
 }

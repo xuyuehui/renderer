@@ -20,6 +20,7 @@ uint32_t RenderWorld_Base::AddEntityDef(const renderEntity_t &entity) {
 
 uint32_t RenderWorld_Base::AddLightDef(const renderLight_t &light) {
     RenderLight *rl = new RenderLight();
+    rl->UpdateRenderParams(&light);
     return lights.Append(rl);
 }
 

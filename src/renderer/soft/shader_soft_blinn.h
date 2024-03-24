@@ -8,7 +8,7 @@ namespace CG {
 namespace Blinn {
 
 typedef struct shaderVaryingBlinn_s : public ishaderVarying_t {
-    Vec4 worldPosition;
+    Vec3 worldPosition;
     Vec4 depthPosition;
     Vec2 texcoord;
     Vec3 normal;
@@ -24,8 +24,8 @@ typedef struct shaderUniformsBlinn_s : public ishaderUniforms_t {
     Texture *emissionMap;
 
     float ambientIntensity;
-    
     float alphaCutoff;
+
 } shaderUniformsBlinn_t;
 
 typedef struct shaderVertexAttribsBlinn_s : public ishaderVertexAttribs_t {

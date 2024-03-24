@@ -9,12 +9,16 @@
 #include "../math/vector.h"
 #include "../renderer/scene_loader.h"
 #include "../math/angles.h"
+#include "../renderer/renderworld.h"
 
 namespace Tutorial {
 
+static const float LIGHT_THETA = DEG2RAD(45);
+static const float LIGHT_PHI = DEG2RAD(45);
+
 const char *DemoMain::s_name = "main";
 
-DemoMain::DemoMain() : renderWorld(NULL), camera(NULL), scene(NULL) {
+DemoMain::DemoMain() : renderWorld(NULL), camera(NULL), scene(NULL), lightTheta(LIGHT_THETA), lightPhi(LIGHT_PHI) {
 }
 
 void DemoMain::OnInit() {
@@ -42,6 +46,12 @@ void DemoMain::OnInit() {
     for (int i = 0; i < scene->entities.size(); i++) {
         renderWorld->AddEntityDef(*scene->entities[i]);
     }
+
+    if (scene->light) {
+        UpdateLight(scene->light);
+        renderWorld->AddLightDef(*scene->light);
+    }
+
 }
 
 void DemoMain::OnUpdate() {
@@ -53,6 +63,14 @@ void DemoMain::OnShutdown() {
     delete camera;
     delete scene;
     Demo::OnShutdown();
+}
+
+void DemoMain::UpdateLight(renderLight_t *light) {
+    float st, ct, sp, cp;
+
+    Math::SinCos(lightTheta, st, ct);
+    Math::SinCos(lightPhi, sp, cp);
+    light->dir = Vec3(-sp * st, -cp, -sp * ct);
 }
 
 }
