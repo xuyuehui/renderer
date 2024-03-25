@@ -145,4 +145,14 @@ Vec3 Math::MatrixToTranslate(const Mat4 &mat) {
 
     return translate;
 }
+
+Vec4 Math::Saturate(const Vec4 &v) {
+    return Vec4(
+        Saturate(v.x),
+        Saturate(v.y),
+        Saturate(v.z),
+        Saturate(v.w)
+    );
+}
+
 }

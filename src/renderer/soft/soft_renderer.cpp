@@ -264,9 +264,27 @@ inline void PerspectiveDivision(Vec4 &v) {
     v.z *= rw;
 }
 
-inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color, float depth) {
+inline void DrawFragment(FrameBuffer *frameBuffer, ishaderVarying_t **varyings, IProgram *program, int index, bool backface, float depth) {
+    bool discard = false;
+    Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(program->shaderVarying, program->uniforms, backface, discard);
+    if (discard) {
+        return;
+    }
+
+    color = Math::Saturate(color);
+
     byte *colorBuffer = frameBuffer->GetColorBuffer();
-    int index = (frameBuffer->GetWidth() * y + x) ;
+
+    if (program->enableBlend) {
+        // out_color = src_color * src_alpha + dst_color * (1 - src_alpha)
+        byte dstR = colorBuffer[index * 3 + 0];
+        byte dstG = colorBuffer[index * 3 + 1];
+        byte dstB = colorBuffer[index * 3 + 2];
+
+        color.x = color.x * color.w + dstR * (1 - color.w);
+        color.y = color.y * color.w + dstG * (1 - color.w);
+        color.z = color.z * color.w + dstB * (1 - color.w);
+    }
 
     colorBuffer[index * 3 + 0] = Float2ByteColor(color.x);
     colorBuffer[index * 3 + 1] = Float2ByteColor(color.y);
@@ -308,13 +326,10 @@ static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, float 
             // 根据重心坐标插值计算片元属性
             program->Interpolate(varyings, weights, recipW, program->shaderVarying);
 
-            bool discard = false;
-            Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(program->shaderVarying, program->uniforms, backface, discard);
-            if (discard) {
-                continue;
-            }
+            byte *colorBuffer = frameBuffer->GetColorBuffer();
+            int index = (frameBuffer->GetWidth() * y + x);
 
-            DrawPixel(frameBuffer, x, y, color, depth);
+            DrawFragment(frameBuffer, varyings, program, index, backface, depth);
         }
     }
 

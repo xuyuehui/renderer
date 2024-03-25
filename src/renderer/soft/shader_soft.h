@@ -54,6 +54,7 @@ public:
     ishaderUniforms_t *uniforms;
 
     bool doubleSided;
+    bool enableBlend;
 public:
     virtual ~IProgram() {}
 

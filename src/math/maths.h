@@ -31,6 +31,9 @@ public:
     static float EdgeFunction(const Vec3 &a, const Vec3 &b, const Vec3 &c);
     static bool PointInsideTriangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &pos, float &w0, float &w1, float &w2);
     static bool IsTopLeft(const Vec2 &v);
+
+    static float Saturate(float f);
+    static Vec4 Saturate(const Vec4 &v);
 private:
     enum {
         LOOKUP_BITS = 8,
@@ -81,6 +84,10 @@ inline float Math::InvSqrt(float x) {
 inline void Math::SinCos(float a, float &s, float &c) {
     s = sinf(a);
     c = cosf(a);
+}
+
+inline float Math::Saturate(float f) {
+    return f < 0 ? 0 : (f > 1 ? 1 : f);
 }
 
 }

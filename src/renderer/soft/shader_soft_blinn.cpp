@@ -43,6 +43,7 @@ void Program::SetupMaterial(const Material *material) {
     localUniforms.ambientIntensity = 0.5f;
 
     doubleSided = blinnMat->doubleSided;
+    enableBlend = blinnMat->enableBlend;
 }
 
 void Program::SetupVertex(const vertex_t &v, ishaderVertexAttribs_t *attrib, ishaderVarying_t *varying) {
