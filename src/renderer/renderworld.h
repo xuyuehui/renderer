@@ -25,7 +25,6 @@ typedef struct renderEntity_s {
 typedef struct renderLight_s {
     Vec3 dir;
 
-    Vec3 background;
     float ambient;
     float punctual;
 }renderLight_t;

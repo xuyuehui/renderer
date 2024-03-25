@@ -5,48 +5,50 @@
 #include "../../math/vector.h"
 
 namespace CG {
-	class FrameBuffer {
-	public:
-		FrameBuffer();
-		FrameBuffer(int width, int height);
-		~FrameBuffer();
 
-		byte *GetColorBuffer() const;
-		float *GetDepthBuffer() const;
+class FrameBuffer {
+public:
+	FrameBuffer();
+	FrameBuffer(int width, int height);
+	~FrameBuffer();
 
-		int GetWidth() const;
-		int GetHeight() const;
-		int GetSize() const;
+	byte *GetColorBuffer() const;
+	float *GetDepthBuffer() const;
 
-		void ClearColorBuffer(const rgb &color);
-		void ClearDepthBuffer(float depth);
-	private:
-		int			width;
-		int			height;
-		int			size;
-		byte		*colorBuffer;
-		float		*depthBuffer;
-	};
+	int GetWidth() const;
+	int GetHeight() const;
+	int GetSize() const;
 
-	inline byte *FrameBuffer::GetColorBuffer() const {
-		return colorBuffer; 
-	}
+	void ClearColorBuffer(const Vec3 &color);
+	void ClearDepthBuffer(float depth);
+private:
+	int			width;
+	int			height;
+	int			size;
+	byte		*colorBuffer;
+	float		*depthBuffer;
+};
 
-	inline float *FrameBuffer::GetDepthBuffer() const {
-		return depthBuffer; 
-	}
+inline byte *FrameBuffer::GetColorBuffer() const {
+	return colorBuffer; 
+}
 
-	inline int FrameBuffer::GetWidth() const {
-		return width; 
-	}
+inline float *FrameBuffer::GetDepthBuffer() const {
+	return depthBuffer; 
+}
 
-	inline int FrameBuffer::GetHeight() const {
-		return height; 
-	}
+inline int FrameBuffer::GetWidth() const {
+	return width; 
+}
+
+inline int FrameBuffer::GetHeight() const {
+	return height; 
+}
 	
-	inline int FrameBuffer::GetSize() const {
-		return size; 
-	}
+inline int FrameBuffer::GetSize() const {
+	return size; 
+}
+
 }
 
 #endif

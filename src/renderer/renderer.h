@@ -38,7 +38,8 @@ public:
     virtual ~Renderer() {}
 
     virtual void Init(Window *window) = 0;
-    virtual void ClearColorBuffer(const rgb &color) = 0;
+    virtual void ClearColorBuffer(const Vec3 &color) = 0;
+    virtual void ClearDepthBuffer(float depth) = 0;
     virtual void SwapBuffer() = 0;
 
     virtual void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth) = 0;

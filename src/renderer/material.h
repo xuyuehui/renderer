@@ -15,7 +15,7 @@ public:
 
     bool doubleSided;
     bool enableBlend;
-    bool alphaCutoff;
+    float alphaCutoff;
 
     bool opaque;
 public:

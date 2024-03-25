@@ -21,7 +21,7 @@ public:
     ~SoftRenderer();
 
     void Init(Window *window);
-    void ClearColorBuffer(const rgb &color);
+    void ClearColorBuffer(const Vec3 &color);
     void ClearDepthBuffer(float depth);
     void SwapBuffer();
 

@@ -3,7 +3,7 @@
 namespace CG {
 
 Material::Material() : 
-    shader(NULL), doubleSided(false), enableBlend(false), alphaCutoff(false), opaque(true) {
+    shader(NULL), doubleSided(false), enableBlend(false), alphaCutoff(0), opaque(true) {
 }
 
 BlinnMaterial::BlinnMaterial() : diffuseMap(NULL), specularMap(NULL), normalMap(NULL), emissionMap(NULL), shininess(0) {

@@ -55,6 +55,9 @@ void DemoMain::OnInit() {
 }
 
 void DemoMain::OnUpdate() {
+    app->GetRenderer()->ClearColorBuffer(scene->background);
+    app->GetRenderer()->ClearDepthBuffer(1.0f);
+
     renderWorld->RenderScene();
 }
 

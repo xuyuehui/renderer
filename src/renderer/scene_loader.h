@@ -20,6 +20,7 @@ typedef struct renderScene_s {
     renderLight_t *light;
     std::vector<renderEntity_t *> entities;
     int shadingMode;
+    Vec3 background;
 }renderScene_t;
 
 class SceneLoader {

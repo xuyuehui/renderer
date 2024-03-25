@@ -24,7 +24,6 @@ int Demo::Run(CG::Application *app) {
     this->Startup();
 
     while (!app->ShouldClosed()) {
-        app->GetRenderer()->ClearColorBuffer(rgb(.0f, .0f, 0.0f));
         this->OnUpdate();
         app->GetRenderer()->SwapBuffer();
 

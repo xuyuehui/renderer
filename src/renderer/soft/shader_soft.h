@@ -116,7 +116,7 @@ public:
     virtual ~Shader_Soft() {}
 
     virtual Vec4 Vertex(const ishaderVertexAttribs_t *attribs, const ishaderUniforms_t *uniforms, ishaderVarying_t *varyings) const = 0;
-    virtual Vec4 Fragment(const ishaderVarying_t *in, const ishaderUniforms_t *uniforms) const = 0;
+    virtual Vec4 Fragment(const ishaderVarying_t *in, const ishaderUniforms_t *uniforms, bool backface, bool &discard) const = 0;
 
     static Vec4 Sample2D(const Texture *texture, const Vec2 &texcoord);
 };

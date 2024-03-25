@@ -20,7 +20,7 @@ Texture::Texture(const image_t&image, const char *tag) {
             this->data[texPos + 0] = image.ldrData[imgPos + 0] / 255.0f;
             this->data[texPos + 1] = image.ldrData[imgPos + 1] / 255.0f;
             this->data[texPos + 2] = image.ldrData[imgPos + 2] / 255.0f;
-            this->data[texPos + 3] = 1.0f;
+            this->data[texPos + 3] = image.channels <= 3 ? 1.0f : image.ldrData[imgPos + 3] / 255.0f;
         }
     }
         

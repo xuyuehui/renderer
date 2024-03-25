@@ -407,6 +407,7 @@ void CreateBinnScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light = new renderLight_t();
     scene->light->ambient = light.ambient;
     scene->light->punctual = light.punctual;
+    scene->background = light.background;
 
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];

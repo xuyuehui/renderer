@@ -10,7 +10,7 @@ namespace Blinn {
 class CommonShader : public ShaderBlinnBase {
 public:
     Vec4 Vertex(const ishaderVertexAttribs_t *attribs, const ishaderUniforms_t *uniforms, ishaderVarying_t *varyings) const;
-    Vec4 Fragment(const ishaderVarying_t *varyings, const ishaderUniforms_t *uniforms) const;
+    Vec4 Fragment(const ishaderVarying_t *varyings, const ishaderUniforms_t *uniforms, bool backface, bool &discard) const;
 };
 
 }

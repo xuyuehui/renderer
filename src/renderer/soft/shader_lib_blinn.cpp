@@ -18,7 +18,7 @@ Vec4 CommonShader::Vertex(const ishaderVertexAttribs_t *attribs, const ishaderUn
     return clipPosition;
 }
 
-Vec4 CommonShader::Fragment(const ishaderVarying_t *varyings, const ishaderUniforms_t *uniforms) const {
+Vec4 CommonShader::Fragment(const ishaderVarying_t *varyings, const ishaderUniforms_t *uniforms, bool backface, bool &discard) const {
     const shaderVaryingBlinn_t *localVarying = static_cast<const shaderVaryingBlinn_t *>(varyings);
     const shaderUniformsBlinn_t *localUniforms = static_cast<const shaderUniformsBlinn_t *>(uniforms);
 
@@ -39,6 +39,9 @@ Vec4 CommonShader::Fragment(const ishaderVarying_t *varyings, const ishaderUnifo
 
     float shinness = localUniforms->shinness;
     Vec3 normal = localVarying->normal.Normalized();
+    if (backface) {
+        normal = -normal;
+    }
 
     Vec3 emission(0, 0, 0);
     if (localUniforms->emissionMap) {
@@ -46,7 +49,8 @@ Vec4 CommonShader::Fragment(const ishaderVarying_t *varyings, const ishaderUnifo
         emission = sample.ToVec3();
     }
 
-    if (localUniforms->alphaCutoff > 0 && alpha > localUniforms->alphaCutoff) {
+    if (localUniforms->alphaCutoff > 0 && alpha < localUniforms->alphaCutoff) {
+        discard = true;
         return Vec4(0, 0, 0, 0);
     }
 

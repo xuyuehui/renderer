@@ -48,6 +48,8 @@ void DemoBank::OnInit() {
 }
 
 void DemoBank::OnUpdate() {
+    app->GetRenderer()->ClearColorBuffer(Vec3(.0f, .0f, .0f));
+    app->GetRenderer()->ClearDepthBuffer(1.0f);
     renderWorld->RenderScene();
 }
 

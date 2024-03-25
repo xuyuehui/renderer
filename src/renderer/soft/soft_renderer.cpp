@@ -275,7 +275,7 @@ inline void DrawPixel(FrameBuffer *frameBuffer, int x, int y, const Vec4 &color,
     frameBuffer->GetDepthBuffer()[index] = depth;
 }
 
-static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, float *recipW, ishaderVarying_t **varyings, IProgram *program) {
+static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, float *recipW, ishaderVarying_t **varyings, IProgram *program, bool backface) {
     Vec2 screenCoords[3];
     for (int i = 0; i < 3; ++i) {
         screenCoords[i] = points[i].ToVec2();
@@ -308,7 +308,11 @@ static inline bool DrawTriangle_0(FrameBuffer *frameBuffer, Vec3 *points, float 
             // 根据重心坐标插值计算片元属性
             program->Interpolate(varyings, weights, recipW, program->shaderVarying);
 
-            Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(program->shaderVarying, program->uniforms);
+            bool discard = false;
+            Vec4 color = dynamic_cast<Shader_Soft *>(program->shader)->Fragment(program->shaderVarying, program->uniforms, backface, discard);
+            if (discard) {
+                continue;
+            }
 
             DrawPixel(frameBuffer, x, y, color, depth);
         }
@@ -344,7 +348,7 @@ static inline bool RasterizeTriangle(FrameBuffer *frameBuffer, Vec4 *verts, isha
     }
 
     // draw triangle
-    DrawTriangle_0(frameBuffer, points, recipW, varyings, program);
+    DrawTriangle_0(frameBuffer, points, recipW, varyings, program, backface);
 
     return false;
 }
@@ -404,7 +408,7 @@ void SoftRenderer::Init(Window* window) {
     textureManager->Init();
 }
 
-void SoftRenderer::ClearColorBuffer(const rgb& color) {
+void SoftRenderer::ClearColorBuffer(const Vec3 &color) {
     GetBackFrameBuffer()->ClearColorBuffer(color);
 }
 
