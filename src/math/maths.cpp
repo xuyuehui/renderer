@@ -67,6 +67,38 @@ Mat4 Math::LookAt(const Vec3 &eye, const Vec3 &target, const Vec3 &up) {
     return mat;
 }
 
+/*
+ * right: the coordinates for the right clipping planes (left == -right)
+ * top: the coordinates for the top clipping planes (bottom == -top)
+ * near, far: the distances to the near and far depth clipping planes
+ *
+ * 1/r    0         0             0
+ *   0  1/t         0             0
+ *   0    0  -2/(f-n)  -(f+n)/(f-n)
+ *   0    0         0             1
+ *
+ * this is the same as
+ *     float left = -right;
+ *     float bottom = -top;
+ *     mat4_ortho(left, right, bottom, top, near, far);
+ *
+ * see http://www.songho.ca/opengl/gl_projectionmatrix.html
+ */
+Mat4 Math::Orthographic(float right, float top, float near, float far) {
+    float zRange = far - near;
+    Mat4 mat;
+    mat.Indentity();
+
+    assert(right > 0 && top > 0 && zRange > 0);
+
+    mat[0][0] = 1 / right;
+    mat[1][1] = 1 / top;
+    mat[2][2] = -2 / zRange;
+    mat[2][3] = -(near + far) / zRange;
+
+    return mat;
+}
+
 // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage.html
 float Math::EdgeFunction(const Vec3 &a, const Vec3 &b, const Vec3 &c) {
     return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);

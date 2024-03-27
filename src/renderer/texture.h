@@ -16,18 +16,22 @@ typedef struct image_s image_t;
 
 class Texture {
 public:
-	Texture(const image_t& image, const char *tag);
+	Texture(const byte *data, int width, int height, int channels, const char *tag);
+    Texture(int width, int height);
     ~Texture();
 
 	void GetSize(int &w, int &h) const;
+    int GetWidth() const;
+    int GetHeight() const;
 	const float *Data() const;
         
     Vec4 ColorAt(int x, int y) const;
+    void SetColor(int index, const Vec4 &color);
         
     void SetFilterType(TEX_FILTER_TYPE type);
     TEX_FILTER_TYPE GetFilterType() const;
 protected:
-	std::string from;
+	std::string tag;
 	int width;
 	int height;
 	int len;
@@ -39,6 +43,14 @@ protected:
 inline void Texture::GetSize(int &w, int &h) const {
 	w = width;
 	h = height;
+}
+
+inline int Texture::GetWidth() const {
+    return width;
+}
+
+inline int Texture::GetHeight() const {
+    return height;
 }
 
 inline const float *Texture::Data() const {

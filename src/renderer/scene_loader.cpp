@@ -409,6 +409,17 @@ void CreateBinnScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light->punctual = light.punctual;
     scene->background = light.background;
 
+    if (Str::EqualTo(light.shadow, "off")) {
+        scene->shadowSize = Vec2i(-1, -1);
+    }
+    else if (Str::EqualTo(light.shadow, "on")) {
+        scene->shadowSize = Vec2i(512, 512);
+    }
+    else {
+        int item = sscanf(light.shadow, "%dx%d", &scene->shadowSize.x, &scene->shadowSize.y);
+        assert(item == 2);
+    }
+
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];
 
@@ -460,6 +471,18 @@ void CreatePbrmScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light = new renderLight_t();
     scene->light->ambient = light.ambient;
     scene->light->punctual = light.punctual;
+    scene->background = light.background;
+
+    if (Str::EqualTo(light.shadow, "off")) {
+        scene->shadowSize = Vec2i(-1, -1);
+    }
+    else if (Str::EqualTo(light.shadow, "on")) {
+        scene->shadowSize = Vec2i(512, 512);
+    }
+    else {
+        int item = sscanf(light.shadow, "%dx%d", &scene->shadowSize.x, &scene->shadowSize.y);
+        assert(item == 2);
+    }
 
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];
@@ -516,6 +539,18 @@ void CreatePbrsScene(Renderer *renderer, FILE *file, renderScene_t *scene, const
     scene->light = new renderLight_t();
     scene->light->ambient = light.ambient;
     scene->light->punctual = light.punctual;
+    scene->background = light.background;
+
+    if (Str::EqualTo(light.shadow, "off")) {
+        scene->shadowSize = Vec2i(-1, -1);
+    }
+    else if (Str::EqualTo(light.shadow, "on")) {
+        scene->shadowSize = Vec2i(512, 512);
+    }
+    else {
+        int item = sscanf(light.shadow, "%dx%d", &scene->shadowSize.x, &scene->shadowSize.y);
+        assert(item == 2);
+    }
 
     for (int i = 0; i < models.size(); i++) {
         sceneModel_t &modelDecl = models[i];

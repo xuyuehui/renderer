@@ -9,6 +9,8 @@ class Renderer;
 class SoftRenderer;
 class Material;
 class Shader;
+class FrameBuffer;
+class Texture;
 
 namespace Blinn {
 class Program;
@@ -28,10 +30,15 @@ public:
     ~RenderWorld_Soft();
 
     void RenderScene();
+
+    void SetShadowSize(int width, int height);
 protected:
     void SortDrawSurfaces(const Mat4 &viewMat);
 private:
     SoftRenderer *renderer;
+
+    FrameBuffer *shadowBuffer;
+    Texture *shadowMap;
 };
 
 class RenderWorldBlinn_Soft : public RenderWorld_Soft {

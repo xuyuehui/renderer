@@ -3,27 +3,39 @@
 
 namespace CG {
 
-Texture::Texture(const image_t&image, const char *tag) {
-    this->width = image.width;
-    this->height = image.height;
-    this->from = tag;
-        
-    int len = image.width * image.height * 4;
+Texture::Texture(const byte *data, int width, int height, int channels, const char *tag) {
+    this->width = width;
+    this->height = height;
+    this->tag = tag;
+
+    int len = width * height * 4;
     this->data = new float[len];
     this->len = len;
-        
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int texPos = (y * width + x) * 4;
-            int imgPos = (y * width + x) * image.channels;
-                
-            this->data[texPos + 0] = image.ldrData[imgPos + 0] / 255.0f;
-            this->data[texPos + 1] = image.ldrData[imgPos + 1] / 255.0f;
-            this->data[texPos + 2] = image.ldrData[imgPos + 2] / 255.0f;
-            this->data[texPos + 3] = image.channels <= 3 ? 1.0f : image.ldrData[imgPos + 3] / 255.0f;
+            int imgPos = (y * width + x) * channels;
+
+            this->data[texPos + 0] = data[imgPos + 0] / 255.0f;
+            this->data[texPos + 1] = data[imgPos + 1] / 255.0f;
+            this->data[texPos + 2] = data[imgPos + 2] / 255.0f;
+            this->data[texPos + 3] = channels <= 3 ? 1.0f : data[imgPos + 3] / 255.0f;
         }
     }
-        
+
+    this->filterType = TEXFT_DEFAULT;
+}
+
+Texture::Texture(int width, int height) {
+    this->width = width;
+    this->height = height;
+    this->tag = "user created";
+
+    int len = width * height * 4;
+    this->data = new float[len];
+    this->len = len;
+
     this->filterType = TEXFT_DEFAULT;
 }
 
@@ -31,11 +43,22 @@ Texture::~Texture() {
     delete[] data;
 }
 
-Vec4 Texture::ColorAt(int x, int y) const {        
-    x = clamp(x, 0, width-1);
-    y = clamp(y, 0, height-1);
-        
+Vec4 Texture::ColorAt(int x, int y) const {
+    x = clamp(x, 0, width - 1);
+    y = clamp(y, 0, height - 1);
+
     return Vec4(&data[(y * width + x) * 4]);
 }
+
+void Texture::SetColor(int index, const Vec4 &color) {
+    index *= 4;
+    assert(index >= 0 && index < len);
+
+    data[index] = color.x;
+    data[index+1] = color.y;
+    data[index+2] = color.z;
+    data[index+3] = color.w;
+}
+
 
 }

@@ -56,6 +56,8 @@ public:
     virtual void RenderScene() = 0;
 
     virtual IProgram *GetProgram() const = 0;
+
+    virtual void SetShadowSize(int width, int height) = 0;
 };
 
 }

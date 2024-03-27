@@ -22,11 +22,11 @@ DemoMain::DemoMain() : renderWorld(NULL), camera(NULL), scene(NULL), lightTheta(
 }
 
 void DemoMain::OnInit() {
-    Mat4 translation = Mat4::FromTranslate(0, 0, -1.369f);
-    Mat4 rotation = Mat4::FromRotateX(DEG2RAD(-90));
-    Mat4 scale = Mat4::FromScale(0.331f, 0.331f, 0.331f);
+    Mat4 translation = Mat4::FromTranslate(-1.668f, -27.061f, -10.834f);
+    Mat4 rotation = Mat4::FromRotateX(DEG2RAD(0));
+    Mat4 scale = Mat4::FromScale(0.016f, 0.016f, 0.016f);
     Mat4 root = scale * rotation * translation;
-    scene = SceneLoader::LoadScene(app->GetRenderer(), "assets/vivi/vivi.scn", root);
+    scene = SceneLoader::LoadScene(app->GetRenderer(), "assets/craftsman/craftsman.scn", root);
     renderWorld = app->GetRenderer()->CreateRenderWorld((shadingMode_t)scene->shadingMode);
 
     int width, height;
@@ -52,6 +52,7 @@ void DemoMain::OnInit() {
         renderWorld->AddLightDef(*scene->light);
     }
 
+    renderWorld->SetShadowSize(scene->shadowSize.x, scene->shadowSize.y);
 }
 
 void DemoMain::OnUpdate() {

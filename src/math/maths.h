@@ -21,6 +21,7 @@ public:
     static Mat4 FromTRS(const Vec3 &translate, const Quat &rotation, const Vec3 &scale);
     static Mat4 Perspective(float fovY, float aspect, float near, float far);
     static Mat4 LookAt(const Vec3 &eye, const Vec3 &target, const Vec3 &up);
+    static Mat4 Orthographic(float right, float top, float near, float far);
 
     static Quat MatrixToQuat(const Mat4 &mat);
     static Vec3 MatrixToTranslate(const Mat4 &mat);

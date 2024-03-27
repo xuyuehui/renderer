@@ -36,6 +36,9 @@ typedef struct ishaderUniforms_s {
     Vec3 cameraPos;
     Vec3 lightDir;
     float punctualIntensity;
+    bool shadowPass;
+
+    Texture *shadowMap;
 }ishaderUniforms_t;
 
 class IProgram {

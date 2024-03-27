@@ -485,14 +485,16 @@ RenderWorld *SoftRenderer::CreateRenderWorld(shadingMode_t mode) {
     }
 }
 
-void SoftRenderer::DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface) {
+void SoftRenderer::DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface, bool shadowPass, FrameBuffer *dst) {
     if (!surface->geometry) {
         return;
     }
 
-    FrameBuffer *frameBuffer = this->GetBackFrameBuffer();
+    FrameBuffer *frameBuffer = dst ? dst : this->GetBackFrameBuffer();
     IProgram *program = renderWorld->GetProgram();
     program->SetupMaterial(surface->material);
+
+    program->uniforms->shadowPass = shadowPass;
 
     Shader_Soft *shader = dynamic_cast<Shader_Soft *>(program->shader);
 

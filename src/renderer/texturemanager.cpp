@@ -49,7 +49,7 @@ Texture * TextureManager::LoadTexture(const char *filename) {
         return NULL;
     }
 
-    Texture *texture = new Texture(image, filename);
+    Texture *texture = new Texture(image.ldrData, image.width, image.height, image.channels, filename);
 
     textures.insert(std::pair<std::string, Texture *>(filename, texture));
 

@@ -42,7 +42,7 @@ public:
     antiAliasingType_t GetAntiAliasingType() const;
     uint32 GetAntiAliasingLevel() const;
 
-    void DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface);
+    void DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface, bool shadowPass, FrameBuffer *dst);
 public:
     // 已经准备好的缓冲区
     FrameBuffer *GetFrontFrameBuffer() const;

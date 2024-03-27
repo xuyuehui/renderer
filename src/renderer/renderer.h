@@ -19,6 +19,8 @@ class RenderWorld;
 class ShaderManager;
 class ModelManager;
 class TextureManager;
+class FrameBuffer;
+
 typedef struct modelSurface_s modelSurface_t;
 
 typedef enum {
@@ -44,7 +46,7 @@ public:
 
     virtual void DrawLine(const Vec2 &s, const Vec2 &e, const color_t &color, float depth) = 0;
     virtual void DrawText(const char *text, const Vec2& pos, float size, const color_t &color, float gap) = 0;
-    virtual void DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface) = 0;
+    virtual void DrawSurface(const RenderWorld *renderWorld, const modelSurface_t *surface, bool shadowPass, FrameBuffer *dst) = 0;
 
     virtual RenderWorld *CreateRenderWorld(shadingMode_t mode) = 0;
 
